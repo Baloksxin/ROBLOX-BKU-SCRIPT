@@ -142,6 +142,21 @@ ForsakenTab:AddButton({
 	end    
 })
 
+local NdsTab = Window:MakeTab({
+    Name = "自然灾害幸存",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+NdsTab:AddSection({ Name = "NDS 专用脚本" })
+
+NdsTab:AddButton({
+    Name = "NDS HUB",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/KaterHub-Inc/NaturalDisasterSurvival/refs/heads/main/main.lua"))()
+    end
+})
+
 RunService.RenderStepped:Connect(function()
     if SpeedEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
         LocalPlayer.Character.Humanoid.WalkSpeed = TargetSpeed
