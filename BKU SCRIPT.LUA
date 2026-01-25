@@ -32,7 +32,7 @@ local InfoTab = Window:MakeTab({
     PremiumOnly = false
 })
 
-InfoTab:AddSection({ Name = "客户端环境信息" })
+InfoTab:AddSection({ Name = "信息" })
 InfoTab:AddLabel("使用者: " .. LocalPlayer.DisplayName)
 InfoTab:AddLabel("执行器: " .. ((identifyexecutor and identifyexecutor()) or "未知"))
 InfoTab:AddLabel("游戏 ID (PlaceId): " .. tostring(GamePlaceId))
@@ -111,7 +111,7 @@ local DoorsTab = Window:MakeTab({
     PremiumOnly = false
 })
 
-DoorsTab:AddSection({ Name = "专用脚本库" })
+DoorsTab:AddSection({ Name = "DOORS脚本" })
 
 DoorsTab:AddButton({
 	Name = "Velocity X",
@@ -148,12 +148,19 @@ local NdsTab = Window:MakeTab({
     PremiumOnly = false
 })
 
-NdsTab:AddSection({ Name = "NDS 专用脚本" })
+NdsTab:AddSection({ Name = "自然灾害脚本" })
 
 NdsTab:AddButton({
     Name = "NDS HUB",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/KaterHub-Inc/NaturalDisasterSurvival/refs/heads/main/main.lua"))()
+    end
+})
+
+NdsTab:AddButton({
+    Name = "Super Ring Parts V4",
+    Callback = function()
+        loadstring(game:HttpGet("https://rscripts.net/raw/super-ring-parts-v4-by-lukas_1741980981842_td0ummjymf.txt",true))()
     end
 })
 
