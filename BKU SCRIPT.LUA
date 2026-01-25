@@ -216,6 +216,21 @@ ElevatorTab:AddButton({
     end
 })
 
+local FishTab = Window:MakeTab({
+    Name = "Fish It",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+FishTab:AddSection({ Name = "Fish It 脚本" })
+
+FishTab:AddButton({
+    Name = "1",
+    Callback = function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/dilleron964/Fish-It/main/Fish-It.lua'))()
+    end
+})
+
 RunService.RenderStepped:Connect(function()
     if SpeedEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
         LocalPlayer.Character.Humanoid.WalkSpeed = TargetSpeed
