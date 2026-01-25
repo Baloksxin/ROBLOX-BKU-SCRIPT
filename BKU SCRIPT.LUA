@@ -195,9 +195,9 @@ local TsunamiTab = Window:MakeTab({
 TsunamiTab:AddSection({ Name = "逃离海啸获得脑腐脚本" })
 
 TsunamiTab:AddButton({
-    Name = "Kdml Admin",
+    Name = "1",
     Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/kedd063/KdmlScripts/refs/heads/main/EscapeTsunamiForBrainrotEscapeTsunamiForBrainrots"))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptify12/EscapeTsunami/main/KeySystem.lua", true))()
     end
 })
 
