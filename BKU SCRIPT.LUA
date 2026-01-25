@@ -57,7 +57,6 @@ local MainTab = Window:MakeTab({
 })
 
 MainTab:AddSection({ Name = "速度控制" })
-
 MainTab:AddTextbox({
     Name = "设置目标速度数值",
     Default = "16",
@@ -80,7 +79,6 @@ MainTab:AddToggle({
 })
 
 MainTab:AddSection({ Name = "常规增强" })
-
 MainTab:AddToggle({ Name = "无限跳跃", Default = false, Callback = function(V) InfiniteJumpEnabled = V end })
 MainTab:AddToggle({ Name = "穿墙模式 (Noclip)", Default = false, Callback = function(V) NoclipEnabled = V end })
 MainTab:AddToggle({ 
@@ -97,14 +95,12 @@ MainTab:AddToggle({
 })
 
 MainTab:AddSection({ Name = "辅助工具" })
-
 MainTab:AddButton({
 	Name = "开启飞行 GUI",
 	Callback = function()
 		loadstring(game:HttpGet("https://github.com/MiniCapy/scripts/raw/refs/heads/main/fly%20GUI"))()
 	end    
 })
-
 MainTab:AddButton({
 	Name = "R15动作脚本",
 	Callback = function()
@@ -117,16 +113,13 @@ local DoorsTab = Window:MakeTab({
     Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
-
 DoorsTab:AddSection({ Name = "DOORS脚本" })
-
 DoorsTab:AddButton({
 	Name = "Velocity X",
 	Callback = function()
 		loadstring(game:HttpGet("https://velocityloader.vercel.app/"))()
 	end    
 })
-
 DoorsTab:AddButton({
 	Name = "OP实体生成器",
 	Callback = function()
@@ -139,9 +132,7 @@ local ForsakenTab = Window:MakeTab({
     Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
-
 ForsakenTab:AddSection({ Name = "Forsaken 专用脚本" })
-
 ForsakenTab:AddButton({
 	Name = "Byby Hub",
 	Callback = function()
@@ -154,16 +145,13 @@ local NdsTab = Window:MakeTab({
     Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
-
 NdsTab:AddSection({ Name = "自然灾害脚本" })
-
 NdsTab:AddButton({
     Name = "NDS HUB",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/KaterHub-Inc/NaturalDisasterSurvival/refs/heads/main/main.lua"))()
     end
 })
-
 NdsTab:AddButton({
     Name = "Super Ring Parts V4",
     Callback = function()
@@ -176,9 +164,7 @@ local BFTab = Window:MakeTab({
     Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
-
 BFTab:AddSection({ Name = "Blox Fruits 脚本" })
-
 BFTab:AddButton({
     Name = "4479Hub",
     Callback = function()
@@ -191,9 +177,7 @@ local TsunamiTab = Window:MakeTab({
     Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
-
 TsunamiTab:AddSection({ Name = "逃离海啸获得脑腐脚本" })
-
 TsunamiTab:AddButton({
     Name = "1",
     Callback = function()
@@ -206,9 +190,7 @@ local ElevatorTab = Window:MakeTab({
     Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
-
 ElevatorTab:AddSection({ Name = "疯狂电梯脚本" })
-
 ElevatorTab:AddButton({
     Name = "免费工具",
     Callback = function()
@@ -221,9 +203,7 @@ local FishTab = Window:MakeTab({
     Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
-
 FishTab:AddSection({ Name = "Fish It 脚本" })
-
 FishTab:AddButton({
     Name = "1",
     Callback = function()
