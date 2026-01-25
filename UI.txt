@@ -11,16 +11,16 @@ local OrionLib = {
     Connections = {},
     Flags = {},
     Themes = {
-    Default = {
-        Main = Color3.fromRGB(25, 25, 25),
-        Second = Color3.fromRGB(32, 32, 32),
-        Stroke = Color3.fromRGB(60, 60, 60),
-        Divider = Color3.fromRGB(60, 60, 60),
-        Text = Color3.fromRGB(240, 240, 240),
-        TextDark = Color3.fromRGB(150, 150, 150)
+        Green = {
+            Main = Color3.fromRGB(25, 30, 25),
+            Second = Color3.fromRGB(30, 35, 30),
+            Stroke = Color3.fromRGB(60, 180, 60),
+            Divider = Color3.fromRGB(50, 80, 50),
+            Text = Color3.fromRGB(240, 255, 240),
+            TextDark = Color3.fromRGB(150, 170, 150)
         }
     },
-    SelectedTheme = "Default",
+    SelectedTheme = "Green",
     Folder = nil,
     SaveCfg = false
 }
