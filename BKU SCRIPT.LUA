@@ -1,7 +1,7 @@
 local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/Baloksxin/BK-PE-SCRIPT/refs/heads/main/UI.txt"))()
 
 local Window = OrionLib:MakeWindow({
-    Name = "BKU SCRIPT", 
+    Name = "BKU SCRIPT V1 by Baloksxin", 
     HidePremium = true, 
     SaveConfig = true,
     ConfigFolder = "BKU_Config",
@@ -105,6 +105,13 @@ MainTab:AddButton({
 	end    
 })
 
+MainTab:AddButton({
+	Name = "R15动作脚本",
+	Callback = function()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Gazer-Ha/Free-emote/refs/heads/main/Delta%20mad%20stuffs"))()
+	end    
+})
+
 local DoorsTab = Window:MakeTab({
     Name = "DOORS",
     Icon = "rbxassetid://4483345998",
@@ -161,6 +168,51 @@ NdsTab:AddButton({
     Name = "Super Ring Parts V4",
     Callback = function()
         loadstring(game:HttpGet("https://rscripts.net/raw/super-ring-parts-v4-by-lukas_1741980981842_td0ummjymf.txt",true))()
+    end
+})
+
+local BFTab = Window:MakeTab({
+    Name = "Blox Fruits",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+BFTab:AddSection({ Name = "Blox Fruits 脚本" })
+
+BFTab:AddButton({
+    Name = "4479Hub",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/4479cantcode/4479Hub/refs/heads/main/Script.lua"))()
+    end
+})
+
+local TsunamiTab = Window:MakeTab({
+    Name = "逃离海啸，获得脑腐",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+TsunamiTab:AddSection({ Name = "逃离海啸获得脑腐脚本" })
+
+TsunamiTab:AddButton({
+    Name = "Kdml Admin",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/kedd063/KdmlScripts/refs/heads/main/EscapeTsunamiForBrainrot"))()
+    end
+})
+
+local ElevatorTab = Window:MakeTab({
+    Name = "疯狂电梯",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+ElevatorTab:AddSection({ Name = "疯狂电梯脚本" })
+
+ElevatorTab:AddButton({
+    Name = "免费工具",
+    Callback = function()
+        loadstring(game:HttpGet(('https://pastebin.com/raw/vE8WMLit'),true))()
     end
 })
 
