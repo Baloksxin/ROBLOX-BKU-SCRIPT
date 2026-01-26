@@ -249,12 +249,12 @@ local BreakIn2Tab = Window:MakeTab({
     Icon = "rbxassetid://77348087165494",
     PremiumOnly = false
 })
-BreakIn2Tab:AddSection({ Name = "Break In 2 脚本" })
+BreakIn2Tab:AddSection({ Name = "Break In 1/2 脚本" })
 BreakIn2Tab:AddButton({
-    Name = "1",
+    Name = "break in 1/2可以用",
     Callback = function()
         getgenv().ignoreGameCheck = false
-        loadstring(game:HttpGet("https://luau.tech/build"))()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Iptxt/ActualHub/refs/heads/main/Loader"))();
     end    
 })
 
