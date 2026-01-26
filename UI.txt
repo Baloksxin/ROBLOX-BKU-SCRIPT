@@ -45,7 +45,13 @@ end
 
 local Orion = Instance.new("ScreenGui")
 Orion.Name = "Orion"
-Orion.BackgroundTransparency = 0.2
+Orion.BackgroundTransparency = 0.3
+
+-- 添加毛玻璃效果
+local BlurEffect = Instance.new("BlurEffect")
+BlurEffect.Size = 8
+BlurEffect.Parent = Orion
+
 if syn then
     syn.protect_gui(Orion)
     Orion.Parent = game.CoreGui
@@ -77,7 +83,7 @@ end
 
 local function MakeElement(Type, Name)
     local Element = Instance.new(Type)
-    Element.BackgroundTransparency = 0.2
+    Element.BackgroundTransparency = 0.3
     Element.BackgroundColor3 = OrionLib.Themes[OrionLib.SelectedTheme].Main
     return Element
 end
@@ -105,7 +111,7 @@ function OrionLib:MakeWindow(Config)
     local Window = {}
     local Container = Instance.new("Frame")
     Container.Name = Config.Name or "Window"
-    Container.BackgroundTransparency = 0.2
+    Container.BackgroundTransparency = 0.3
     Container.BackgroundColor3 = OrionLib.Themes[OrionLib.SelectedTheme].Main
     Container.Size = UDim2.new(0, Config.Width or 500, 0, Config.Height or 600)
     Container.Position = UDim2.new(0.5, -(Config.Width or 500) / 2, 0.5, -(Config.Height or 600) / 2)
@@ -113,7 +119,7 @@ function OrionLib:MakeWindow(Config)
     
     local TabContainer = Instance.new("Frame")
     TabContainer.Name = "TabContainer"
-    TabContainer.BackgroundTransparency = 0.2
+    TabContainer.BackgroundTransparency = 0.3
     TabContainer.BackgroundColor3 = OrionLib.Themes[OrionLib.SelectedTheme].Second
     TabContainer.Size = UDim2.new(1, -10, 1, -40)
     TabContainer.Position = UDim2.new(0, 5, 0, 35)
@@ -121,7 +127,7 @@ function OrionLib:MakeWindow(Config)
     
     local TabList = Instance.new("Frame")
     TabList.Name = "TabList"
-    TabList.BackgroundTransparency = 0.2
+    TabList.BackgroundTransparency = 0.3
     TabList.BackgroundColor3 = OrionLib.Themes[OrionLib.SelectedTheme].Second
     TabList.Size = UDim2.new(1, 0, 0, 30)
     TabList.Position = UDim2.new(0, 0, 0, 5)
@@ -132,7 +138,7 @@ function OrionLib:MakeWindow(Config)
     function TabFunction:AddTab(Config)
         local TabButton = Instance.new("TextButton")
         TabButton.Name = Config.Name or "Tab"
-        TabButton.BackgroundTransparency = 0.2
+        TabButton.BackgroundTransparency = 0.3
         TabButton.BackgroundColor3 = OrionLib.Themes[OrionLib.SelectedTheme].Second
         TabButton.Text = Config.Name or "Tab"
         TabButton.TextColor3 = OrionLib.Themes[OrionLib.SelectedTheme].Text
@@ -141,7 +147,7 @@ function OrionLib:MakeWindow(Config)
         
         local Tab = Instance.new("ScrollingFrame")
         Tab.Name = Config.Name or "Tab"
-        Tab.BackgroundTransparency = 0.2
+        Tab.BackgroundTransparency = 0.3
         Tab.BackgroundColor3 = OrionLib.Themes[OrionLib.SelectedTheme].Main
         Tab.Size = UDim2.new(1, 0, 1, 0)
         Tab.Visible = false
@@ -149,7 +155,7 @@ function OrionLib:MakeWindow(Config)
         
         local Container = Instance.new("Frame")
         Container.Name = "Container"
-        Container.BackgroundTransparency = 0.2
+        Container.BackgroundTransparency = 0.3
         Container.BackgroundColor3 = OrionLib.Themes[OrionLib.SelectedTheme].Main
         Container.Size = UDim2.new(1, -10, 1, -10)
         Container.Position = UDim2.new(0, 5, 0, 5)
