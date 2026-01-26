@@ -4,6 +4,7 @@ local RunService = game:GetService("RunService")
 local LocalPlayer = game:GetService("Players").LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
 local HttpService = game:GetService("HttpService")
+local Lighting = game:GetService("Lighting")
 
 local OrionLib = {
     Elements = {},
@@ -12,12 +13,12 @@ local OrionLib = {
     Flags = {},
     Themes = {
     Default = {
-        Main = Color3.fromRGB(20, 8, 40),
-        Second = Color3.fromRGB(36, 12, 72),
-        Stroke = Color3.fromRGB(120, 72, 200),
-        Divider = Color3.fromRGB(90, 50, 160),
-        Text = Color3.fromRGB(230, 210, 255),
-        TextDark = Color3.fromRGB(170, 130, 200)
+        Main = Color3.fromRGB(24, 8, 48),
+        Second = Color3.fromRGB(48, 12, 96),
+        Stroke = Color3.fromRGB(150, 90, 220),
+        Divider = Color3.fromRGB(110, 60, 170),
+        Text = Color3.fromRGB(250, 230, 255),
+        TextDark = Color3.fromRGB(190, 150, 230)
         }
     },
     SelectedTheme = "Default",
@@ -601,6 +602,7 @@ function OrionLib:MakeWindow(WindowConfig)
         Parent = Orion,
         Position = UDim2.new(0.5, -307, 0.5, -172),
         Size = UDim2.new(0, 615, 0, 344),
+        BackgroundTransparency = 0.4,
         ClipsDescendants = true,
         Active = true,
         Draggable = true
@@ -638,6 +640,16 @@ function OrionLib:MakeWindow(WindowConfig)
     end    
 
     MakeDraggable(DragPoint, MainWindow)
+
+    local OrionBlur = Instance.new("BlurEffect")
+    OrionBlur.Name = "OrionUIBlur"
+    OrionBlur.Size = 0
+    OrionBlur.Parent = Lighting
+
+    OrionBlur.Size = MainWindow.Visible and 8 or 0
+    AddConnection(MainWindow:GetPropertyChangedSignal("Visible"), function()
+        OrionBlur.Size = MainWindow.Visible and 8 or 0
+    end)
 
     AddConnection(CloseBtn.MouseButton1Up, function()
         MainWindow.Visible = false
@@ -1716,6 +1728,12 @@ end
 
 function OrionLib:Destroy()
     Orion:Destroy()
+    if OrionUIBlur and OrionUIBlur.Destroy then
+        pcall(function() OrionUIBlur:Destroy() end)
+    end
+    for _, conn in pairs(OrionLib.Connections) do
+        pcall(function() conn:Disconnect() end)
+    end
 end
 
 return OrionLib
