@@ -27,7 +27,7 @@ local OriginalClockTime = Lighting.ClockTime
 
 local InfoTab = Window:MakeTab({
     Name = "信息",
-    Icon = "rbxassetid://4483345998",
+    Icon = "rbxassetid://77348087165494",
     PremiumOnly = false
 })
 
@@ -51,7 +51,7 @@ InfoTab:AddButton({
 
 local MainTab = Window:MakeTab({
     Name = "主要",
-    Icon = "rbxassetid://4483345998",
+    Icon = "rbxassetid://77348087165494",
     PremiumOnly = false
 })
 
@@ -109,7 +109,7 @@ MainTab:AddButton({
 
 local DoorsTab = Window:MakeTab({
     Name = "DOORS",
-    Icon = "rbxassetid://4483345998",
+    Icon = "rbxassetid://77348087165494",
     PremiumOnly = false
 })
 DoorsTab:AddSection({ Name = "DOORS脚本" })
@@ -128,7 +128,7 @@ DoorsTab:AddButton({
 
 local ForsakenTab = Window:MakeTab({
     Name = "Forsaken",
-    Icon = "rbxassetid://4483345998",
+    Icon = "rbxassetid://77348087165494",
     PremiumOnly = false
 })
 ForsakenTab:AddSection({ Name = "Forsaken 专用脚本" })
@@ -141,7 +141,7 @@ ForsakenTab:AddButton({
 
 local NdsTab = Window:MakeTab({
     Name = "自然灾害幸存",
-    Icon = "rbxassetid://4483345998",
+    Icon = "rbxassetid://77348087165494",
     PremiumOnly = false
 })
 NdsTab:AddSection({ Name = "自然灾害脚本" })
@@ -160,7 +160,7 @@ NdsTab:AddButton({
 
 local BFTab = Window:MakeTab({
     Name = "Blox Fruits",
-    Icon = "rbxassetid://4483345998",
+    Icon = "rbxassetid://77348087165494",
     PremiumOnly = false
 })
 BFTab:AddSection({ Name = "Blox Fruits 脚本" })
@@ -173,7 +173,7 @@ BFTab:AddButton({
 
 local TsunamiTab = Window:MakeTab({
     Name = "逃离海啸，获得脑腐",
-    Icon = "rbxassetid://4483345998",
+    Icon = "rbxassetid://77348087165494",
     PremiumOnly = false
 })
 TsunamiTab:AddSection({ Name = "逃离海啸获得脑腐脚本" })
@@ -186,7 +186,7 @@ TsunamiTab:AddButton({
 
 local ElevatorTab = Window:MakeTab({
     Name = "疯狂电梯",
-    Icon = "rbxassetid://4483345998",
+    Icon = "rbxassetid://77348087165494",
     PremiumOnly = false
 })
 ElevatorTab:AddSection({ Name = "疯狂电梯脚本" })
@@ -199,7 +199,7 @@ ElevatorTab:AddButton({
 
 local FishTab = Window:MakeTab({
     Name = "Fish It",
-    Icon = "rbxassetid://4483345998",
+    Icon = "rbxassetid://77348087165494",
     PremiumOnly = false
 })
 FishTab:AddSection({ Name = "Fish It 脚本" })
@@ -212,7 +212,7 @@ FishTab:AddButton({
 
 local GAndBTab = Window:MakeTab({
     Name = "内脏与黑火药",
-    Icon = "rbxassetid://4483345998",
+    Icon = "rbxassetid://77348087165494",
     PremiumOnly = false
 })
 GAndBTab:AddSection({ Name = "Guts & Blackpowder 脚本" })
