@@ -12,7 +12,7 @@ local OrionLib = {
     Flags = {},
     Themes = {
     Default = {
-        Main = Color3.fromRGB(25, 25, 25),
+        Main = Color3.fromRGB(75, 0, 130),
         Second = Color3.fromRGB(32, 32, 32),
         Stroke = Color3.fromRGB(60, 60, 60),
         Divider = Color3.fromRGB(60, 60, 60),
@@ -402,7 +402,7 @@ function OrionLib:MakeNotification(NotificationConfig)
             Parent = NotificationParent,
             Size = UDim2.new(1, 0, 0, 0),
             Position = UDim2.new(1, -55, 0, 0),
-            BackgroundTransparency = 0,
+            BackgroundTransparency = 0.5,
             AutomaticSize = Enum.AutomaticSize.Y
         }), {
             MakeElement("Stroke", Color3.fromRGB(93, 93, 93), 1.2),
@@ -433,11 +433,11 @@ function OrionLib:MakeNotification(NotificationConfig)
 
         wait(NotificationConfig.Time - 0.88)
         TweenService:Create(NotificationFrame.Icon, TweenInfo.new(0.4, Enum.EasingStyle.Quint), {ImageTransparency = 1}):Play()
-        TweenService:Create(NotificationFrame, TweenInfo.new(0.8, Enum.EasingStyle.Quint), {BackgroundTransparency = 0.6}):Play()
+        TweenService:Create(NotificationFrame, TweenInfo.new(0.8, Enum.EasingStyle.Quint), {BackgroundTransparency = 0.5.6}):Play()
         wait(0.3)
-        TweenService:Create(NotificationFrame.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {Transparency = 0.9}):Play()
-        TweenService:Create(NotificationFrame.Title, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {TextTransparency = 0.4}):Play()
-        TweenService:Create(NotificationFrame.Content, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {TextTransparency = 0.5}):Play()
+        TweenService:Create(NotificationFrame.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {Transparency = 0.5.9}):Play()
+        TweenService:Create(NotificationFrame.Title, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {TextTransparency = 0.5.4}):Play()
+        TweenService:Create(NotificationFrame.Content, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {TextTransparency = 0.5.5}):Play()
         wait(0.05)
 
         NotificationFrame:TweenPosition(UDim2.new(1, 20, 0, 0),'In','Quint',0.8,true)
@@ -706,11 +706,11 @@ function OrionLib:MakeWindow(WindowConfig)
             TextTransparency = 1
         })
 
-        TweenService:Create(LoadSequenceLogo, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageTransparency = 0, Position = UDim2.new(0.5, 0, 0.5, 0)}):Play()
+        TweenService:Create(LoadSequenceLogo, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {ImageTransparency = 0.5, Position = UDim2.new(0.5, 0, 0.5, 0)}):Play()
         wait(0.8)
         TweenService:Create(LoadSequenceLogo, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Position = UDim2.new(0.5, -(LoadSequenceText.TextBounds.X/2), 0.5, 0)}):Play()
         wait(0.3)
-        TweenService:Create(LoadSequenceText, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 0}):Play()
+        TweenService:Create(LoadSequenceText, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 0.5}):Play()
         wait(2)
         TweenService:Create(LoadSequenceText, TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 1}):Play()
         MainWindow.Visible = true
@@ -737,14 +737,14 @@ function OrionLib:MakeWindow(WindowConfig)
                 AnchorPoint = Vector2.new(0, 0.5),
                 Size = UDim2.new(0, 18, 0, 18),
                 Position = UDim2.new(0, 10, 0.5, 0),
-                ImageTransparency = 0.4,
+                ImageTransparency = 0.5.4,
                 Name = "Ico"
             }), "Text"),
             AddThemeObject(SetProps(MakeElement("Label", TabConfig.Name, 14), {
                 Size = UDim2.new(1, -35, 1, 0),
                 Position = UDim2.new(0, 35, 0, 0),
                 Font = Enum.Font.GothamSemibold,
-                TextTransparency = 0.4,
+                TextTransparency = 0.5.4,
                 Name = "Title"
             }), "Text")
         })
@@ -770,8 +770,8 @@ function OrionLib:MakeWindow(WindowConfig)
 
         if FirstTab then
             FirstTab = false
-            TabFrame.Ico.ImageTransparency = 0
-            TabFrame.Title.TextTransparency = 0
+            TabFrame.Ico.ImageTransparency = 0.5
+            TabFrame.Title.TextTransparency = 0.5
             TabFrame.Title.Font = Enum.Font.GothamBlack
             Container.Visible = true
         end
@@ -780,8 +780,8 @@ function OrionLib:MakeWindow(WindowConfig)
             for _, Tab in next, TabHolder:GetChildren() do
                 if Tab:IsA("TextButton") then
                     Tab.Title.Font = Enum.Font.GothamSemibold
-                    TweenService:Create(Tab.Ico, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {ImageTransparency = 0.4}):Play()
-                    TweenService:Create(Tab.Title, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {TextTransparency = 0.4}):Play()
+                    TweenService:Create(Tab.Ico, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {ImageTransparency = 0.5.4}):Play()
+                    TweenService:Create(Tab.Title, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {TextTransparency = 0.5.4}):Play()
                 end
             end
             for _, ItemContainer in next, MainWindow:GetChildren() do
@@ -789,8 +789,8 @@ function OrionLib:MakeWindow(WindowConfig)
                     ItemContainer.Visible = false
                 end
             end
-            TweenService:Create(TabFrame.Ico, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {ImageTransparency = 0}):Play()
-            TweenService:Create(TabFrame.Title, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {TextTransparency = 0}):Play()
+            TweenService:Create(TabFrame.Ico, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {ImageTransparency = 0.5}):Play()
+            TweenService:Create(TabFrame.Title, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {TextTransparency = 0.5}):Play()
             TabFrame.Title.Font = Enum.Font.GothamBlack
             Container.Visible = true
         end)
@@ -800,7 +800,7 @@ function OrionLib:MakeWindow(WindowConfig)
             function ElementFunction:AddLabel(Text)
                 local LabelFrame = AddThemeObject(SetChildren(SetProps(MakeElement("RoundFrame", Color3.fromRGB(255, 255, 255), 0, 5), {
                     Size = UDim2.new(1, 0, 0, 30),
-                    BackgroundTransparency = 0.7,
+                    BackgroundTransparency = 0.5.7,
                     Parent = ItemParent
                 }), {
                     AddThemeObject(SetProps(MakeElement("Label", Text, 15), {
@@ -824,7 +824,7 @@ function OrionLib:MakeWindow(WindowConfig)
 
                 local ParagraphFrame = AddThemeObject(SetChildren(SetProps(MakeElement("RoundFrame", Color3.fromRGB(255, 255, 255), 0, 5), {
                     Size = UDim2.new(1, 0, 0, 30),
-                    BackgroundTransparency = 0.7,
+                    BackgroundTransparency = 0.5.7,
                     Parent = ItemParent
                 }), {
                     AddThemeObject(SetProps(MakeElement("Label", Text, 15), {
@@ -934,7 +934,7 @@ function OrionLib:MakeWindow(WindowConfig)
                     SetProps(MakeElement("Stroke"), {
                         Color = ToggleConfig.Color,
                         Name = "Stroke",
-                        Transparency = 0.5
+                        Transparency = 0.5.5
                     }),
                     SetProps(MakeElement("Image", "rbxassetid://3944680095"), {
                         Size = UDim2.new(0, 20, 0, 20),
@@ -1011,7 +1011,7 @@ function OrionLib:MakeWindow(WindowConfig)
 
                 local SliderDrag = SetChildren(SetProps(MakeElement("RoundFrame", SliderConfig.Color, 0, 5), {
                     Size = UDim2.new(0, 0, 1, 0),
-                    BackgroundTransparency = 0.3,
+                    BackgroundTransparency = 0.5.3,
                     ClipsDescendants = true
                 }), {
                     AddThemeObject(SetProps(MakeElement("Label", "value", 13), {
@@ -1019,14 +1019,14 @@ function OrionLib:MakeWindow(WindowConfig)
                         Position = UDim2.new(0, 12, 0, 6),
                         Font = Enum.Font.GothamBold,
                         Name = "Value",
-                        TextTransparency = 0
+                        TextTransparency = 0.5
                     }), "Text")
                 })
 
                 local SliderBar = SetChildren(SetProps(MakeElement("RoundFrame", SliderConfig.Color, 0, 5), {
                     Size = UDim2.new(1, -24, 0, 26),
                     Position = UDim2.new(0, 12, 0, 30),
-                    BackgroundTransparency = 0.9
+                    BackgroundTransparency = 0.5.9
                 }), {
                     SetProps(MakeElement("Stroke"), {
                         Color = SliderConfig.Color
@@ -1036,7 +1036,7 @@ function OrionLib:MakeWindow(WindowConfig)
                         Position = UDim2.new(0, 12, 0, 6),
                         Font = Enum.Font.GothamBold,
                         Name = "Value",
-                        TextTransparency = 0.8
+                        TextTransparency = 0.5.8
                     }), "Text"),
                     SliderDrag
                 })
@@ -1208,7 +1208,7 @@ function OrionLib:MakeWindow(WindowConfig)
                         DropdownFrame.F.Selected.Text = Dropdown.Value
                         for _, v in pairs(Dropdown.Buttons) do
                             TweenService:Create(v,TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{BackgroundTransparency = 1}):Play()
-                            TweenService:Create(v.Title,TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{TextTransparency = 0.4}):Play()
+                            TweenService:Create(v.Title,TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{TextTransparency = 0.5.4}):Play()
                         end    
                         return
                     end
@@ -1218,10 +1218,10 @@ function OrionLib:MakeWindow(WindowConfig)
 
                     for _, v in pairs(Dropdown.Buttons) do
                         TweenService:Create(v,TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{BackgroundTransparency = 1}):Play()
-                        TweenService:Create(v.Title,TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{TextTransparency = 0.4}):Play()
+                        TweenService:Create(v.Title,TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{TextTransparency = 0.5.4}):Play()
                     end    
-                    TweenService:Create(Dropdown.Buttons[Value],TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{BackgroundTransparency = 0}):Play()
-                    TweenService:Create(Dropdown.Buttons[Value].Title,TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{TextTransparency = 0}):Play()
+                    TweenService:Create(Dropdown.Buttons[Value],TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{BackgroundTransparency = 0.5}):Play()
+                    TweenService:Create(Dropdown.Buttons[Value].Title,TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{TextTransparency = 0.5}):Play()
                     return DropdownConfig.Callback(Dropdown.Value)
                 end
 
@@ -1684,12 +1684,12 @@ function OrionLib:MakeWindow(WindowConfig)
                 AddThemeObject(SetProps(MakeElement("Image", "rbxassetid://3610239960"), {
                     Size = UDim2.new(0, 18, 0, 18),
                     Position = UDim2.new(0, 15, 0, 15),
-                    ImageTransparency = 0.4
+                    ImageTransparency = 0.5.4
                 }), "Text"),
                 AddThemeObject(SetProps(MakeElement("Label", "Unauthorised Access", 14), {
                     Size = UDim2.new(1, -38, 0, 14),
                     Position = UDim2.new(0, 38, 0, 18),
-                    TextTransparency = 0.4
+                    TextTransparency = 0.5.4
                 }), "Text"),
                 AddThemeObject(SetProps(MakeElement("Image", "rbxassetid://4483345875"), {
                     Size = UDim2.new(0, 56, 0, 56),
@@ -1704,7 +1704,7 @@ function OrionLib:MakeWindow(WindowConfig)
                     Size = UDim2.new(1, -200, 0, 14),
                     Position = UDim2.new(0, 150, 0, 138),
                     TextWrapped = true,
-                    TextTransparency = 0.4
+                    TextTransparency = 0.5.4
                 }), "Text")
             })
         end
