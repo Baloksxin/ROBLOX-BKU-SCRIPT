@@ -231,6 +231,19 @@ GAndBTab:AddButton({
     end    
 })
 
+local Forest99Tab = Window:MakeTab({
+    Name = "森林中的99夜",
+    Icon = "rbxassetid://77348087165494",
+    PremiumOnly = false
+})
+Forest99Tab:AddSection({ Name = "森林中的99夜 脚本" })
+Forest99Tab:AddButton({
+    Name = "UNPERFORMED HUB",
+    Callback = function()
+        loadstring(game:HttpGet("https://api.junkie-development.de/api/v1/luascripts/public/6ed3b0b29cae165a5df389c3650171583312f6baeaf622f2330521e9c340436c/download"))()
+    end    
+})
+
 RunService.RenderStepped:Connect(function()
     if SpeedEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
         LocalPlayer.Character.Humanoid.WalkSpeed = TargetSpeed
