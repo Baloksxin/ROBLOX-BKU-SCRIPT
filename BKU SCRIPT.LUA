@@ -1,7 +1,7 @@
 local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/Baloksxin/BK-PE-SCRIPT/refs/heads/main/UI.txt"))()
 
 local Window = OrionLib:MakeWindow({
-    Name = "BKU SCRIPT by Baloksxin", 
+    Name = "BKU HUB BY BALOKSXIN", 
     HidePremium = true, 
     SaveConfig = true,
     ConfigFolder = "BKU_Config",
@@ -209,6 +209,19 @@ FishTab:AddButton({
     Callback = function()
         loadstring(game:HttpGet('https://raw.githubusercontent.com/dilleron964/Fish-It/main/Fish-It.lua'))()
     end
+})
+
+local GAndBTab = Window:MakeTab({
+    Name = "内脏与黑火药",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+GAndBTab:AddSection({ Name = "Guts & Blackpowder 脚本" })
+GAndBTab:AddButton({
+    Name = "Katchi Hub",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/XaviscoZ/roblox/refs/heads/main/g%26b.lua"))()
+    end    
 })
 
 RunService.RenderStepped:Connect(function()
