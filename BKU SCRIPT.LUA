@@ -3,9 +3,8 @@ local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/Balo
 local Window = OrionLib:MakeWindow({
     Name = "BKU HUB BY BALOKSXIN", 
     HidePremium = true, 
-    SaveConfig = true,
-    ConfigFolder = "BKU_Config",
-    IntroText = "BKU SCRIPT INITIALIZING..."
+    SaveConfig = false,
+    IntroText = "正在加载BKU HUB"
 })
 
 local Players = game:GetService("Players")
