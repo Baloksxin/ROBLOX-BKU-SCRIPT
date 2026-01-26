@@ -1,7 +1,7 @@
 local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/Baloksxin/BK-PE-SCRIPT/refs/heads/main/UI.txt"))()
 
 local Window = OrionLib:MakeWindow({
-    Name = "BKU SCRIPT V1 by Baloksxin", 
+    Name = "BKU SCRIPT by Baloksxin", 
     HidePremium = true, 
     SaveConfig = true,
     ConfigFolder = "BKU_Config",
