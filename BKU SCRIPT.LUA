@@ -55,7 +55,7 @@ local MainTab = Window:MakeTab({
     PremiumOnly = false
 })
 
-MainTab:AddSection({ Name = "速度控制" })
+MainTab:AddSection({ Name = "🐷要" })
 MainTab:AddTextbox({
     Name = "设置目标速度数值",
     Default = "16",
@@ -77,7 +77,6 @@ MainTab:AddToggle({
     end
 })
 
-MainTab:AddSection({ Name = "常规增强" })
 MainTab:AddToggle({ Name = "无限跳跃", Default = false, Callback = function(V) InfiniteJumpEnabled = V end })
 MainTab:AddToggle({ Name = "穿墙模式 (Noclip)", Default = false, Callback = function(V) NoclipEnabled = V end })
 MainTab:AddToggle({ 
@@ -93,7 +92,7 @@ MainTab:AddToggle({
     end 
 })
 
-MainTab:AddSection({ Name = "辅助工具" })
+MainTab:AddSection({ Name = "工具" })
 MainTab:AddButton({
 	Name = "开启飞行 GUI",
 	Callback = function()
