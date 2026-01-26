@@ -244,6 +244,20 @@ Forest99Tab:AddButton({
     end    
 })
 
+local BreakIn2Tab = Window:MakeTab({
+    Name = "Break In 2",
+    Icon = "rbxassetid://77348087165494",
+    PremiumOnly = false
+})
+BreakIn2Tab:AddSection({ Name = "Break In 2 脚本" })
+BreakIn2Tab:AddButton({
+    Name = "1",
+    Callback = function()
+        getgenv().ignoreGameCheck = false
+        loadstring(game:HttpGet("https://luau.tech/build"))()
+    end    
+})
+
 RunService.RenderStepped:Connect(function()
     if SpeedEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
         LocalPlayer.Character.Humanoid.WalkSpeed = TargetSpeed
