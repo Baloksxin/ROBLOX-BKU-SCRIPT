@@ -63,7 +63,7 @@ MainTab:AddTextbox({
     Callback = function(Value)
         local num = tonumber(Value)
         if num then TargetSpeed = num end
-    end	  
+    end      
 })
 
 MainTab:AddToggle({
@@ -93,12 +93,21 @@ MainTab:AddToggle({
 })
 
 MainTab:AddSection({ Name = "工具" })
+
 MainTab:AddButton({
-	Name = "开启飞行 GUI",
+	Name = "Infinite Yield",
+	Callback = function()
+		loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+	end    
+})
+
+MainTab:AddButton({
+	Name = "飞行 GUI",
 	Callback = function()
 		loadstring(game:HttpGet("https://github.com/MiniCapy/scripts/raw/refs/heads/main/fly%20GUI"))()
 	end    
 })
+
 MainTab:AddButton({
 	Name = "R15动作脚本",
 	Callback = function()
