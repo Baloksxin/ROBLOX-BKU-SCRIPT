@@ -291,6 +291,19 @@ GardenTab:AddButton({
     end
 })
 
+local LexingtonTab = Window:MakeTab({
+    Name = "莱辛顿和康科德",
+    Icon = "rbxassetid://77348087165494",
+    PremiumOnly = false
+})
+LexingtonTab:AddSection({ Name = "莱辛顿和康科德脚本" })
+LexingtonTab:AddButton({
+    Name = "1",
+    Callback = function()
+        loadstring(game:HttpGet("https://rawscripts.net/raw/Lexington-and-Concord-LC-75016"))()
+    end
+})
+
 RunService.RenderStepped:Connect(function()
     if SpeedEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
         LocalPlayer.Character.Humanoid.WalkSpeed = TargetSpeed
