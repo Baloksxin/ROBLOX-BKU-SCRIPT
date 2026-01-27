@@ -301,6 +301,33 @@ LexingtonTab:AddButton({
     end
 })
 
+
+local HackerTab = Window:MakeTab({
+	Name = "黑客GUI",
+	Icon = "rbxassetid://77348087165494",
+	PremiumOnly = false
+})
+HackerTab:AddSection({ Name = "提示" })
+HackerTab:AddLabel("想啥呢，肯定是客户端啊")
+HackerTab:AddButton({
+	Name = "c00lgui",
+	Callback = function()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Baloksxin/ROBLOX-BKU-SCRIPT/refs/heads/main/Scripts/c00lgui.LUA"))()
+	end
+})
+HackerTab:AddButton({
+	Name = "1x1x1x1gui",
+	Callback = function()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Baloksxin/ROBLOX-BKU-SCRIPT/refs/heads/main/Scripts/1x1x1x1gui%203.3.LUA"))()
+	end
+})
+HackerTab:AddButton({
+	Name = "k00pgui",
+	Callback = function()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Baloksxin/ROBLOX-BKU-SCRIPT/refs/heads/main/Scripts/k00pgui%20v12.LUA"))()
+	end
+})
+
 RunService.RenderStepped:Connect(function()
     if SpeedEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
         LocalPlayer.Character.Humanoid.WalkSpeed = TargetSpeed
