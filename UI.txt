@@ -11,16 +11,16 @@ local OrionLib = {
     Connections = {},
     Flags = {},
     Themes = {
-    Default = {
-        Main = Color3.fromRGB(25, 25, 25),
-        Second = Color3.fromRGB(32, 32, 32),
-        Stroke = Color3.fromRGB(60, 60, 60),
-        Divider = Color3.fromRGB(60, 60, 60),
-        Text = Color3.fromRGB(240, 240, 240),
-        TextDark = Color3.fromRGB(150, 150, 150)
-        }
-    },
-    SelectedTheme = "Default",
+    SciFiPurple = {
+        Main = Color3.fromRGB(22,18,35),
+        Second = Color3.fromRGB(32,24,55),
+        Stroke = Color3.fromRGB(160,120,255),
+        Divider = Color3.fromRGB(90,60,160),
+        Text = Color3.fromRGB(235,230,255),
+        TextDark = Color3.fromRGB(170,160,210)
+    }
+},
+SelectedTheme = "SciFiPurple",
     Folder = nil,
     SaveCfg = false
 }
@@ -259,12 +259,12 @@ CreateElement("Corner", function(Scale, Offset)
     return Corner
 end)
 
-CreateElement("Stroke", function(Color, Thickness)
-    local Stroke = Create("UIStroke", {
-        Color = Color or Color3.fromRGB(255, 255, 255),
-        Thickness = Thickness or 1
+CreateElement("Stroke", function()
+    return Instance.new("UIStroke", {
+        Color = Color3.fromRGB(160,120,255),
+        Thickness = 1.2,
+        Transparency = 0.15
     })
-    return Stroke
 end)
 
 CreateElement("List", function(Scale, Offset)
