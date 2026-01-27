@@ -301,13 +301,11 @@ LexingtonTab:AddButton({
     end
 })
 
-
 local HackerTab = Window:MakeTab({
 	Name = "黑客GUI",
 	Icon = "rbxassetid://77348087165494",
 	PremiumOnly = false
 })
-HackerTab:AddSection({ Name = "提示" })
 HackerTab:AddLabel("想啥呢，肯定是客户端啊")
 HackerTab:AddButton({
 	Name = "c00lgui",
