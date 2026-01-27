@@ -68,7 +68,7 @@ InfoTab:AddButton({
 })
 
 local MainTab = Window:MakeTab({
-    Name = "主要",
+    Name = "通用",
     Icon = "rbxassetid://77348087165494",
     PremiumOnly = false
 })
