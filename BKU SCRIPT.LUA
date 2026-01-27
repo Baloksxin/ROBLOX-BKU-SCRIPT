@@ -27,6 +27,17 @@ local TargetSpeed = 16
 local ServerJobId = game.JobId ~= "" and game.JobId or "单人/私服环境"
 local GamePlaceId = game.PlaceId
 
+local ESPEnabled = false
+local ESPFolder = nil
+local ESPConnections = {}
+local ESPPlayers = {}
+local ESPRenderDistance = 1000
+local ESPColor = Color3.fromRGB(255, 0, 0)
+local ESPThickness = 2
+local ESPShowNames = true
+local ESPShowHealth = true
+local ESPShowDistance = true
+
 local OriginalBrightness = Lighting.Brightness
 local OriginalAmbient = Lighting.Ambient
 local OriginalClockTime = Lighting.ClockTime
@@ -108,6 +119,55 @@ MainTab:AddToggle({
             Lighting.ClockTime = OriginalClockTime
         end
     end 
+})
+
+MainTab:AddSection({ Name = "ESP设置" })
+
+MainTab:AddToggle({
+    Name = "玩家ESP",
+    Default = false,
+    Callback = function(Value)
+        ESPEnabled = Value
+        if Value then
+            InitializeESP()
+        else
+            CleanupESP()
+        end
+    end
+})
+
+MainTab:AddSlider({
+    Name = "ESP显示距离",
+    Min = 100,
+    Max = 2000,
+    Default = 1000,
+    Callback = function(Value)
+        ESPRenderDistance = Value
+    end
+})
+
+MainTab:AddToggle({
+    Name = "显示名称",
+    Default = true,
+    Callback = function(Value)
+        ESPShowNames = Value
+    end
+})
+
+MainTab:AddToggle({
+    Name = "显示血量",
+    Default = true,
+    Callback = function(Value)
+        ESPShowHealth = Value
+    end
+})
+
+MainTab:AddToggle({
+    Name = "显示距离",
+    Default = true,
+    Callback = function(Value)
+        ESPShowDistance = Value
+    end
 })
 
 MainTab:AddSection({ Name = "工具" })
@@ -301,6 +361,227 @@ LexingtonTab:AddButton({
     end
 })
 
+local function InitializeESP()
+    if ESPFolder then return end
+    
+    ESPFolder = Instance.new("ScreenGui")
+    ESPFolder.Name = "ESPFolder"
+    ESPFolder.Parent = game.CoreGui
+    
+    ESPPlayers = {}
+    
+    local playerAddedConn = Players.PlayerAdded:Connect(function(player)
+        ESPPlayers[player] = {
+            NameTag = nil,
+            Box = nil,
+            HealthBar = nil,
+            DistanceLabel = nil,
+            Connection = nil
+        }
+    end)
+    
+    local playerRemovingConn = Players.PlayerRemoving:Connect(function(player)
+        if ESPPlayers[player] then
+            if ESPPlayers[player].NameTag then ESPPlayers[player].NameTag:Destroy() end
+            if ESPPlayers[player].Box then ESPPlayers[player].Box:Destroy() end
+            if ESPPlayers[player].HealthBar then ESPPlayers[player].HealthBar:Destroy() end
+            if ESPPlayers[player].DistanceLabel then ESPPlayers[player].DistanceLabel:Destroy() end
+            if ESPPlayers[player].Connection then ESPPlayers[player].Connection:Disconnect() end
+            
+            ESPPlayers[player] = nil
+        end
+    end)
+    
+    table.insert(ESPConnections, playerAddedConn)
+    table.insert(ESPConnections, playerRemovingConn)
+    
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer then
+            ESPPlayers[player] = {
+                NameTag = nil,
+                Box = nil,
+                HealthBar = nil,
+                DistanceLabel = nil,
+                Connection = nil
+            }
+        end
+    end
+end
+
+local function CleanupESP()
+    if not ESPFolder then return end
+    
+    for _, conn in ipairs(ESPConnections) do
+        if conn and conn.Connected then
+            conn:Disconnect()
+        end
+    end
+    ESPConnections = {}
+    
+    for _, playerData in pairs(ESPPlayers) do
+        if playerData.NameTag then playerData.NameTag:Destroy() end
+        if playerData.Box then playerData.Box:Destroy() end
+        if playerData.HealthBar then playerData.HealthBar:Destroy() end
+        if playerData.DistanceLabel then playerData.DistanceLabel:Destroy() end
+        if playerData.Connection then playerData.Connection:Disconnect() end
+    end
+    
+    ESPPlayers = {}
+    
+    ESPFolder:Destroy()
+    ESPFolder = nil
+end
+
+local function UpdateESP()
+    if not ESPEnabled or not ESPFolder then return end
+    
+    local camera = workspace.CurrentCamera
+    if not camera then return end
+    
+    local localCharacter = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+    if not localCharacter then return end
+    
+    local localRoot = localCharacter:FindFirstChild("HumanoidRootPart")
+    if not localRoot then return end
+    
+    local localPosition = localRoot.Position
+    
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer and player.Character then
+            local character = player.Character
+            local rootPart = character:FindFirstChild("HumanoidRootPart")
+            local headPart = character:FindFirstChild("Head")
+            
+            if rootPart and headPart then
+                local characterPosition = rootPart.Position
+                
+                local distance = (characterPosition - localPosition).Magnitude
+                if distance <= ESPRenderDistance then
+                    local screenPosition, onScreen = camera:WorldToScreenPoint(characterPosition)
+                    
+                    if onScreen then
+                        local humanoid = character:FindFirstChildOfClass("Humanoid")
+                        local healthPercent = 100
+                        if humanoid then
+                            healthPercent = (humanoid.Health / humanoid.MaxHealth) * 100
+                        end
+                        
+                        if not ESPPlayers[player] then
+                            ESPPlayers[player] = {
+                                NameTag = nil,
+                                Box = nil,
+                                HealthBar = nil,
+                                DistanceLabel = nil,
+                                Connection = nil
+                            }
+                        end
+                        
+                        local playerData = ESPPlayers[player]
+                        
+                        if ESPShowNames then
+                            if not playerData.NameTag then
+                                playerData.NameTag = Instance.new("TextLabel")
+                                playerData.NameTag.Name = "NameTag"
+                                playerData.NameTag.BackgroundTransparency = 1
+                                playerData.NameTag.TextColor3 = Color3.new(1, 1, 1)
+                                playerData.NameTag.TextStrokeColor3 = Color3.new(0, 0, 0)
+                                playerData.NameTag.TextStrokeTransparency = 0
+                                playerData.NameTag.Font = Enum.Font.SourceSansBold
+                                playerData.NameTag.TextSize = 14
+                                playerData.NameTag.Size = UDim2.new(0, 100, 0, 20)
+                                playerData.NameTag.Parent = ESPFolder
+                            end
+                            
+                            playerData.NameTag.Text = player.DisplayName
+                            playerData.NameTag.Position = UDim2.new(0, screenPosition.X - 50, 0, screenPosition.Y - 30)
+                        end
+                        
+                        if not playerData.Box then
+                            playerData.Box = Instance.new("Frame")
+                            playerData.Box.Name = "BoundingBox"
+                            playerData.Box.BackgroundColor3 = ESPColor
+                            playerData.Box.BorderSizePixel = 0
+                            playerData.Box.BorderSize = 0
+                            playerData.Box.Size = UDim2.new(0, 0, 0, 0)
+                            playerData.Box.Parent = ESPFolder
+                        end
+                        
+                        local headScreenPos, headOnScreen = camera:WorldToScreenPoint(headPart.Position)
+                        if headOnScreen then
+                            local headSize = (headScreenPos - screenPosition).Magnitude
+                            local boxWidth = headSize * 0.8
+                            local boxHeight = headSize * 1.5
+                            
+                            playerData.Box.Position = UDim2.new(0, screenPosition.X - boxWidth/2, 0, screenPosition.Y - boxHeight/2)
+                            playerData.Box.Size = UDim2.new(0, boxWidth, 0, boxHeight)
+                        end
+                        
+                        if ESPShowHealth and humanoid then
+                            if not playerData.HealthBar then
+                                playerData.HealthBar = Instance.new("Frame")
+                                playerData.HealthBar.Name = "HealthBar"
+                                playerData.HealthBar.BackgroundColor3 = Color3.new(0, 0, 0)
+                                playerData.HealthBar.BorderSizePixel = 0
+                                playerData.HealthBar.Size = UDim2.new(0, 100, 0, 10)
+                                playerData.HealthBar.Parent = ESPFolder
+                                
+                                playerData.HealthFill = Instance.new("Frame")
+                                playerData.HealthFill.Name = "HealthFill"
+                                playerData.HealthFill.BackgroundColor3 = Color3.new(0, 255, 0)
+                                playerData.HealthFill.BorderSizePixel = 0
+                                playerData.HealthFill.Size = UDim2.new(0, 100, 0, 10)
+                                playerData.HealthFill.Parent = playerData.HealthBar
+                            end
+                            
+                            playerData.HealthBar.Visible = true
+                            playerData.HealthFill.Visible = true
+                            
+                            playerData.HealthBar.Position = UDim2.new(0, screenPosition.X - 50, 0, screenPosition.Y - 45)
+                            playerData.HealthFill.Size = UDim2.new(0, 100 * (healthPercent / 100), 0, 10)
+                            
+                            if healthPercent < 25 then
+                                playerData.HealthFill.BackgroundColor3 = Color3.new(255, 0, 0)
+                            elseif healthPercent < 50 then
+                                playerData.HealthFill.BackgroundColor3 = Color3.new(255, 165, 0)
+                            else
+                                playerData.HealthFill.BackgroundColor3 = Color3.new(0, 255, 0)
+                            end
+                        end
+                        
+                        if ESPShowDistance then
+                            if not playerData.DistanceLabel then
+                                playerData.DistanceLabel = Instance.new("TextLabel")
+                                playerData.DistanceLabel.Name = "DistanceLabel"
+                                playerData.DistanceLabel.BackgroundTransparency = 1
+                                playerData.DistanceLabel.TextColor3 = Color3.new(1, 1, 1)
+                                playerData.DistanceLabel.TextStrokeColor3 = Color3.new(0, 0, 0)
+                                playerData.DistanceLabel.TextStrokeTransparency = 0
+                                playerData.DistanceLabel.Font = Enum.Font.SourceSans
+                                playerData.DistanceLabel.TextSize = 12
+                                playerData.DistanceLabel.Size = UDim2.new(0, 100, 0, 20)
+                                playerData.DistanceLabel.Parent = ESPFolder
+                            end
+                            
+                            playerData.DistanceLabel.Text = string.format("%.0fm", distance)
+                            playerData.DistanceLabel.Position = UDim2.new(0, screenPosition.X - 50, 0, screenPosition.Y + 30)
+                        end
+                    else
+                        if playerData.NameTag then playerData.NameTag.Visible = false end
+                        if playerData.Box then playerData.Box.Visible = false end
+                        if playerData.HealthBar then playerData.HealthBar.Visible = false end
+                        if playerData.DistanceLabel then playerData.DistanceLabel.Visible = false end
+                    end
+                else
+                    if playerData.NameTag then playerData.NameTag.Visible = false end
+                    if playerData.Box then playerData.Box.Visible = false end
+                    if playerData.HealthBar then playerData.HealthBar.Visible = false end
+                    if playerData.DistanceLabel then playerData.DistanceLabel.Visible = false end
+                end
+            end
+        end
+    end
+end
+
 RunService.RenderStepped:Connect(function()
     if SpeedEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
         LocalPlayer.Character.Humanoid.WalkSpeed = TargetSpeed
@@ -310,6 +591,8 @@ RunService.RenderStepped:Connect(function()
         Lighting.Ambient = Color3.fromRGB(255, 255, 255)
         Lighting.ClockTime = 12
     end
+    
+    UpdateESP()
 end)
 
 RunService.Stepped:Connect(function()
