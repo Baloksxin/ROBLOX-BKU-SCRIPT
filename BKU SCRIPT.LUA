@@ -1,16 +1,16 @@
 local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/Baloksxin/BK-PE-SCRIPT/refs/heads/main/UI.txt"))()
 
-OrionLib:MakeNotification({
-    Name = "BKU HUB",
-    Content = "BKU HUB正在加载...",
-    Time = 3
-})
-
 local Window = OrionLib:MakeWindow({
     Name = "BKU HUB BY BALOKSXIN", 
     HidePremium = true, 
     SaveConfig = false,
     IntroText = "BKU HUB"
+})
+
+OrionLib:MakeNotification({
+    Name = "BKU HUB",
+    Content = "BKU HUB已加载完毕!🤯🤯🤯",
+    Time = 3
 })
 
 local Players = game:GetService("Players")
