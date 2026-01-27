@@ -11,24 +11,16 @@ local OrionLib = {
     Connections = {},
     Flags = {},
     Themes = {
-        Default = {
-            Main = Color3.fromRGB(25, 25, 25),
-            Second = Color3.fromRGB(32, 32, 32),
-            Stroke = Color3.fromRGB(60, 60, 60),
-            Divider = Color3.fromRGB(60, 60, 60),
-            Text = Color3.fromRGB(240, 240, 240),
-            TextDark = Color3.fromRGB(150, 150, 150)
-        },
-        AeroPurple = {
-            Main = Color3.fromRGB(25, 10, 50),
-            Second = Color3.fromRGB(40, 20, 80),
-            Stroke = Color3.fromRGB(140, 80, 255),
-            Divider = Color3.fromRGB(80, 40, 150),
-            Text = Color3.fromRGB(220, 180, 255),
-            TextDark = Color3.fromRGB(160, 120, 220)
+    Default = {
+        Main = Color3.fromRGB(25, 25, 25),
+        Second = Color3.fromRGB(32, 32, 32),
+        Stroke = Color3.fromRGB(60, 60, 60),
+        Divider = Color3.fromRGB(60, 60, 60),
+        Text = Color3.fromRGB(240, 240, 240),
+        TextDark = Color3.fromRGB(150, 150, 150)
         }
     },
-    SelectedTheme = "AeroPurple",
+    SelectedTheme = "Default",
     Folder = nil,
     SaveCfg = false
 }
@@ -80,6 +72,7 @@ function OrionLib:IsRunning()
     else
         return Orion.Parent == game:GetService("CoreGui")
     end
+
 end
 
 local function AddConnection(Signal, Function)
@@ -125,6 +118,7 @@ local function MakeDraggable(DragPoint, Main)
         AddConnection(UserInputService.InputChanged, function(Input)
             if Input == DragInput and Dragging then
                 local Delta = Input.Position - MousePos
+
                 Main.Position  = UDim2.new(FramePos.X.Scale,FramePos.X.Offset + Delta.X, FramePos.Y.Scale, FramePos.Y.Offset + Delta.Y)
             end
         end)
@@ -260,7 +254,7 @@ end
 
 CreateElement("Corner", function(Scale, Offset)
     local Corner = Create("UICorner", {
-        CornerRadius = UDim.new(Scale or 0, Offset or 12)
+        CornerRadius = UDim.new(Scale or 0, Offset or 10)
     })
     return Corner
 end)
@@ -268,7 +262,7 @@ end)
 CreateElement("Stroke", function(Color, Thickness)
     local Stroke = Create("UIStroke", {
         Color = Color or Color3.fromRGB(255, 255, 255),
-        Thickness = Thickness or 1.5
+        Thickness = Thickness or 1
     })
     return Stroke
 end)
@@ -404,14 +398,14 @@ function OrionLib:MakeNotification(NotificationConfig)
             Parent = NotificationHolder
         })
 
-        local NotificationFrame = SetChildren(SetProps(MakeElement("RoundFrame", Color3.fromRGB(25, 25, 25), 0, 12), {
+        local NotificationFrame = SetChildren(SetProps(MakeElement("RoundFrame", Color3.fromRGB(25, 25, 25), 0, 10), {
             Parent = NotificationParent,
             Size = UDim2.new(1, 0, 0, 0),
             Position = UDim2.new(1, -55, 0, 0),
-            BackgroundTransparency = 0.1,
+            BackgroundTransparency = 0,
             AutomaticSize = Enum.AutomaticSize.Y
         }), {
-            MakeElement("Stroke", Color3.fromRGB(140, 80, 255), 2),
+            MakeElement("Stroke", Color3.fromRGB(93, 93, 93), 1.2),
             MakeElement("Padding", 12, 12, 12, 12),
             SetProps(MakeElement("Image", NotificationConfig.Image), {
                 Size = UDim2.new(0, 20, 0, 20),
@@ -452,7 +446,7 @@ function OrionLib:MakeNotification(NotificationConfig)
     end)
 end
 
-function OrbitaLib:Init()
+function OrionLib:Init()
     if OrionLib.SaveCfg then    
         pcall(function()
             if isfile(OrionLib.Folder .. "/" .. game.GameId .. ".lua") then
@@ -532,10 +526,9 @@ function OrionLib:MakeWindow(WindowConfig)
         Size = UDim2.new(1, 0, 0, 50)
     })
 
-    local WindowStuff = AddThemeObject(SetChildren(SetProps(MakeElement("RoundFrame", OrionLib.Themes[OrionLib.SelectedTheme].Second, 0, 12), {
+    local WindowStuff = AddThemeObject(SetChildren(SetProps(MakeElement("RoundFrame", Color3.fromRGB(255, 255, 255), 0, 10), {
         Size = UDim2.new(0, 150, 1, -50),
-        Position = UDim2.new(0, 0, 0, 50),
-        BackgroundTransparency = 0.25
+        Position = UDim2.new(0, 0, 0, 50)
     }), {
         AddThemeObject(SetProps(MakeElement("Frame"), {
             Size = UDim2.new(1, 0, 0, 10),
@@ -604,16 +597,14 @@ function OrionLib:MakeWindow(WindowConfig)
         Position = UDim2.new(0, 0, 1, -1)
     }), "Stroke")
 
-    local MainWindow = AddThemeObject(SetChildren(SetProps(MakeElement("RoundFrame", OrionLib.Themes[OrionLib.SelectedTheme].Main, 0, 12), {
+    local MainWindow = AddThemeObject(SetChildren(SetProps(MakeElement("RoundFrame", Color3.fromRGB(255, 255, 255), 0, 10), {
         Parent = Orion,
         Position = UDim2.new(0.5, -307, 0.5, -172),
         Size = UDim2.new(0, 615, 0, 344),
-        BackgroundTransparency = 0.15,
         ClipsDescendants = true,
         Active = true,
         Draggable = true
     }), {
-        MakeElement("Stroke", OrionLib.Themes[OrionLib.SelectedTheme].Stroke, 2),
         SetChildren(SetProps(MakeElement("TFrame"), {
             Size = UDim2.new(1, 0, 0, 50),
             Name = "TopBar"
@@ -750,7 +741,7 @@ function OrionLib:MakeWindow(WindowConfig)
                 Name = "Ico"
             }), "Text"),
             AddThemeObject(SetProps(MakeElement("Label", TabConfig.Name, 14), {
-                Size = new = UDim2.new(1, -35, 1, 0),
+                Size = UDim2.new(1, -35, 1, 0),
                 Position = UDim2.new(0, 35, 0, 0),
                 Font = Enum.Font.GothamSemibold,
                 TextTransparency = 0.4,
@@ -807,7 +798,7 @@ function OrionLib:MakeWindow(WindowConfig)
         local function GetElements(ItemParent)
             local ElementFunction = {}
             function ElementFunction:AddLabel(Text)
-                local LabelFrame = AddThemeObject(SetChildren(SetProps(MakeElement("RoundFrame", Color3.fromRGB(255, 255, 255), 0, 12), {
+                local LabelFrame = AddThemeObject(SetChildren(SetProps(MakeElement("RoundFrame", Color3.fromRGB(255, 255, 255), 0, 5), {
                     Size = UDim2.new(1, 0, 0, 30),
                     BackgroundTransparency = 0.7,
                     Parent = ItemParent
@@ -831,7 +822,7 @@ function OrionLib:MakeWindow(WindowConfig)
                 Text = Text or "Text"
                 Content = Content or "Content"
 
-                local ParagraphFrame = AddThemeObject(SetChildren(SetProps(MakeElement("RoundFrame", Color3.fromRGB(255, 255, 255), 0, 12), {
+                local ParagraphFrame = AddThemeObject(SetChildren(SetProps(MakeElement("RoundFrame", Color3.fromRGB(255, 255, 255), 0, 5), {
                     Size = UDim2.new(1, 0, 0, 30),
                     BackgroundTransparency = 0.7,
                     Parent = ItemParent
@@ -877,7 +868,7 @@ function OrionLib:MakeWindow(WindowConfig)
                     Size = UDim2.new(1, 0, 1, 0)
                 })
 
-                local ButtonFrame = AddThemeObject(SetChildren(SetProps(MakeElement("RoundFrame", Color3.fromRGB(255, 255, 255), 0, 12), {
+                local ButtonFrame = AddThemeObject(SetChildren(SetProps(MakeElement("RoundFrame", Color3.fromRGB(255, 255, 255), 0, 5), {
                     Size = UDim2.new(1, 0, 0, 33),
                     Parent = ItemParent
                 }), {
@@ -925,7 +916,7 @@ function OrionLib:MakeWindow(WindowConfig)
                 ToggleConfig.Name = ToggleConfig.Name or "Toggle"
                 ToggleConfig.Default = ToggleConfig.Default or false
                 ToggleConfig.Callback = ToggleConfig.Callback or function() end
-                ToggleConfig.Color = ToggleConfig.Color or Color3.fromRGB(140, 80, 255)
+                ToggleConfig.Color = ToggleConfig.Color or Color3.fromRGB(9, 99, 195)
                 ToggleConfig.Flag = ToggleConfig.Flag or nil
                 ToggleConfig.Save = ToggleConfig.Save or false
 
@@ -954,11 +945,11 @@ function OrionLib:MakeWindow(WindowConfig)
                     }),
                 })
 
-                local ToggleFrame = AddThemeObject(SetChildren(SetProps(MakeElement("RoundFrame", Color3.fromRGB(255, 255, 255), 0, 12), {
+                local ToggleFrame = AddThemeObject(SetChildren(SetProps(MakeElement("RoundFrame", Color3.fromRGB(255, 255, 255), 0, 5), {
                     Size = UDim2.new(1, 0, 0, 38),
                     Parent = ItemParent
                 }), {
-                    AddThemeObject(SetProps(MakeElement("Label",手工 ToggleConfig.Name, 15), {
+                    AddThemeObject(SetProps(MakeElement("Label", ToggleConfig.Name, 15), {
                         Size = UDim2.new(1, -12, 1, 0),
                         Position = UDim2.new(0, 12, 0, 0),
                         Font = Enum.Font.GothamBold,
@@ -1002,7 +993,6 @@ function OrionLib:MakeWindow(WindowConfig)
                 end    
                 return Toggle
             end
-
             function ElementFunction:AddSlider(SliderConfig)
                 SliderConfig = SliderConfig or {}
                 SliderConfig.Name = SliderConfig.Name or "Slider"
@@ -1012,7 +1002,7 @@ function OrionLib:MakeWindow(WindowConfig)
                 SliderConfig.Default = SliderConfig.Default or 50
                 SliderConfig.Callback = SliderConfig.Callback or function() end
                 SliderConfig.ValueName = SliderConfig.ValueName or ""
-                SliderConfig.Color = SliderConfig.Color or Color3.fromRGB(140, 80, 255)
+                SliderConfig.Color = SliderConfig.Color or Color3.fromRGB(9, 149, 98)
                 SliderConfig.Flag = SliderConfig.Flag or nil
                 SliderConfig.Save = SliderConfig.Save or false
 
@@ -1051,7 +1041,7 @@ function OrionLib:MakeWindow(WindowConfig)
                     SliderDrag
                 })
 
-                local SliderFrame = AddThemeObject(SetChildren(SetProps(MakeElement("RoundFrame", Color3.fromRGB(255, 255, 255), 0, 12), {
+                local SliderFrame = AddThemeObject(SetChildren(SetProps(MakeElement("RoundFrame", Color3.fromRGB(255, 255, 255), 0, 4), {
                     Size = UDim2.new(1, 0, 0, 65),
                     Parent = ItemParent
                 }), {
@@ -1098,7 +1088,6 @@ function OrionLib:MakeWindow(WindowConfig)
                 end
                 return Slider
             end
-
             function ElementFunction:AddDropdown(DropdownConfig)
                 DropdownConfig = DropdownConfig or {}
                 DropdownConfig.Name = DropdownConfig.Name or "Dropdown"
@@ -1130,7 +1119,7 @@ function OrionLib:MakeWindow(WindowConfig)
                     Size = UDim2.new(1, 0, 1, 0)
                 })
 
-                local DropdownFrame = AddThemeObject(SetChildren(SetProps(MakeElement("RoundFrame", Color3.fromRGB(255, 255, 255), 0, 12), {
+                local DropdownFrame = AddThemeObject(SetChildren(SetProps(MakeElement("RoundFrame", Color3.fromRGB(255, 255, 255), 0, 5), {
                     Size = UDim2.new(1, 0, 0, 38),
                     Parent = ItemParent,
                     ClipsDescendants = true
@@ -1254,7 +1243,6 @@ function OrionLib:MakeWindow(WindowConfig)
                 end
                 return Dropdown
             end
-
             function ElementFunction:AddBind(BindConfig)
                 BindConfig.Name = BindConfig.Name or "Bind"
                 BindConfig.Default = BindConfig.Default or Enum.KeyCode.Unknown
@@ -1284,7 +1272,7 @@ function OrionLib:MakeWindow(WindowConfig)
                     }), "Text")
                 }), "Main")
 
-                local BindFrame = AddThemeObject(SetChildren(SetProps(MakeElement("RoundFrame", Color3.fromRGB(255, 255, 255), 0, 12), {
+                local BindFrame = AddThemeObject(SetChildren(SetProps(MakeElement("RoundFrame", Color3.fromRGB(255, 255, 255), 0, 5), {
                     Size = UDim2.new(1, 0, 0, 38),
                     Parent = ItemParent
                 }), {
@@ -1376,7 +1364,6 @@ function OrionLib:MakeWindow(WindowConfig)
                 end
                 return Bind
             end
-
             function ElementFunction:AddTextbox(TextboxConfig)
                 TextboxConfig = TextboxConfig or {}
                 TextboxConfig.Name = TextboxConfig.Name or "Textbox"
@@ -1409,7 +1396,8 @@ function OrionLib:MakeWindow(WindowConfig)
                     TextboxActual
                 }), "Main")
 
-                local TextboxFrame = AddThemeObject(SetChildren(SetProps(MakeElement("RoundFrame", Color3.fromRGB(255, 255, 255), 0, 12), {
+
+                local TextboxFrame = AddThemeObject(SetChildren(SetProps(MakeElement("RoundFrame", Color3.fromRGB(255, 255, 255), 0, 5), {
                     Size = UDim2.new(1, 0, 0, 38),
                     Parent = ItemParent
                 }), {
@@ -1454,7 +1442,6 @@ function OrionLib:MakeWindow(WindowConfig)
                     TweenService:Create(TextboxFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(OrionLib.Themes[OrionLib.SelectedTheme].Second.R * 255 + 6, OrionLib.Themes[OrionLib.SelectedTheme].Second.G * 255 + 6, OrionLib.Themes[OrionLib.SelectedTheme].Second.B * 255 + 6)}):Play()
                 end)
             end
-
             function ElementFunction:AddColorpicker(ColorpickerConfig)
                 ColorpickerConfig = ColorpickerConfig or {}
                 ColorpickerConfig.Name = ColorpickerConfig.Name or "Colorpicker"
@@ -1498,7 +1485,7 @@ function OrionLib:MakeWindow(WindowConfig)
                     Position = UDim2.new(1, -20, 0, 0),
                     Visible = false
                 }, {
-                    Create("UIGradient", {Rotation = 270, Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 4)), ColorSequenceKeypoint.new(0.20, Color3.fromRGB(234, 255, 0)), ColorSequenceKeypoint.new(0.40, Color3.fromRGB(21, 255, 0)), ColorSequenceKeypoint.new(0.60, Color3.fromRGB(0, 255, 255)), ColorSequenceKeypoint.new(0.80, Color3.fromRGB(0, 17, 255)), ColorSequenceKeypoint.new(0.90, Color3.fromRGB(255, 0, 251)), ColorSequenceKeypoint.new(1.00,  Color3.fromRGB(255, 0, 4))},}),
+                    Create("UIGradient", {Rotation = 270, Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 4)), ColorSequenceKeypoint.new(0.20, Color3.fromRGB(234, 255, 0)), ColorSequenceKeypoint.new(0.40, Color3.fromRGB(21, 255, 0)), ColorSequenceKeypoint.new(0.60, Color3.fromRGB(0, 255, 255)), ColorSequenceKeypoint.new(0.80, Color3.fromRGB(0, 17, 255)), ColorSequenceKeypoint.new(0.90, Color3.fromRGB(255, 0, 251)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 4))},}),
                     Create("UICorner", {CornerRadius = UDim.new(0, 5)}),
                     HueSelection
                 })
@@ -1531,7 +1518,7 @@ function OrionLib:MakeWindow(WindowConfig)
                     AddThemeObject(MakeElement("Stroke"), "Stroke")
                 }), "Main")
 
-                local ColorpickerFrame = AddThemeObject(SetChildren(SetProps(MakeElement("RoundFrame", Color3.fromRGB(255, 255, 255), 0, 12), {
+                local ColorpickerFrame = AddThemeObject(SetChildren(SetProps(MakeElement("RoundFrame", Color3.fromRGB(255, 255, 255), 0, 5), {
                     Size = UDim2.new(1, 0, 0, 38),
                     Parent = ItemParent
                 }), {
@@ -1579,11 +1566,8 @@ function OrionLib:MakeWindow(WindowConfig)
                 ColorS = (math.clamp(ColorSelection.AbsolutePosition.X - Color.AbsolutePosition.X, 0, Color.AbsoluteSize.X) / Color.AbsoluteSize.X)
                 ColorV = 1 - (math.clamp(ColorSelection.AbsolutePosition.Y - Color.AbsolutePosition.Y, 0, Color.AbsoluteSize.Y) / Color.AbsoluteSize.Y)
 
-                local ColorInput
-                local HueInput
-
                 AddConnection(Color.InputBegan, function(input)
-                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                    if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
                         if ColorInput then
                             ColorInput:Disconnect()
                         end
@@ -1599,7 +1583,7 @@ function OrionLib:MakeWindow(WindowConfig)
                 end)
 
                 AddConnection(Color.InputEnded, function(input)
-                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                    if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
                         if ColorInput then
                             ColorInput:Disconnect()
                         end
@@ -1607,10 +1591,10 @@ function OrionLib:MakeWindow(WindowConfig)
                 end)
 
                 AddConnection(Hue.InputBegan, function(input)
-                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                    if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
                         if HueInput then
                             HueInput:Disconnect()
-                        end
+                        end;
 
                         HueInput = AddConnection(RunService.RenderStepped, function()
                             local HueY = (math.clamp(Mouse.Y - Hue.AbsolutePosition.Y, 0, Hue.AbsoluteSize.Y) / Hue.AbsoluteSize.Y)
@@ -1624,7 +1608,7 @@ function OrionLib:MakeWindow(WindowConfig)
                 end)
 
                 AddConnection(Hue.InputEnded, function(input)
-                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                    if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
                         if HueInput then
                             HueInput:Disconnect()
                         end
@@ -1640,7 +1624,6 @@ function OrionLib:MakeWindow(WindowConfig)
                 Colorpicker:Set(Colorpicker.Value)
                 if ColorpickerConfig.Flag then                
                     OrionLib.Flags[ColorpickerConfig.Flag] = Colorpicker
-
                 end
                 return Colorpicker
             end
@@ -1687,6 +1670,44 @@ function OrionLib:MakeWindow(WindowConfig)
             ElementFunction[i] = v
         end
 
+        if TabConfig.PremiumOnly then
+            for i, v in next, ElementFunction do
+                ElementFunction[i] = function()
+                end
+            end
+            Container:FindFirstChild("UIListLayout"):Destroy()
+            Container:FindFirstChild("UIPadding"):Destroy()
+            SetChildren(SetProps(MakeElement("TFrame"), {
+                Size = UDim2.new(1, 0, 1, 0),
+                Parent = ItemParent
+            }), {
+                AddThemeObject(SetProps(MakeElement("Image", "rbxassetid://3610239960"), {
+                    Size = UDim2.new(0, 18, 0, 18),
+                    Position = UDim2.new(0, 15, 0, 15),
+                    ImageTransparency = 0.4
+                }), "Text"),
+                AddThemeObject(SetProps(MakeElement("Label", "Unauthorised Access", 14), {
+                    Size = UDim2.new(1, -38, 0, 14),
+                    Position = UDim2.new(0, 38, 0, 18),
+                    TextTransparency = 0.4
+                }), "Text"),
+                AddThemeObject(SetProps(MakeElement("Image", "rbxassetid://4483345875"), {
+                    Size = UDim2.new(0, 56, 0, 56),
+                    Position = UDim2.new(0, 84, 0, 110),
+                }), "Text"),
+                AddThemeObject(SetProps(MakeElement("Label", "Premium Features", 14), {
+                    Size = UDim2.new(1, -150, 0, 14),
+                    Position = UDim2.new(0, 150, 0, 112),
+                    Font = Enum.Font.GothamBold
+                }), "Text"),
+                AddThemeObject(SetProps(MakeElement("Label", "This part of the script is locked to Sirius Premium users. Purchase Premium in the Discord server (discord.gg/sirius)", 12), {
+                    Size = UDim2.new(1, -200, 0, 14),
+                    Position = UDim2.new(0, 150, 0, 138),
+                    TextWrapped = true,
+                    TextTransparency = 0.4
+                }), "Text")
+            })
+        end
         return ElementFunction
     end
     
