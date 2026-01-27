@@ -262,20 +262,6 @@ Forest99Tab:AddButton({
     end    
 })
 
-local BreakIn2Tab = Window:MakeTab({
-    Name = "Break In 2",
-    Icon = "rbxassetid://77348087165494",
-    PremiumOnly = false
-})
-BreakIn2Tab:AddSection({ Name = "Break In 1/2 脚本" })
-BreakIn2Tab:AddButton({
-    Name = "break in 1/2可以用",
-    Callback = function()
-        getgenv().ignoreGameCheck = false
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/Iptxt/ActualHub/refs/heads/main/Loader"));
-    end    
-})
-
 local FNAFTab = Window:MakeTab({
     Name = "FNAF:永恒之夜",
     Icon = "rbxassetid://77348087165494",
