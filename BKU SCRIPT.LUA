@@ -115,6 +115,13 @@ MainTab:AddButton({
 	end    
 })
 
+MainTab:AddButton({
+	Name = "变回旧版Gui☠☠☠",
+	Callback = function()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/jannnerb/core-gui-fixer/refs/heads/main/CoreGUIFixer.luau"))()
+	end    
+})
+
 local DoorsTab = Window:MakeTab({
     Name = "DOORS",
     Icon = "rbxassetid://77348087165494",
@@ -254,7 +261,7 @@ BreakIn2Tab:AddButton({
     Name = "break in 1/2可以用",
     Callback = function()
         getgenv().ignoreGameCheck = false
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/Iptxt/ActualHub/refs/heads/main/Loader"))();
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/Iptxt/ActualHub/refs/heads/main/Loader"));
     end    
 })
 
