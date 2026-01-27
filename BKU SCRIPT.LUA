@@ -261,8 +261,21 @@ BreakIn2Tab:AddButton({
     Name = "break in 1/2可以用",
     Callback = function()
         getgenv().ignoreGameCheck = false
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/Iptxt/ActualHub/refs/heads/main/Loader"));
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Iptxt/ActualHub/refs/heads/main/Loader"));
     end    
+})
+
+local FNAFTab = Window:MakeTab({
+    Name = "FNAF:永恒之夜",
+    Icon = "rbxassetid://77348087165494",
+    PremiumOnly = false
+})
+FNAFTab:AddSection({ Name = "FNAF 永恒之夜脚本" })
+FNAFTab:AddButton({
+    Name = "1",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Snipez-Dev/Rbx-Scripts/refs/heads/main/Eternal%20Nights"))()
+    end
 })
 
 RunService.RenderStepped:Connect(function()
