@@ -8,8 +8,8 @@ local Window = OrionLib:MakeWindow({
 })
 
 OrionLib:MakeNotification({
-    Name = "BKU HUB加载中",
-    Content = "正在加载BKU HUB，请稍候...",
+    Name = "BKU HUB",
+    Content = "BKU HUB正在加载...",
     Time = 3
 })
 
