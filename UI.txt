@@ -260,11 +260,11 @@ CreateElement("Corner", function(Scale, Offset)
 end)
 
 CreateElement("Stroke", function()
-    return Instance.new("UIStroke", {
-        Color = Color3.fromRGB(160,120,255),
-        Thickness = 1.2,
-        Transparency = 0.15
-    })
+    local s = Instance.new("UIStroke")
+    s.Color = Color3.fromRGB(160,120,255)
+    s.Thickness = 1.2
+    s.Transparency = 0.15
+    return s
 end)
 
 CreateElement("List", function(Scale, Offset)
