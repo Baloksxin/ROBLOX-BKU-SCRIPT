@@ -133,13 +133,6 @@ MainTab:AddButton({
 	end    
 })
 
-MainTab:AddButton({
-	Name = "变回旧版Gui☠☠☠",
-	Callback = function()
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/jannnerb/core-gui-fixer/refs/heads/main/CoreGUIFixer.luau"))()
-	end    
-})
-
 local DoorsTab = Window:MakeTab({
     Name = "DOORS",
     Icon = "rbxassetid://77348087165494",
