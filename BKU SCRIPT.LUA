@@ -4,7 +4,13 @@ local Window = OrionLib:MakeWindow({
     Name = "BKU HUB BY BALOKSXIN", 
     HidePremium = true, 
     SaveConfig = false,
-    IntroText = "正在加载BKU HUB"
+    IntroText = "BKU HUB"
+})
+
+OrionLib:MakeNotification({
+    Name = "BKU HUB加载中",
+    Content = "正在加载BKU HUB，请稍候...",
+    Time = 3
 })
 
 local Players = game:GetService("Players")
