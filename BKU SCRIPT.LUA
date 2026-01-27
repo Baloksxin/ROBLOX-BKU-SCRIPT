@@ -49,6 +49,18 @@ InfoTab:AddButton({
 	end    
 })
 
+InfoTab:AddButton({
+	Name = "复制作者KS ID",
+	Callback = function()
+		setclipboard("Baloksxin")
+		OrionLib:MakeNotification({
+			Name = "系统提示",
+			Content = "作者KS ID 已复制到剪贴板",
+			Time = 2
+		})
+	end    
+})
+
 local MainTab = Window:MakeTab({
     Name = "主要",
     Icon = "rbxassetid://77348087165494",
