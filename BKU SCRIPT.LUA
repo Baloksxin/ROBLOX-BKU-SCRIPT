@@ -278,6 +278,19 @@ FNAFTab:AddButton({
     end
 })
 
+local GardenTab = Window:MakeTab({
+    Name = "种植花园",
+    Icon = "rbxassetid://77348087165494",
+    PremiumOnly = false
+})
+GardenTab:AddSection({ Name = "种植花园脚本" })
+GardenTab:AddButton({
+    Name = "Zap Hub",
+    Callback = function()
+        loadstring(game:HttpGet('https://zaphub.xyz/Exec'))()
+    end
+})
+
 RunService.RenderStepped:Connect(function()
     if SpeedEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
         LocalPlayer.Character.Humanoid.WalkSpeed = TargetSpeed
