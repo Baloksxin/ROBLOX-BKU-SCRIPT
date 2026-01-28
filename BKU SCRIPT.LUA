@@ -339,6 +339,19 @@ BloxStrikeTab:AddButton({
     end
 })
 
+local SoloHuntersTab = Window:MakeTab({
+    Name = "Solo Hunters",
+    Icon = "rbxassetid://77348087165494",
+    PremiumOnly = false
+})
+SoloHuntersTab:AddSection({ Name = "Solo Hunters 脚本" })
+SoloHuntersTab:AddButton({
+    Name = "1",
+    Callback = function()
+        loadstring(game:HttpGet('https://gist.githubusercontent.com/weeew07/d477f12afffdec7131886d9bdb06dbe7/raw/1a13b69b74915e3effa36ed447f6863cebd743a5/Solo%20Hunters'))()
+    end
+})
+
 RunService.RenderStepped:Connect(function()
     if SpeedEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
         LocalPlayer.Character.Humanoid.WalkSpeed = TargetSpeed
