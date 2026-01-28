@@ -326,6 +326,19 @@ HackerTab:AddButton({
 	end
 })
 
+local BloxStrikeTab = Window:MakeTab({
+    Name = "BloxStrike",
+    Icon = "rbxassetid://77348087165494",
+    PremiumOnly = false
+})
+BloxStrikeTab:AddSection({ Name = "BloxStrike 脚本" })
+BloxStrikeTab:AddButton({
+    Name = "wyvern gui v2",
+    Callback = function()
+        loadstring(game:HttpGet("https://gist.githubusercontent.com/wydirdscripts/f6daf1950dd645377bb8a86e941baf9f/raw/c0b8895d18d12ceb8c1e5ae3d30798c5e10d972b/gistfile1.txt"))()
+    end
+})
+
 RunService.RenderStepped:Connect(function()
     if SpeedEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
         LocalPlayer.Character.Humanoid.WalkSpeed = TargetSpeed
