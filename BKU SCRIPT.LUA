@@ -352,6 +352,19 @@ SoloHuntersTab:AddButton({
     end
 })
 
+local ROBITTab = Window:MakeTab({
+    Name = "ROB IT",
+    Icon = "rbxassetid://77348087165494",
+    PremiumOnly = false
+})
+ROBITTab:AddSection({ Name = "ROB IT 脚本" })
+ROBITTab:AddButton({
+    Name = "ROB IT HUB",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/agentstojak/ROB-IT/refs/heads/main/ROB%20IT"))()
+    end
+})
+
 RunService.RenderStepped:Connect(function()
     if SpeedEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
         LocalPlayer.Character.Humanoid.WalkSpeed = TargetSpeed
