@@ -197,6 +197,22 @@ BFTab:AddButton({
     end
 })
 
+local RoomsAndDoorsTab = Window:MakeTab({
+    Name = "Rooms&Doors",
+    Icon = "rbxassetid://77348087165494",
+    PremiumOnly = false
+})
+RoomsAndDoorsTab:AddSection({ Name = "Rooms&Doors 脚本" })
+RoomsAndDoorsTab:AddButton({
+    Name = "Xera Hub",
+    Callback = function()
+        local succes, err = pcall(function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/NobodyOrIdk/XeraHub/main/main.lua"))()
+        end)
+        print(succes, err)
+    end
+})
+
 local TsunamiTab = Window:MakeTab({
     Name = "逃离海啸，获得脑腐",
     Icon = "rbxassetid://77348087165494",
