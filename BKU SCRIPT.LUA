@@ -210,6 +210,19 @@ TsunamiTab:AddButton({
     end
 })
 
+local StealBrainRotTab = Window:MakeTab({
+    Name = "偷走脑腐",
+    Icon = "rbxassetid://77348087165494",
+    PremiumOnly = false
+})
+StealBrainRotTab:AddSection({ Name = "偷走脑腐脚本" })
+StealBrainRotTab:AddButton({
+    Name = "1",
+    Callback = function()
+        loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/fcc63f5f04efa9a6a85d6f16a179b870.lua"))()
+    end
+})
+
 local ElevatorTab = Window:MakeTab({
     Name = "疯狂电梯",
     Icon = "rbxassetid://77348087165494",
