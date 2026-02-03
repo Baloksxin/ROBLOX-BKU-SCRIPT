@@ -1,269 +1,132 @@
 local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/Baloksxin/BK-PE-SCRIPT/refs/heads/main/UI.txt"))()
+local LPlr = game:GetService("Players").LocalPlayer
+local RS, UIS, Light = game:GetService("RunService"), game:GetService("UserInputService"), game:GetService("Lighting")
+local Cam = workspace.CurrentCamera
 
-local Window = OrionLib:MakeWindow({
-    Name = "BKU HUB BY BALOKSXIN", 
-    HidePremium = true, 
-    SaveConfig = false,
-    IntroText = "BKU HUB"
-})
+local Config = { Speed = 16, FOV = 70, SpeedEn = false, FOVEn = false, InfJump = false, Noclip = false, NightVis = false }
+local Orig = { FOV = Cam.FieldOfView, Bright = Light.Brightness, Ambient = Light.Ambient, Clock = Light.ClockTime }
 
-OrionLib:MakeNotification({
-    Name = "BKU HUB",
-    Content = "BKU HUB已加载完毕!🤯🤯🤯",
-    Time = 3
-})
+local Window = OrionLib:MakeWindow({Name = "BKU HUB BY BALOKSXIN", HidePremium = true, SaveConfig = false, IntroText = "BKU HUB"})
 
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local UserInputService = game:GetService("UserInputService")
-local Lighting = game:GetService("Lighting")
-local LocalPlayer = Players.LocalPlayer
-local Camera = workspace.CurrentCamera
+OrionLib:MakeNotification({Name = "BKU HUB", Content = "BKU HUB已加载完毕!🤯🤯🤯", Time = 3})
 
-local InfiniteJumpEnabled = false
-local NoclipEnabled = false
-local NightVisionEnabled = false
-local SpeedEnabled = false 
-local TargetSpeed = 16    
-local FOVEnabled = false
-local TargetFOV = 70
-local OriginalFOV = Camera.FieldOfView
+local t = Window:MakeTab({Name = "信息", Icon = "rbxassetid://77348087165494"})
+t:AddSection({Name = "信息"})
+t:AddLabel("使用者: " .. LPlr.DisplayName)
+t:AddLabel("执行器: " .. ((identifyexecutor and identifyexecutor()) or "未知"))
+t:AddLabel("游戏 ID (PlaceId): " .. tostring(game.PlaceId))
+t:AddLabel("服务器 ID (JobId): " .. (game.JobId ~= "" and game.JobId or "单人/私服环境"))
+t:AddButton({Name = "点击复制服务器 ID", Callback = function() setclipboard(game.JobId) end})
+t:AddButton({Name = "复制作者KS ID", Callback = function() setclipboard("Baloksxin") end})
 
-local ServerJobId = game.JobId ~= "" and game.JobId or "单人/私服环境"
-local GamePlaceId = game.PlaceId
+local t = Window:MakeTab({Name = "通用", Icon = "rbxassetid://77348087165494"})
+t:AddSection({Name = "角色属性修改"})
+t:AddTextbox({Name = "修改速度值", Default = "16", Callback = function(v) Config.Speed = tonumber(v) or 16 end})
+t:AddToggle({Name = "开启速度修改", Callback = function(v) Config.SpeedEn = v if not v and LPlr.Character:FindFirstChild("Humanoid") then LPlr.Character.Humanoid.WalkSpeed = 16 end end})
+t:AddTextbox({Name = "修改FOV值", Default = "70", Callback = function(v) Config.FOV = tonumber(v) or 70 end})
+t:AddToggle({Name = "开启 FOV 修改", Callback = function(v) Config.FOVEn = v if not v then Cam.FieldOfView = Orig.FOV end end})
+t:AddToggle({Name = "无限跳跃", Callback = function(v) Config.InfJump = v end})
+t:AddToggle({Name = "穿墙模式 (Noclip)", Callback = function(v) Config.Noclip = v end})
+t:AddToggle({Name = "夜视模式 (全局高亮)", Callback = function(v) Config.NightVis = v if not v then Light.Brightness, Light.Ambient, Light.ClockTime = Orig.Bright, Orig.Ambient, Orig.Clock end end})
+t:AddSection({Name = "工具"})
+t:AddButton({Name = "Infinite Yield", Callback = function() loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))() end})
+t:AddButton({Name = "飞行 GUI", Callback = function() loadstring(game:HttpGet("https://github.com/MiniCapy/scripts/raw/refs/heads/main/fly%20GUI"))() end})
+t:AddButton({Name = "R15动作脚本", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Gazer-Ha/Free-emote/refs/heads/main/Delta%20mad%20stuffs"))() end})
 
-local OriginalBrightness = Lighting.Brightness
-local OriginalAmbient = Lighting.Ambient
-local OriginalClockTime = Lighting.ClockTime
+local t = Window:MakeTab({Name = "DOORS", Icon = "rbxassetid://77348087165494"})
+t:AddSection({Name = "DOORS脚本"})
+t:AddButton({Name = "Velocity X", Callback = function() loadstring(game:HttpGet("https://velocityloader.vercel.app/"))() end})
+t:AddButton({Name = "OP实体生成器", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/althan99/doors-entity-spawner/main/Script"))() end})
 
-local InfoTab = Window:MakeTab({
-    Name = "信息",
-    Icon = "rbxassetid://77348087165494",
-    PremiumOnly = false
-})
+local t = Window:MakeTab({Name = "Forsaken", Icon = "rbxassetid://77348087165494"})
+t:AddSection({Name = "Forsaken 专用脚本"})
+t:AddButton({Name = "Byby Hub", Callback = function() loadstring(game:HttpGet('https://raw.githubusercontent.com/Edulucas2013/Byby-hub/refs/heads/main/Forsaken%20byby%20hub'))() end})
 
-InfoTab:AddSection({ Name = "信息" })
-InfoTab:AddLabel("使用者: " .. LocalPlayer.DisplayName)
-InfoTab:AddLabel("执行器: " .. ((identifyexecutor and identifyexecutor()) or "未知"))
-InfoTab:AddLabel("游戏 ID (PlaceId): " .. tostring(GamePlaceId))
-InfoTab:AddLabel("服务器 ID (JobId): " .. ServerJobId)
+local t = Window:MakeTab({Name = "自然灾害幸存", Icon = "rbxassetid://77348087165494"})
+t:AddSection({Name = "自然灾害脚本"})
+t:AddButton({Name = "NDS HUB", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/KaterHub-Inc/NaturalDisasterSurvival/refs/heads/main/main.lua"))() end})
+t:AddButton({Name = "Super Ring Parts V4", Callback = function() loadstring(game:HttpGet("https://rscripts.net/raw/super-ring-parts-v4-by-lukas_1741980981842_td0ummjymf.txt",true))() end})
 
-InfoTab:AddButton({
-	Name = "点击复制服务器 ID",
-	Callback = function()
-		setclipboard(ServerJobId)
-		OrionLib:MakeNotification({
-			Name = "系统提示",
-			Content = "服务器 ID 已复制到剪贴板",
-			Time = 2
-		})
-	end    
-})
+local t = Window:MakeTab({Name = "Blox Fruits", Icon = "rbxassetid://77348087165494"})
+t:AddSection({Name = "Blox Fruits 脚本"})
+t:AddButton({Name = "4479Hub", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/4479cantcode/4479Hub/refs/heads/main/Script.lua"))() end})
 
-InfoTab:AddButton({
-	Name = "复制作者KS ID",
-	Callback = function()
-		setclipboard("Baloksxin")
-		OrionLib:MakeNotification({
-			Name = "系统提示",
-			Content = "作者KS ID 已复制到剪贴板",
-			Time = 2
-		})
-	end    
-})
+local t = Window:MakeTab({Name = "Rooms&Doors", Icon = "rbxassetid://77348087165494"})
+t:AddSection({Name = "Rooms&Doors 脚本"})
+t:AddButton({Name = "Xera Hub", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/NobodyOrIdk/XeraHub/main/main.lua"))() end})
 
-local MainTab = Window:MakeTab({
-    Name = "通用",
-    Icon = "rbxassetid://77348087165494",
-    PremiumOnly = false
-})
+local t = Window:MakeTab({Name = "逃离海啸，获得脑腐", Icon = "rbxassetid://77348087165494"})
+t:AddSection({Name = "逃离海啸获得脑腐脚本"})
+t:AddButton({Name = "1", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptify12/EscapeTsunami/main/KeySystem.lua", true))() end})
 
-MainTab:AddSection({ Name = "角色属性修改" })
+local t = Window:MakeTab({Name = "偷走脑腐", Icon = "rbxassetid://77348087165494"})
+t:AddSection({Name = "偷走脑腐脚本"})
+t:AddButton({Name = "1", Callback = function() loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/fcc63f5f04efa9a6a85d6f16a179b870.lua"))() end})
 
-MainTab:AddTextbox({
-    Name = "修改速度值",
-    Default = "16",
-    TextDisappear = false,
-    Callback = function(Value)
-        local num = tonumber(Value)
-        if num then TargetSpeed = num end
-    end      
-})
+local t = Window:MakeTab({Name = "疯狂电梯", Icon = "rbxassetid://77348087165494"})
+t:AddSection({Name = "疯狂电梯脚本"})
+t:AddButton({Name = "免费工具", Callback = function() loadstring(game:HttpGet(('https://pastebin.com/raw/vE8WMLit'),true))() end})
 
-MainTab:AddToggle({
-    Name = "开启速度修改",
-    Default = false,
-    Callback = function(Value)
-        SpeedEnabled = Value
-        if not Value and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
-            LocalPlayer.Character.Humanoid.WalkSpeed = 16
-        end
-    end
-})
+local t = Window:MakeTab({Name = "Fish It", Icon = "rbxassetid://77348087165494"})
+t:AddSection({Name = "Fish It 脚本"})
+t:AddButton({Name = "1", Callback = function() loadstring(game:HttpGet('https://raw.githubusercontent.com/dilleron964/Fish-It/main/Fish-It.lua'))() end})
 
-MainTab:AddTextbox({
-    Name = "修改FOV值",
-    Default = "70",
-    TextDisappear = false,
-    Callback = function(Value)
-        local num = tonumber(Value)
-        if num then TargetFOV = num end
-    end      
-})
+local t = Window:MakeTab({Name = "内脏与黑火药", Icon = "rbxassetid://77348087165494"})
+t:AddSection({Name = "Guts & Blackpowder 脚本"})
+t:AddButton({Name = "Katchi Hub", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/XaviscoZ/roblox/refs/heads/main/g%26b.lua"))() end})
 
-MainTab:AddToggle({
-    Name = "开启 FOV 修改",
-    Default = false,
-    Callback = function(Value)
-        FOVEnabled = Value
-        if not Value then
-            Camera.FieldOfView = OriginalFOV
-        end
-    end
-})
+local t = Window:MakeTab({Name = "森林中的99夜", Icon = "rbxassetid://77348087165494"})
+t:AddSection({Name = "森林中的99夜 脚本"})
+t:AddButton({Name = "UNPERFORMED HUB", Callback = function() loadstring(game:HttpGet("https://api.junkie-development.de/api/v1/luascripts/public/6ed3b0b29cae165a5df389c3650171583312f6baeaf622f2330521e9c340436c/download"))() end})
 
-MainTab:AddToggle({ Name = "无限跳跃", Default = false, Callback = function(V) InfiniteJumpEnabled = V end })
-MainTab:AddToggle({ Name = "穿墙模式 (Noclip)", Default = false, Callback = function(V) NoclipEnabled = V end })
-MainTab:AddToggle({ 
-    Name = "夜视模式 (全局高亮)", 
-    Default = false, 
-    Callback = function(Value) 
-        NightVisionEnabled = Value 
-        if not Value then
-            Lighting.Brightness = OriginalBrightness
-            Lighting.Ambient = OriginalAmbient
-            Lighting.ClockTime = OriginalClockTime
-        end
-    end 
-})
+local t = Window:MakeTab({Name = "FNAF:永恒之夜", Icon = "rbxassetid://77348087165494"})
+t:AddSection({Name = "FNAF 永恒之夜脚本"})
+t:AddButton({Name = "1", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Snipez-Dev/Rbx-Scripts/refs/heads/main/Eternal%20Nights"))() end})
 
-MainTab:AddSection({ Name = "工具" })
+local t = Window:MakeTab({Name = "种植花园", Icon = "rbxassetid://77348087165494"})
+t:AddSection({Name = "种植花园脚本"})
+t:AddButton({Name = "Zap Hub", Callback = function() loadstring(game:HttpGet('https://zaphub.xyz/Exec'))() end})
 
-MainTab:AddButton({
-	Name = "Infinite Yield",
-	Callback = function()
-		loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
-	end    
-})
+local t = Window:MakeTab({Name = "莱辛顿和康科德", Icon = "rbxassetid://77348087165494"})
+t:AddSection({Name = "莱辛顿和康科德脚本"})
+t:AddButton({Name = "1", Callback = function() loadstring(game:HttpGet("https://rawscripts.net/raw/Lexington-and-Concord-LC-75016"))() end})
 
-MainTab:AddButton({
-	Name = "飞行 GUI",
-	Callback = function()
-		loadstring(game:HttpGet("https://github.com/MiniCapy/scripts/raw/refs/heads/main/fly%20GUI"))()
-	end    
-})
+local t = Window:MakeTab({Name = "黑客GUI", Icon = "rbxassetid://77348087165494"})
+t:AddLabel("想啥呢，肯定是客户端啊")
+t:AddButton({Name = "c00lgui", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Baloksxin/ROBLOX-BKU-SCRIPT/refs/heads/main/Scripts/c00lgui.LUA"))() end})
+t:AddButton({Name = "1x1x1x1gui", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Baloksxin/ROBLOX-BKU-SCRIPT/refs/heads/main/Scripts/1x1x1x1gui%203.3.LUA"))() end})
+t:AddButton({Name = "k00pgui", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Baloksxin/ROBLOX-BKU-SCRIPT/refs/heads/main/Scripts/k00pgui%20v12.LUA"))() end})
 
-MainTab:AddButton({
-	Name = "R15动作脚本",
-	Callback = function()
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/Gazer-Ha/Free-emote/refs/heads/main/Delta%20mad%20stuffs"))()
-	end    
-})
+local t = Window:MakeTab({Name = "BloxStrike", Icon = "rbxassetid://77348087165494"})
+t:AddSection({Name = "BloxStrike 脚本"})
+t:AddButton({Name = "wyvern gui v2", Callback = function() loadstring(game:HttpGet("https://gist.githubusercontent.com/wydirdscripts/f6daf1950dd645377bb8a86e941baf9f/raw/c0b8895d18d12ceb8c1e5ae3d30798c5e10d972b/gistfile1.txt"))() end})
 
-local DoorsTab = Window:MakeTab({ Name = "DOORS", Icon = "rbxassetid://77348087165494", PremiumOnly = false })
-DoorsTab:AddSection({ Name = "DOORS脚本" })
-DoorsTab:AddButton({ Name = "Velocity X", Callback = function() loadstring(game:HttpGet("https://velocityloader.vercel.app/"))() end })
-DoorsTab:AddButton({ Name = "OP实体生成器", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/althan99/doors-entity-spawner/main/Script"))() end })
+local t = Window:MakeTab({Name = "Solo Hunters", Icon = "rbxassetid://77348087165494"})
+t:AddSection({Name = "Solo Hunters 脚本"})
+t:AddButton({Name = "1", Callback = function() loadstring(game:HttpGet('https://gist.githubusercontent.com/weeew07/d477f12afffdec7131886d9bdb06dbe7/raw/1a13b69b74915e3effa36ed447f6863cebd743a5/Solo%20Hunters'))() end})
 
-local ForsakenTab = Window:MakeTab({ Name = "Forsaken", Icon = "rbxassetid://77348087165494", PremiumOnly = false })
-ForsakenTab:AddSection({ Name = "Forsaken 专用脚本" })
-ForsakenTab:AddButton({ Name = "Byby Hub", Callback = function() loadstring(game:HttpGet('https://raw.githubusercontent.com/Edulucas2013/Byby-hub/refs/heads/main/Forsaken%20byby%20hub'))() end })
+local t = Window:MakeTab({Name = "ROB IT", Icon = "rbxassetid://77348087165494"})
+t:AddSection({Name = "ROB IT 脚本"})
+t:AddButton({Name = "ROB IT HUB", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/agentstojak/ROB-IT/refs/heads/main/ROB%20IT"))() end})
 
-local NdsTab = Window:MakeTab({ Name = "自然灾害幸存", Icon = "rbxassetid://77348087165494", PremiumOnly = false })
-NdsTab:AddSection({ Name = "自然灾害脚本" })
-NdsTab:AddButton({ Name = "NDS HUB", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/KaterHub-Inc/NaturalDisasterSurvival/refs/heads/main/main.lua"))() end })
-NdsTab:AddButton({ Name = "Super Ring Parts V4", Callback = function() loadstring(game:HttpGet("https://rscripts.net/raw/super-ring-parts-v4-by-lukas_1741980981842_td0ummjymf.txt",true))() end })
+local t = Window:MakeTab({Name = "死亡之死", Icon = "rbxassetid://77348087165494"})
+t:AddSection({Name = "死亡之死 脚本"})
+t:AddButton({Name = "RedScripter102 HUB", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/RedScripter102/Script/refs/heads/main/Die%20of%20death%20updated"))() end})
 
-local BFTab = Window:MakeTab({ Name = "Blox Fruits", Icon = "rbxassetid://77348087165494", PremiumOnly = false })
-BFTab:AddSection({ Name = "Blox Fruits 脚本" })
-BFTab:AddButton({ Name = "4479Hub", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/4479cantcode/4479Hub/refs/heads/main/Script.lua"))() end })
+RS.RenderStepped:Connect(function()
+    if Config.SpeedEn and LPlr.Character and LPlr.Character:FindFirstChild("Humanoid") then LPlr.Character.Humanoid.WalkSpeed = Config.Speed end
+    if Config.NightVis then Light.Brightness, Light.Ambient, Light.ClockTime = 2, Color3.new(1,1,1), 12 end
+    if Config.FOVEn then Cam.FieldOfView = Config.FOV end
+end)
 
-local RoomsAndDoorsTab = Window:MakeTab({ Name = "Rooms&Doors", Icon = "rbxassetid://77348087165494", PremiumOnly = false })
-RoomsAndDoorsTab:AddSection({ Name = "Rooms&Doors 脚本" })
-RoomsAndDoorsTab:AddButton({ Name = "Xera Hub", Callback = function() local succes, err = pcall(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/NobodyOrIdk/XeraHub/main/main.lua"))() end) print(succes, err) end })
-
-local TsunamiTab = Window:MakeTab({ Name = "逃离海啸，获得脑腐", Icon = "rbxassetid://77348087165494", PremiumOnly = false })
-TsunamiTab:AddSection({ Name = "逃离海啸获得脑腐脚本" })
-TsunamiTab:AddButton({ Name = "1", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptify12/EscapeTsunami/main/KeySystem.lua", true))() end })
-
-local StealBrainRotTab = Window:MakeTab({ Name = "偷走脑腐", Icon = "rbxassetid://77348087165494", PremiumOnly = false })
-StealBrainRotTab:AddSection({ Name = "偷走脑腐脚本" })
-StealBrainRotTab:AddButton({ Name = "1", Callback = function() loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/fcc63f5f04efa9a6a85d6f16a179b870.lua"))() end })
-
-local ElevatorTab = Window:MakeTab({ Name = "疯狂电梯", Icon = "rbxassetid://77348087165494", PremiumOnly = false })
-ElevatorTab:AddSection({ Name = "疯狂电梯脚本" })
-ElevatorTab:AddButton({ Name = "免费工具", Callback = function() loadstring(game:HttpGet(('https://pastebin.com/raw/vE8WMLit'),true))() end })
-
-local FishTab = Window:MakeTab({ Name = "Fish It", Icon = "rbxassetid://77348087165494", PremiumOnly = false })
-FishTab:AddSection({ Name = "Fish It 脚本" })
-FishTab:AddButton({ Name = "1", Callback = function() loadstring(game:HttpGet('https://raw.githubusercontent.com/dilleron964/Fish-It/main/Fish-It.lua'))() end })
-
-local GAndBTab = Window:MakeTab({ Name = "内脏与黑火药", Icon = "rbxassetid://77348087165494", PremiumOnly = false })
-GAndBTab:AddSection({ Name = "Guts & Blackpowder 脚本" })
-GAndBTab:AddButton({ Name = "Katchi Hub", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/XaviscoZ/roblox/refs/heads/main/g%26b.lua"))() end })
-
-local Forest99Tab = Window:MakeTab({ Name = "森林中的99夜", Icon = "rbxassetid://77348087165494", PremiumOnly = false })
-Forest99Tab:AddSection({ Name = "森林中的99夜 脚本" })
-Forest99Tab:AddButton({ Name = "UNPERFORMED HUB", Callback = function() loadstring(game:HttpGet("https://api.junkie-development.de/api/v1/luascripts/public/6ed3b0b29cae165a5df389c3650171583312f6baeaf622f2330521e9c340436c/download"))() end })
-
-local FNAFTab = Window:MakeTab({ Name = "FNAF:永恒之夜", Icon = "rbxassetid://77348087165494", PremiumOnly = false })
-FNAFTab:AddSection({ Name = "FNAF 永恒之夜脚本" })
-FNAFTab:AddButton({ Name = "1", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Snipez-Dev/Rbx-Scripts/refs/heads/main/Eternal%20Nights"))() end })
-
-local GardenTab = Window:MakeTab({ Name = "种植花园", Icon = "rbxassetid://77348087165494", PremiumOnly = false })
-GardenTab:AddSection({ Name = "种植花园脚本" })
-GardenTab:AddButton({ Name = "Zap Hub", Callback = function() loadstring(game:HttpGet('https://zaphub.xyz/Exec'))() end })
-
-local LexingtonTab = Window:MakeTab({ Name = "莱辛顿和康科德", Icon = "rbxassetid://77348087165494", PremiumOnly = false })
-LexingtonTab:AddSection({ Name = "莱辛顿和康科德脚本" })
-LexingtonTab:AddButton({ Name = "1", Callback = function() loadstring(game:HttpGet("https://rawscripts.net/raw/Lexington-and-Concord-LC-75016"))() end })
-
-local HackerTab = Window:MakeTab({ Name = "黑客GUI", Icon = "rbxassetid://77348087165494", PremiumOnly = false })
-HackerTab:AddLabel("想啥呢，肯定是客户端啊")
-HackerTab:AddButton({ Name = "c00lgui", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Baloksxin/ROBLOX-BKU-SCRIPT/refs/heads/main/Scripts/c00lgui.LUA"))() end })
-HackerTab:AddButton({ Name = "1x1x1x1gui", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Baloksxin/ROBLOX-BKU-SCRIPT/refs/heads/main/Scripts/1x1x1x1gui%203.3.LUA"))() end })
-HackerTab:AddButton({ Name = "k00pgui", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Baloksxin/ROBLOX-BKU-SCRIPT/refs/heads/main/Scripts/k00pgui%20v12.LUA"))() end })
-
-local BloxStrikeTab = Window:MakeTab({ Name = "BloxStrike", Icon = "rbxassetid://77348087165494", PremiumOnly = false })
-BloxStrikeTab:AddSection({ Name = "BloxStrike 脚本" })
-BloxStrikeTab:AddButton({ Name = "wyvern gui v2", Callback = function() loadstring(game:HttpGet("https://gist.githubusercontent.com/wydirdscripts/f6daf1950dd645377bb8a86e941baf9f/raw/c0b8895d18d12ceb8c1e5ae3d30798c5e10d972b/gistfile1.txt"))() end })
-
-local SoloHuntersTab = Window:MakeTab({ Name = "Solo Hunters", Icon = "rbxassetid://77348087165494", PremiumOnly = false })
-SoloHuntersTab:AddSection({ Name = "Solo Hunters 脚本" })
-SoloHuntersTab:AddButton({ Name = "1", Callback = function() loadstring(game:HttpGet('https://gist.githubusercontent.com/weeew07/d477f12afffdec7131886d9bdb06dbe7/raw/1a13b69b74915e3effa36ed447f6863cebd743a5/Solo%20Hunters'))() end })
-
-local ROBITTab = Window:MakeTab({ Name = "ROB IT", Icon = "rbxassetid://77348087165494", PremiumOnly = false })
-ROBITTab:AddSection({ Name = "ROB IT 脚本" })
-ROBITTab:AddButton({ Name = "ROB IT HUB", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/agentstojak/ROB-IT/refs/heads/main/ROB%20IT"))() end })
-
-RunService.RenderStepped:Connect(function()
-    if SpeedEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
-        LocalPlayer.Character.Humanoid.WalkSpeed = TargetSpeed
-    end
-    
-    if NightVisionEnabled then
-        Lighting.Brightness = 2
-        Lighting.Ambient = Color3.fromRGB(255, 255, 255)
-        Lighting.ClockTime = 12
-    end
-
-    if FOVEnabled then
-        Camera.FieldOfView = TargetFOV
+RS.Stepped:Connect(function()
+    if Config.Noclip and LPlr.Character then
+        for _, v in pairs(LPlr.Character:GetDescendants()) do if v:IsA("BasePart") then v.CanCollide = false end end
     end
 end)
 
-RunService.Stepped:Connect(function()
-    if NoclipEnabled and LocalPlayer.Character then
-        for _, part in pairs(LocalPlayer.Character:GetDescendants()) do
-            if part:IsA("BasePart") then part.CanCollide = false end
-        end
-    end
-end)
-
-UserInputService.JumpRequest:Connect(function()
-    if InfiniteJumpEnabled and LocalPlayer.Character then
-        LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
-    end
+UIS.JumpRequest:Connect(function()
+    if Config.InfJump and LPlr.Character then LPlr.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping") end
 end)
 
 OrionLib:Init()
