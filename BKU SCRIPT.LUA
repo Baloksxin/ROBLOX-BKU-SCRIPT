@@ -76,7 +76,7 @@ local t16 = Window:MakeTab({Name = "莱辛顿和康科德", Icon = "rbxassetid:/
 t16:AddButton({Name = "1", Callback = function() loadstring(game:HttpGet("https://rawscripts.net/raw/Lexington-and-Concord-LC-75016"))() end})
 
 local t17 = Window:MakeTab({Name = "SCP:3199示范", Icon = "rbxassetid://77348087165494"})
-t17:AddToggle({Name = "SCP-3199 高亮 + 名字", Callback = function(v) Config.SCPHighlight = v if not v then for _,o in pairs(workspace:GetChildren()) do if o:FindFirstChild("SCP3199_ESP") then o.SCP3199_ESP:Destroy() end end end end})
+t17:AddToggle({Name = "SCP-3199高亮", Callback = function(v) Config.SCPHighlight = v if not v then for _,o in pairs(workspace:GetChildren()) do if o:FindFirstChild("SCP3199_ESP") then o.SCP3199_ESP:Destroy() end end end end})
 t17:AddToggle({Name = "无限体力", Callback = function(v) Config.InfStamina = v end})
 
 local t18 = Window:MakeTab({Name = "黑客GUI", Icon = "rbxassetid://77348087165494"})
