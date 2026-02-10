@@ -5,7 +5,7 @@ local Cam = workspace.CurrentCamera
 local Config = { Speed = 16, FOV = 70, SpeedEn = false, FOVEn = false, InfJump = false, Noclip = false, NightVis = false, SCPHighlight = false, InfStamina = false, ThirdPerson = false }
 local Orig = { FOV = Cam.FieldOfView, Bright = Light.Brightness, Ambient = Light.Ambient, Clock = Light.ClockTime }
 local Window = OrionLib:MakeWindow({Name = "BKU HUB BY BALOKSXIN", HidePremium = true, SaveConfig = false, IntroText = "BKU HUB"})
-OrionLib:MakeNotification({Name = "BKU HUB", Content = "BKU HUB 简化版已加载!", Time = 3})
+OrionLib:MakeNotification({Name = "BKU HUB", Content = "BKU HUB 已加载!😱😱😱", Time = 3})
 
 local t1 = Window:MakeTab({Name = "信息", Icon = "rbxassetid://77348087165494"})
 t1:AddSection({Name = "信息"})
@@ -22,7 +22,7 @@ t2:AddTextbox({Name = "修改速度值", Default = "16", Callback = function(v) 
 t2:AddToggle({Name = "开启速度修改", Callback = function(v) Config.SpeedEn = v if not v and LPlr.Character:FindFirstChild("Humanoid") then LPlr.Character.Humanoid.WalkSpeed = 16 end end})
 t2:AddTextbox({Name = "修改FOV值", Default = "70", Callback = function(v) Config.FOV = tonumber(v) or 70 end})
 t2:AddToggle({Name = "开启 FOV 修改", Callback = function(v) Config.FOVEn = v if not v then Cam.FieldOfView = Orig.FOV end end})
-t2:AddToggle({Name = "第三人称 (Classic)", Callback = function(v) Config.ThirdPerson = v end})
+t2:AddToggle({Name = "第三人称", Callback = function(v) Config.ThirdPerson = v end})
 t2:AddToggle({Name = "无限跳跃", Callback = function(v) Config.InfJump = v end})
 t2:AddToggle({Name = "穿墙模式 (Noclip)", Callback = function(v) Config.Noclip = v end})
 t2:AddToggle({Name = "夜视模式", Callback = function(v) Config.NightVis = v if not v then Light.Brightness, Light.Ambient, Light.ClockTime = Orig.Bright, Orig.Ambient, Orig.Clock end end})
