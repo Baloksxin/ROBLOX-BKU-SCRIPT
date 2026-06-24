@@ -193,7 +193,7 @@ local function IsValidGroundItem(obj)
 end
 
 local function PlayerHasLootToSell()
-    local lootNames = { "Gold", "Diamond", "Emerald", "Copper" } -- 已修改：添加了 Copper
+    local lootNames = { "Gold", "Diamond", "Emerald", "Copper" }
     for _, name in pairs(lootNames) do
         if LPlr.Character and LPlr.Character:FindFirstChild(name) then return true end
         local bp = LPlr:FindFirstChild("Backpack")
@@ -239,7 +239,6 @@ task.spawn(function()
                     local v = mapItems[i]
                     actionCount = actionCount + 1
                     if actionCount >= 100 then actionCount = 0 task.wait() end
-                    -- 已修改：添加了 Copper 的判断逻辑
                     if (v.Name == "Gold" or v.Name == "Diamond" or v.Name == "Emerald" or v.Name == "Copper") and IsValidGroundItem(v) then
                         local itemPos = v:IsA("BasePart") and v.CFrame or v:GetPivot()
                         if itemPos then
