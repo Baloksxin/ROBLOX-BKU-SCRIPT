@@ -7,7 +7,7 @@ local Config = { Speed = 16, FOV = 70, SpeedEn = false, FOVEn = false, InfJump =
 local Orig = { FOV = Cam.FieldOfView, Bright = Light.Brightness, Ambient = Light.Ambient, Clock = Light.ClockTime }
 local Window = OrionLib:MakeWindow({Name = "BKU HUB BY BALOKSXIN", HidePremium = true, SaveConfig = false, IntroText = "BKU HUB"})
 
-OrionLib:MakeNotification({Name = "BKU HUB", Content = "BKU HUB已加载🤯🤯🤯", Time = 3})
+OrionLib:MakeNotification({Name = "BKU HUB", Content = "BKU 极速无卡顿版已加载⚡", Time = 3})
 
 local t1 = Window:MakeTab({Name = "信息", Icon = "rbxassetid://77348087165494"})
 t1:AddSection({Name = "信息"})
@@ -123,7 +123,7 @@ t23:AddToggle({
     end
 })
 
-local TargetMonkeys = { ["Kus"] = true, ["Dus"] = true, ["Gus"] = true, ["Sandman"] = true, ["Ashy"] = true, ["Lost"] = true, ["Scar"] = true }
+local TargetMonkeys = { ["Kus"] = true, ["Dus"] = true, ["Gus"] = true, ["SandMan"] = true, ["Ashy"] = true, ["Lost"] = true, ["Scar"] = true }
 
 local function CreateOutlineESP(model)
     if not model:FindFirstChild("Monkey_Highlight_ESP") then
@@ -164,17 +164,13 @@ local function InteractWithObject(obj)
     if prompt then
         fireproximityprompt(prompt)
     else
-        pcall(function()
-            game:GetService("VirtualInputManager"):SendKeyEvent(true, Enum.KeyCode.E, false, game)
-            task.wait(0.02)
-            game:GetService("VirtualInputManager"):SendKeyEvent(false, Enum.KeyCode.E, false, game)
-        end)
+        game:GetService("VirtualInputManager"):SendKeyEvent(true, Enum.KeyCode.E, false, game)
+        task.wait()
+        game:GetService("VirtualInputManager"):SendKeyEvent(false, Enum.KeyCode.E, false, game)
     end
 end
 
-local IgnoredItems = {}
 local function IsValidGroundItem(obj)
-    if IgnoredItems[obj] then return false end
     local allPlayers = Players:GetPlayers()
     for i = 1, #allPlayers do
         local p = allPlayers[i]
@@ -193,84 +189,97 @@ local function IsValidGroundItem(obj)
 end
 
 local function PlayerHasLootToSell()
-    local lootNames = { "Gold", "Diamond", "Emerald", "Copper" }
-    for _, name in pairs(lootNames) do
-        if LPlr.Character and LPlr.Character:FindFirstChild(name) then return true end
-        local bp = LPlr:FindFirstChild("Backpack")
-        if bp and bp:FindFirstChild(name) then return true end
+    local lootNames = { "Emerald", "Diamond", "Gold", "Copper" }
+    local char = LPlr.Character
+    local bp = LPlr:FindFirstChild("Backpack")
+    for i = 1, #lootNames do
+        local name = lootNames[i]
+        if (char and char:FindFirstChild(name)) or (bp and bp:FindFirstChild(name)) then 
+            return true 
+        end
     end
     return false
 end
 
+local CachedItems = { Emerald = {}, Diamond = {}, Gold = {}, Copper = {}, Recycler = nil }
+local function UpdateMapCache()
+    table.clear(CachedItems.Emerald)
+    table.clear(CachedItems.Diamond)
+    table.clear(CachedItems.Gold)
+    table.clear(CachedItems.Copper)
+    CachedItems.Recycler = nil
+    
+    local allItems = workspace:GetDescendants()
+    for i = 1, #allItems do
+        local v = allItems[i]
+        local name = v.Name
+        if name == "Emerald" then table.insert(CachedItems.Emerald, v)
+        elseif name == "Diamond" then table.insert(CachedItems.Diamond, v)
+        elseif name == "Gold" then table.insert(CachedItems.Gold, v)
+        elseif name == "Copper" then table.insert(CachedItems.Copper, v)
+        elseif name == "ScrapRecycler" and (v:IsA("BasePart") or v:IsA("Model")) then CachedItems.Recycler = v end
+    end
+end
+
 task.spawn(function()
     while true do
-        task.wait(2) 
-        table.clear(IgnoredItems)
+        if Config.AutoGold then
+            UpdateMapCache()
+        end
+        task.wait(0.8)
     end
 end)
 
 task.spawn(function()
+    local PriorityList = { "Emerald", "Diamond", "Gold", "Copper" }
+    
     while true do
-        task.wait(0.15) 
+        RS.Heartbeat:Wait()
+        
         if Config.AutoGold and LPlr.Character and LPlr.Character:FindFirstChild("HumanoidRootPart") and LPlr.Character:FindFirstChildOfClass("Humanoid") and LPlr.Character.Humanoid.Health > 0 then
+            local hrp = LPlr.Character.HumanoidRootPart
+            
             if PlayerHasLootToSell() then
-                local mapItems = workspace:GetDescendants()
-                for i = 1, #mapItems do
-                    local v = mapItems[i]
-                    if v.Name == "ScrapRecycler" and (v:IsA("BasePart") or v:IsA("Model")) then
-                        local recyclerPos = v:IsA("BasePart") and v.CFrame or v:GetPivot()
-                        if recyclerPos then
-                            local sellTimer = tick()
-                            while Config.AutoGold and PlayerHasLootToSell() and LPlr.Character and LPlr.Character:FindFirstChild("HumanoidRootPart") and LPlr.Character.Humanoid.Health > 0 and (tick() - sellTimer < 2.5) do
-                                LPlr.Character.HumanoidRootPart.CFrame = recyclerPos * CFrame.new(0, 0.5, 0)
-                                InteractWithObject(v)
-                                task.wait(0.18)
-                            end
-                            break
-                        end
+                local recycler = CachedItems.Recycler or workspace:FindFirstChild("ScrapRecycler", true)
+                if recycler then
+                    local recyclerPos = recycler:IsA("BasePart") and recycler.CFrame or recycler:GetPivot()
+                    local sellTimer = tick()
+                    while Config.AutoGold and PlayerHasLootToSell() and LPlr.Character and LPlr.Character.Humanoid.Health > 0 and (tick() - sellTimer < 1.5) do
+                        hrp.CFrame = recyclerPos
+                        InteractWithObject(recycler)
+                        task.wait(0.05) 
                     end
                 end
             else
-                local mapItems = workspace:GetDescendants()
-                local actionCount = 0
-                local foundAny = false
-                for i = 1, #mapItems do
-                    if not Config.AutoGold or PlayerHasLootToSell() or not LPlr.Character or not LPlr.Character:FindFirstChild("HumanoidRootPart") or LPlr.Character.Humanoid.Health <= 0 then break end
-                    local v = mapItems[i]
-                    actionCount = actionCount + 1
-                    if actionCount >= 100 then actionCount = 0 task.wait() end
-                    if (v.Name == "Gold" or v.Name == "Diamond" or v.Name == "Emerald" or v.Name == "Copper") and IsValidGroundItem(v) then
-                        local itemPos = v:IsA("BasePart") and v.CFrame or v:GetPivot()
-                        if itemPos then
-                            foundAny = true
-                            IgnoredItems[v] = true
-                            if LPlr.Character and LPlr.Character:FindFirstChild("HumanoidRootPart") then
-                                LPlr.Character.HumanoidRootPart.CFrame = itemPos * CFrame.new(0, 0.5, 0)
+                
+                local targetItem = nil
+                for p = 1, #PriorityList do
+                    local listName = PriorityList[p]
+                    local itemArray = CachedItems[listName]
+                    if itemArray then
+                        for i = #itemArray, 1, -1 do 
+                            local v = itemArray[i]
+                            if v and v.Parent and IsValidGroundItem(v) then
+                                targetItem = v
+                                break
                             end
-                            task.wait(0.1)
-                            InteractWithObject(v)
-                            local startCheck = tick()
-                            while tick() - startCheck < 0.4 do
-                                if PlayerHasLootToSell() then break end
-                                task.wait(0.04)
-                            end
-                            if PlayerHasLootToSell() then
-                                local recycler = workspace:FindFirstChild("ScrapRecycler", true)
-                                if recycler then
-                                    local recyclerPos = recycler:IsA("BasePart") and recycler.CFrame or recycler:GetPivot()
-                                    local insideSellTimer = tick()
-                                    while Config.AutoGold and PlayerHasLootToSell() and LPlr.Character and LPlr.Character:FindFirstChild("HumanoidRootPart") and LPlr.Character.Humanoid.Health > 0 and (tick() - insideSellTimer < 2.5) do
-                                        LPlr.Character.HumanoidRootPart.CFrame = recyclerPos * CFrame.new(0, 0.5, 0)
-                                        InteractWithObject(recycler)
-                                        task.wait(0.18)
-                                    end
-                                end
-                            end
-                            break 
+                        end
+                    end
+                    if targetItem then break end
+                end
+
+                if targetItem then
+                    local itemPos = targetItem:IsA("BasePart") and targetItem.CFrame or targetItem:GetPivot()
+                    if itemPos then
+                        hrp.CFrame = itemPos                
+                        InteractWithObject(targetItem)                       
+                        local fastCheck = tick()
+                        while tick() - fastCheck < 0.35 do
+                            if PlayerHasLootToSell() then break end
+                            RS.Heartbeat:Wait()
                         end
                     end
                 end
-                if not foundAny then table.clear(IgnoredItems) end
             end
         end
     end
