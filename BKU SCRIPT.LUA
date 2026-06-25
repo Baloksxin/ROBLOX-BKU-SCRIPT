@@ -3,7 +3,7 @@ local LPlr = game:GetService("Players").LocalPlayer
 local Players = game:GetService("Players")
 local RS, UIS, Light = game:GetService("RunService"), game:GetService("UserInputService"), game:GetService("Lighting")
 local Cam = workspace.CurrentCamera
-local Config = { Speed = 16, FOV = 70, SpeedEn = false, FOVEn = false, InfJump = false, Noclip = false, NightVis = false, SCPHighlight = false, InfStamina = false, ThirdPerson = false, MonkeyESP = false, AutoGold = false, EarGameESP = false, ScrapESP = false, CardESP = false }
+local Config = { Speed = 16, FOV = 70, SpeedEn = false, FOVEn = false, InfJump = false, Noclip = false, NightVis = false, SCPHighlight = false, InfStamina = false, ThirdPerson = false, MonkeyESP = false, AutoGold = false, EarGameESP = false, ScrapESP = false, CardESP = false, AutoEarMoney = false }
 local Orig = { FOV = Cam.FieldOfView, Bright = Light.Brightness, Ambient = Light.Ambient, Clock = Light.ClockTime }
 local Window = OrionLib:MakeWindow({Name = "BKU HUB BY BALOKSXIN", HidePremium = true, SaveConfig = false, IntroText = "BKU HUB"})
 
@@ -164,6 +164,14 @@ t24:AddToggle({
                 end
             end
         end
+    end
+})
+
+t24:AddToggle({
+    Name = "开启自动刷钱 (Auto Scrap)",
+    Default = false,
+    Callback = function(v)
+        Config.AutoEarMoney = v
     end
 })
 
@@ -339,6 +347,14 @@ local function PlayerHasLootToSell()
             return true 
         end
     end
+    if bp and #bp:GetChildren() > 0 then return true end
+    if char then
+        for _, tool in pairs(char:GetChildren()) do
+            if tool:IsA("Tool") and tool.Name ~= "Flashlight" then
+                return true
+            end
+        end
+    end
     return false
 end
 
@@ -373,13 +389,10 @@ end)
 
 task.spawn(function()
     local PriorityList = { "Emerald", "Diamond", "Gold", "Copper" }
-    
     while true do
         RS.Heartbeat:Wait()
-        
         if Config.AutoGold and LPlr.Character and LPlr.Character:FindFirstChild("HumanoidRootPart") and LPlr.Character:FindFirstChildOfClass("Humanoid") and LPlr.Character.Humanoid.Health > 0 then
             local hrp = LPlr.Character.HumanoidRootPart
-            
             if PlayerHasLootToSell() then
                 local recycler = CachedItems.Recycler or workspace:FindFirstChild("ScrapRecycler", true)
                 if recycler then
@@ -392,7 +405,6 @@ task.spawn(function()
                     end
                 end
             else
-                
                 local targetItem = nil
                 for p = 1, #PriorityList do
                     local listName = PriorityList[p]
@@ -408,7 +420,6 @@ task.spawn(function()
                     end
                     if targetItem then break end
                 end
-
                 if targetItem then
                     local itemPos = targetItem:IsA("BasePart") and targetItem.CFrame or targetItem:GetPivot()
                     if itemPos then
@@ -420,6 +431,49 @@ task.spawn(function()
                             RS.Heartbeat:Wait()
                         end
                     end
+                end
+            end
+        end
+    end
+end)
+
+task.spawn(function()
+    while true do
+        RS.Heartbeat:Wait()
+        if Config.AutoEarMoney and LPlr.Character and LPlr.Character:FindFirstChild("HumanoidRootPart") and LPlr.Character:FindFirstChildOfClass("Humanoid") and LPlr.Character.Humanoid.Health > 0 then
+            local hrp = LPlr.Character.HumanoidRootPart
+            if PlayerHasLootToSell() then
+                local recycler = workspace:FindFirstChild("ScrapRecycler", true)
+                if recycler then
+                    local recyclerPos = recycler:IsA("BasePart") and recycler.CFrame or recycler:GetPivot()
+                    hrp.CFrame = recyclerPos
+                    InteractWithObject(recycler)
+                    task.wait(0.2)
+                end
+            else
+                local scrapsFolder = workspace:FindFirstChild("Scraps")
+                local targetScrap = nil
+                if scrapsFolder then
+                    for _, scrap in pairs(scrapsFolder:GetChildren()) do
+                        if (scrap:IsA("BasePart") or scrap:IsA("Model")) and IsValidGroundItem(scrap) then
+                            targetScrap = scrap
+                            break
+                        end
+                    end
+                end
+                if not targetScrap then
+                    for _, v in pairs(workspace:GetDescendants()) do
+                        if v.Name:lower():find("scrap") and v ~= scrapsFolder and IsValidGroundItem(v) then
+                            targetScrap = v
+                            break
+                        end
+                    end
+                end
+                if targetScrap then
+                    local scrapPos = targetScrap:IsA("BasePart") and targetScrap.CFrame or targetScrap:GetPivot()
+                    hrp.CFrame = scrapPos
+                    InteractWithObject(targetScrap)
+                    task.wait(0.2)
                 end
             end
         end
