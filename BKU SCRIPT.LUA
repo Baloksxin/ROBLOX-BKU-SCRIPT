@@ -197,7 +197,9 @@ local TargetMonkeys = {
     ["Lost"] = true, 
     ["Scar"] = true,
     ["Billy"] = true,      
-    ["SangGuy"] = true
+    ["SangGuy"] = true,
+    ["Meat"] ＝ true,
+    ["???"] ＝ true
 }
 local TargetEarMonkeys = { ["SawRunner"] = true, ["Crawly"] = true, ["Claw"] = true, ["slender"] = true }
 
