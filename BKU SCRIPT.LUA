@@ -3,8 +3,14 @@ local LPlr = game:GetService("Players").LocalPlayer
 local Players = game:GetService("Players")
 local RS, UIS, Light = game:GetService("RunService"), game:GetService("UserInputService"), game:GetService("Lighting")
 local Cam = workspace.CurrentCamera
-local Config = { Speed = 16, FOV = 70, SpeedEn = false, FOVEn = false, InfJump = false, Noclip = false, NightVis = false, SCPHighlight = false, InfStamina = false, ThirdPerson = false, MonkeyESP = false, AutoGold = false, EarGameESP = false, ScrapESP = false, CardESP = false, AutoEarMoney = false }
-local Orig = { FOV = Cam.FieldOfView, Bright = Light.Brightness, Ambient = Light.Ambient, Clock = Light.ClockTime }
+
+local initSpeed = 16
+if LPlr.Character and LPlr.Character:FindFirstChild("Humanoid") then
+    initSpeed = LPlr.Character.Humanoid.WalkSpeed
+end
+
+local Config = { Speed = initSpeed, FOV = Cam.FieldOfView, SpeedEn = false, FOVEn = false, InfJump = false, Noclip = false, NightVis = false, SCPHighlight = false, InfStamina = false, ThirdPerson = false, MonkeyESP = false, AutoGold = false, EarGameESP = false, ScrapESP = false, CardESP = false, AutoEarMoney = false, RecyclerESP = false }
+local Orig = { FOV = Cam.FieldOfView, Bright = Light.Brightness, Ambient = Light.Ambient, Clock = Light.ClockTime, Speed = initSpeed }
 local Window = OrionLib:MakeWindow({Name = "BKU HUB BY BALOKSXIN", HidePremium = true, SaveConfig = false, IntroText = "BKU HUB"})
 
 OrionLib:MakeNotification({Name = "BKU HUB", Content = "辛巴爸爸卢比呀", Time = 3})
@@ -20,9 +26,9 @@ t1:AddButton({Name = "复制作者KS ID", Callback = function() setclipboard("Ba
 
 local t2 = Window:MakeTab({Name = "通用", Icon = "rbxassetid://77348087165494"})
 t2:AddSection({Name = "角色属性修改"})
-t2:AddTextbox({Name = "修改速度值", Default = "16", Callback = function(v) Config.Speed = tonumber(v) or 16 end})
-t2:AddToggle({Name = "开启速度修改", Callback = function(v) Config.SpeedEn = v if not v and LPlr.Character:FindFirstChild("Humanoid") then LPlr.Character.Humanoid.WalkSpeed = 16 end end})
-t2:AddTextbox({Name = "修改FOV值", Default = "70", Callback = function(v) Config.FOV = tonumber(v) or 70 end})
+t2:AddTextbox({Name = "修改速度值", Default = tostring(Orig.Speed), Callback = function(v) Config.Speed = tonumber(v) or Orig.Speed end})
+t2:AddToggle({Name = "开启速度修改", Callback = function(v) Config.SpeedEn = v if not v and LPlr.Character:FindFirstChild("Humanoid") then LPlr.Character.Humanoid.WalkSpeed = Orig.Speed end end})
+t2:AddTextbox({Name = "修改FOV值", Default = tostring(Orig.FOV), Callback = function(v) Config.FOV = tonumber(v) or Orig.FOV end})
 t2:AddToggle({Name = "开启 FOV 修改", Callback = function(v) Config.FOVEn = v if not v then Cam.FieldOfView = Orig.FOV end end})
 t2:AddToggle({Name = "第三人称", Callback = function(v) Config.ThirdPerson = v end})
 t2:AddToggle({Name = "无限跳跃", Callback = function(v) Config.InfJump = v end})
@@ -117,6 +123,20 @@ tFused:AddToggle({
         if not v then
             for _, o in pairs(workspace:GetDescendants()) do
                 if o.Name == "Scrap_Highlight_ESP" or o.Name == "Scrap_Text_ESP" then
+                    o:Destroy()
+                end
+            end
+        end
+    end
+})
+
+tFused:AddToggle({
+    Name = "开关回收机Esp",
+    Callback = function(v)
+        Config.RecyclerESP = v
+        if not v then
+            for _, o in pairs(workspace:GetDescendants()) do
+                if o.Name == "Recycler_Highlight_ESP" or o.Name == "Recycler_Text_ESP" then
                     o:Destroy()
                 end
             end
@@ -267,6 +287,40 @@ local function CreateScrapESP(part)
         label.Font = Enum.Font.SourceSansBold
         label.TextStrokeTransparency = 0 
         label.Parent = billboard
+    end
+end
+
+local function CreateRecyclerESP(obj)
+    if not obj:FindFirstChild("Recycler_Highlight_ESP") then
+        local hl = Instance.new("Highlight")
+        hl.Name = "Recycler_Highlight_ESP"
+        hl.FillColor = Color3.fromRGB(170, 85, 255) 
+        hl.FillTransparency = 0.4                     
+        hl.OutlineColor = Color3.fromRGB(255, 255, 255) 
+        hl.OutlineTransparency = 0                    
+        hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop 
+        hl.Parent = obj
+    end
+    if not obj:FindFirstChild("Recycler_Text_ESP") then
+        local targetPart = obj:IsA("Model") and (obj.PrimaryPart or obj:FindFirstChildWhichIsA("BasePart")) or obj
+        if targetPart then
+            local billboard = Instance.new("BillboardGui")
+            billboard.Name = "Recycler_Text_ESP"
+            billboard.Size = UDim2.new(0, 160, 0, 40)
+            billboard.AlwaysOnTop = true
+            billboard.ExtentsOffset = Vector3.new(0, 4, 0)
+            billboard.Adornee = targetPart
+            billboard.Parent = obj
+            local label = Instance.new("TextLabel")
+            label.Size = UDim2.new(1, 0, 1, 0)
+            label.BackgroundTransparency = 1
+            label.Text = "废品回收机" 
+            label.TextColor3 = Color3.fromRGB(170, 85, 255)
+            label.TextSize = 15
+            label.Font = Enum.Font.SourceSansBold
+            label.TextStrokeTransparency = 0 
+            label.Parent = billboard
+        end
     end
 end
 
@@ -476,6 +530,13 @@ task.spawn(function()
                     if v:IsA("BasePart") or v:IsA("Model") then
                         CreateScrapESP(v)
                     end
+                end
+            end
+        end
+        if Config.RecyclerESP then
+            for _, v in pairs(workspace:GetDescendants()) do
+                if v.Name == "ScrapRecycler" and (v:IsA("BasePart") or v:IsA("Model")) then
+                    CreateRecyclerESP(v)
                 end
             end
         end
