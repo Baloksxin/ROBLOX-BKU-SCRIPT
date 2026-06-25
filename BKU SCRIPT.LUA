@@ -1,3 +1,8 @@
+local LPlr = game:GetService("Players").LocalPlayer
+if LPlr.Name == "qwaszx78789191" or LPlr.UserId == 3274296766 then 
+    LPlr:Kick("滴滴等别逗我笑")
+    return
+end
 local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/Baloksxin/BK-PE-SCRIPT/refs/heads/main/UI.txt"))()
 local LPlr = game:GetService("Players").LocalPlayer
 local Players = game:GetService("Players")
