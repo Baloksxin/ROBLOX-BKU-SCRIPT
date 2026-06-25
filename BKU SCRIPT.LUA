@@ -198,9 +198,10 @@ local TargetMonkeys = {
     ["Scar"] = true,
     ["Billy"] = true,      
     ["SangGuy"] = true,
-    ["Meat"] ＝ true,
-    ["???"] ＝ true
+    ["Meat"] = true,   
+    ["???"] = true       
 }
+
 local TargetEarMonkeys = { ["SawRunner"] = true, ["Crawly"] = true, ["Claw"] = true, ["slender"] = true }
 
 local function CreateOutlineESP(model)
