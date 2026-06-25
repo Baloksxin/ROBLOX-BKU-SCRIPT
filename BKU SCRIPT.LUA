@@ -403,13 +403,15 @@ task.spawn(function()
                 if recycler then
                     local recyclerPos = recycler:IsA("BasePart") and recycler.CFrame or recycler:GetPivot()
                     local sellTimer = tick()
-                    while Config.AutoGold and PlayerHasLootToSell() and LPlr.Character and LPlr.Character.Humanoid.Health > 0 and (tick() - sellTimer < 1.5) do
+                    while PlayerHasLootToSell() and LPlr.Character and LPlr.Character.Humanoid.Health > 0 and (tick() - sellTimer < 1.5) do
+                        if not Config.AutoGold then break end
                         hrp.CFrame = recyclerPos
                         InteractWithObject(recycler)
                         task.wait(0.05) 
                     end
                 end
             else
+                if not Config.AutoGold then continue end
                 local targetItem = nil
                 local itemArray = CachedItems.Scraps
                 if itemArray then
@@ -422,13 +424,14 @@ task.spawn(function()
                     end
                 end
                 
-                if targetItem then
+                if targetItem and Config.AutoGold then
                     local itemPos = targetItem:IsA("BasePart") and targetItem.CFrame or targetItem:GetPivot()
                     if itemPos then
                         hrp.CFrame = itemPos                
                         InteractWithObject(targetItem)                       
                         local fastCheck = tick()
                         while tick() - fastCheck < 0.35 do
+                            if not Config.AutoGold then break end
                             if PlayerHasLootToSell() then break end
                             RS.Heartbeat:Wait()
                         end
