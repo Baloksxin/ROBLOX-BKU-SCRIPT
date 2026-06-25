@@ -188,7 +188,17 @@ tFused:AddToggle({
     end
 })
 
-local TargetMonkeys = { ["Kus"] = true, ["Dus"] = true, ["Gus"] = true, ["SandMan"] = true, ["Ashy"] = true, ["Lost"] = true, ["Scar"] = true }
+local TargetMonkeys = { 
+    ["Kus"] = true, 
+    ["Dus"] = true, 
+    ["Gus"] = true, 
+    ["SandMan"] = true, 
+    ["Ashy"] = true, 
+    ["Lost"] = true, 
+    ["Scar"] = true,
+    ["Billy"] = true,      
+    ["SangGuy"] = true
+}
 local TargetEarMonkeys = { ["SawRunner"] = true, ["Crawly"] = true, ["Claw"] = true, ["slender"] = true }
 
 local function CreateOutlineESP(model)
