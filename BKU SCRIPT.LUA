@@ -3,7 +3,7 @@ local LPlr = game:GetService("Players").LocalPlayer
 local Players = game:GetService("Players")
 local RS, UIS, Light = game:GetService("RunService"), game:GetService("UserInputService"), game:GetService("Lighting")
 local Cam = workspace.CurrentCamera
-local Config = { Speed = 16, FOV = 70, SpeedEn = false, FOVEn = false, InfJump = false, Noclip = false, NightVis = false, SCPHighlight = false, InfStamina = false, ThirdPerson = false, MonkeyESP = false, AutoGold = false, EarGameESP = false, ScrapESP = false }
+local Config = { Speed = 16, FOV = 70, SpeedEn = false, FOVEn = false, InfJump = false, Noclip = false, NightVis = false, SCPHighlight = false, InfStamina = false, ThirdPerson = false, MonkeyESP = false, AutoGold = false, EarGameESP = false, ScrapESP = false, CardESP = false }
 local Orig = { FOV = Cam.FieldOfView, Bright = Light.Brightness, Ambient = Light.Ambient, Clock = Light.ClockTime }
 local Window = OrionLib:MakeWindow({Name = "BKU HUB BY BALOKSXIN", HidePremium = true, SaveConfig = false, IntroText = "BKU HUB"})
 
@@ -123,7 +123,6 @@ t23:AddToggle({
     end
 })
 
--- Ear Game 标签页
 local t24 = Window:MakeTab({Name = "Ear Game", Icon = "rbxassetid://77348087165494"})
 t24:AddSection({Name = "游戏功能"})
 t24:AddToggle({
@@ -147,6 +146,20 @@ t24:AddToggle({
         if not v then
             for _, o in pairs(workspace:GetDescendants()) do
                 if o.Name == "Scrap_Highlight_ESP" or o.Name == "Scrap_Text_ESP" then
+                    o:Destroy()
+                end
+            end
+        end
+    end
+})
+
+t24:AddToggle({
+    Name = "开关卡片Esp",
+    Callback = function(v)
+        Config.CardESP = v
+        if not v then
+            for _, o in pairs(workspace:GetDescendants()) do
+                if o.Name == "Card_Highlight_ESP" or o.Name == "Card_Text_ESP" then
                     o:Destroy()
                 end
             end
@@ -202,7 +215,7 @@ local function CreateEarGameESP(model)
         hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop 
         hl.Parent = model
     end
-    if not model:FindFirstChild("EarGame_Text_ESP") then
+    if model and not model:FindFirstChild("EarGame_Text_ESP") then
         local targetPart = model:FindFirstChild("HumanoidRootPart") or model:FindFirstChild("Head") or model:FindFirstChildOfClass("BasePart")
         if targetPart then
             local billboard = Instance.new("BillboardGui")
@@ -225,12 +238,11 @@ local function CreateEarGameESP(model)
     end
 end
 
--- 废品特有的 ESP 创建函数
 local function CreateScrapESP(part)
     if not part:FindFirstChild("Scrap_Highlight_ESP") then
         local hl = Instance.new("Highlight")
         hl.Name = "Scrap_Highlight_ESP"
-        hl.FillColor = Color3.fromRGB(0, 255, 100) -- 使用绿光表示可收集废品
+        hl.FillColor = Color3.fromRGB(0, 255, 100) 
         hl.FillTransparency = 0.5                     
         hl.OutlineColor = Color3.fromRGB(255, 255, 255) 
         hl.OutlineTransparency = 0                    
@@ -251,6 +263,37 @@ local function CreateScrapESP(part)
         label.Text = part.Name 
         label.TextColor3 = Color3.fromRGB(0, 255, 100)
         label.TextSize = 14
+        label.Font = Enum.Font.SourceSansBold
+        label.TextStrokeTransparency = 0 
+        label.Parent = billboard
+    end
+end
+
+local function CreateCardESP(part)
+    if not part:FindFirstChild("Card_Highlight_ESP") then
+        local hl = Instance.new("Highlight")
+        hl.Name = "Card_Highlight_ESP"
+        hl.FillColor = Color3.fromRGB(0, 200, 255) 
+        hl.FillTransparency = 0.4                     
+        hl.OutlineColor = Color3.fromRGB(255, 255, 255) 
+        hl.OutlineTransparency = 0                    
+        hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop 
+        hl.Parent = part
+    end
+    if not part:FindFirstChild("Card_Text_ESP") then
+        local billboard = Instance.new("BillboardGui")
+        billboard.Name = "Card_Text_ESP"
+        billboard.Size = UDim2.new(0, 150, 0, 40)
+        billboard.AlwaysOnTop = true
+        billboard.ExtentsOffset = Vector3.new(0, 2, 0)
+        billboard.Adornee = part
+        billboard.Parent = part
+        local label = Instance.new("TextLabel")
+        label.Size = UDim2.new(1, 0, 1, 0)
+        label.BackgroundTransparency = 1
+        label.Text = "Card" 
+        label.TextColor3 = Color3.fromRGB(0, 200, 255)
+        label.TextSize = 15
         label.Font = Enum.Font.SourceSansBold
         label.TextStrokeTransparency = 0 
         label.Parent = billboard
@@ -410,13 +453,24 @@ task.spawn(function()
                 end
             end
         end
-        -- 新增：扫描并显示 Scraps 文件夹内的废品 ESP
         if Config.ScrapESP then
             local scrapsFolder = workspace:FindFirstChild("Scraps")
             if scrapsFolder then
                 for _, v in pairs(scrapsFolder:GetChildren()) do
                     if v:IsA("BasePart") or v:IsA("Model") then
                         CreateScrapESP(v)
+                    end
+                end
+            end
+        end
+        if Config.CardESP then
+            for _, v in pairs(workspace:GetDescendants()) do
+                if v:IsA("MeshPart") and v.Name == "Card" then
+                    if IsValidGroundItem(v) then
+                        CreateCardESP(v)
+                    else
+                        if v:FindFirstChild("Card_Highlight_ESP") then v.Card_Highlight_ESP:Destroy() end
+                        if v:FindFirstChild("Card_Text_ESP") then v.Card_Text_ESP:Destroy() end
                     end
                 end
             end
