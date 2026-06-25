@@ -7,7 +7,7 @@ local Config = { Speed = 16, FOV = 70, SpeedEn = false, FOVEn = false, InfJump =
 local Orig = { FOV = Cam.FieldOfView, Bright = Light.Brightness, Ambient = Light.Ambient, Clock = Light.ClockTime }
 local Window = OrionLib:MakeWindow({Name = "BKU HUB BY BALOKSXIN", HidePremium = true, SaveConfig = false, IntroText = "BKU HUB"})
 
-OrionLib:MakeNotification({Name = "BKU HUB", Content = "BKU 极速无卡顿版已加载⚡", Time = 3})
+OrionLib:MakeNotification({Name = "BKU HUB", Content = "辛巴巴巴鲁比呀", Time = 3})
 
 local t1 = Window:MakeTab({Name = "信息", Icon = "rbxassetid://77348087165494"})
 t1:AddSection({Name = "信息"})
