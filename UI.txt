@@ -645,26 +645,69 @@ function OrionLib:MakeWindow(WindowConfig)
     end    
 
     MakeDraggable(DragPoint, MainWindow)
+-- ==================== 新增：UI关闭后的重新打开开关按钮 ====================
+local OpenToggleBtn = Create("TextButton", {
+    Name = "OrionOpenToggle",
+    Size = UDim2.new(0, 50, 0, 50),
+    Position = UDim2.new(0, 20, 0.5, -25), -- 默认靠左居中，你可以根据需要调整位置
+    BackgroundColor3 = OrionLib.Themes[OrionLib.SelectedTheme].Main,
+    Text = "打开UI",
+    TextColor3 = OrionLib.Themes[OrionLib.SelectedTheme].Text,
+    Font = Enum.Font.GothamBold,
+    TextSize = 12,
+    Visible = false, -- 初始为隐藏
+    Active = true,
+    Parent = Orion
+})
 
-    AddConnection(CloseBtn.MouseButton1Up, function()
-        MainWindow.Visible = false
-        UIHidden = true
-        OrionLib:MakeNotification({
-            Name = "界面隐藏",
-            Content = "点击右Shift重新打开界面",
-            Time = 5
-        })
+-- 为这个小开关也加上圆角和描边
+Create("UICorner", { CornerRadius = UDim.new(0, 8) }).Parent = OpenToggleBtn
+local ToggleStroke = Create("UIStroke", {
+    Color = OrionLib.Themes[OrionLib.SelectedTheme].Stroke,
+    Thickness = 1.5
+})
+ToggleStroke.Parent = OpenToggleBtn
 
-        local Sound = Instance.new("Sound")
-            Sound.SoundId = "rbxassetid://4590662766"
-            Sound.Parent = game:GetService("SoundService")
-            Sound.Volume = 5
-            Sound:Play()
-            Sound.Ended:Wait()
-            Sound:Destroy()
+MakeDraggable(DragPoint, MainWindow)
+MakeDraggable(OpenToggleBtn, OpenToggleBtn)
 
-        WindowConfig.CloseCallback()
+local function SetUIVisibility(visible)
+    MainWindow.Visible = visible
+    UIHidden = not visible
+    OpenToggleBtn.Visible = not visible
+end
+
+AddConnection(CloseBtn.MouseButton1Up, function()
+    SetUIVisibility(false) 
+    
+    OrionLib:MakeNotification({
+        Name = "界面隐藏",
+        Content = "点击左侧开关或右Shift重新打开界面",
+        Time = 5
+    })
+
+    local Sound = Instance.new("Sound")
+    Sound.SoundId = "rbxassetid://4590662766"
+    Sound.Parent = game:GetService("SoundService")
+    Sound.Volume = 5
+    Sound:Play()
+    spawn(function()
+        Sound.Ended:Wait()
+        Sound:Destroy()
     end)
+
+    WindowConfig.CloseCallback()
+end)
+
+AddConnection(OpenToggleBtn.MouseButton1Click, function()
+    SetUIVisibility(true)
+end)
+
+AddConnection(UserInputService.InputBegan, function(Input)
+    if Input.KeyCode == Enum.KeyCode.RightShift and UIHidden then
+        SetUIVisibility(true)
+    end
+end)
 
     AddConnection(UserInputService.InputBegan, function(Input)
         if Input.KeyCode == Enum.KeyCode.RightShift and UIHidden then
