@@ -99,23 +99,10 @@ t21:AddButton({Name = "ROB IT HUB", Callback = function() loadstring(game:HttpGe
 local t22 = Window:MakeTab({Name = "死亡之死", Icon = "rbxassetid://77348087165494"})
 t22:AddButton({Name = "RedScripter102 HUB", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/RedScripter102/Script/refs/heads/main/Die%20of%20death%20updated"))() end})
 
-local t23 = Window:MakeTab({Name = "致命猴子", Icon = "rbxassetid://77348087165494"})
-t23:AddSection({Name = "脚本功能"})
-t23:AddToggle({
-    Name = "开关怪物Esp", 
-    Callback = function(v) 
-        Config.MonkeyESP = v 
-        if not v then 
-            for _, o in pairs(workspace:GetDescendants()) do 
-                if o.Name == "Monkey_Highlight_ESP" or o.Name == "Monkey_Text_ESP" then 
-                    o:Destroy() 
-                end 
-            end 
-        end 
-    end
-})
+local tFused = Window:MakeTab({Name = "致命猴子 & Ear Game", Icon = "rbxassetid://77348087165494"})
 
-t23:AddToggle({
+tFused:AddSection({Name = "两个游戏通用"})
+tFused:AddToggle({
     Name = "开启刷钱",
     Default = false,
     Callback = function(v)
@@ -123,23 +110,7 @@ t23:AddToggle({
     end
 })
 
-local t24 = Window:MakeTab({Name = "Ear Game", Icon = "rbxassetid://77348087165494"})
-t24:AddSection({Name = "游戏功能"})
-t24:AddToggle({
-    Name = "开关怪物Esp",
-    Callback = function(v)
-        Config.EarGameESP = v
-        if not v then
-            for _, o in pairs(workspace:GetDescendants()) do
-                if o.Name == "EarGame_Highlight_ESP" or o.Name == "EarGame_Text_ESP" then
-                    o:Destroy()
-                end
-            end
-        end
-    end
-})
-
-t24:AddToggle({
+tFused:AddToggle({
     Name = "开关废品Esp",
     Callback = function(v)
         Config.ScrapESP = v
@@ -153,7 +124,37 @@ t24:AddToggle({
     end
 })
 
-t24:AddToggle({
+tFused:AddSection({Name = "致命猴子"})
+tFused:AddToggle({
+    Name = "开关怪物Esp", 
+    Callback = function(v) 
+        Config.MonkeyESP = v 
+        if not v then 
+            for _, o in pairs(workspace:GetDescendants()) do 
+                if o.Name == "Monkey_Highlight_ESP" or o.Name == "Monkey_Text_ESP" then 
+                    o:Destroy() 
+                end 
+            end 
+        end 
+    end
+})
+
+tFused:AddSection({Name = "Ear Game "})
+tFused:AddToggle({
+    Name = "开关怪物Esp",
+    Callback = function(v)
+        Config.EarGameESP = v
+        if not v then
+            for _, o in pairs(workspace:GetDescendants()) do
+                if o.Name == "EarGame_Highlight_ESP" or o.Name == "EarGame_Text_ESP" then
+                    o:Destroy()
+                end
+            end
+        end
+    end
+})
+
+tFused:AddToggle({
     Name = "开关卡片Esp",
     Callback = function(v)
         Config.CardESP = v
@@ -164,14 +165,6 @@ t24:AddToggle({
                 end
             end
         end
-    end
-})
-
-t24:AddToggle({
-    Name = "开启自动刷钱 (Auto Scrap)",
-    Default = false,
-    Callback = function(v)
-        Config.AutoEarMoney = v
     end
 })
 
@@ -338,19 +331,29 @@ local function IsValidGroundItem(obj)
 end
 
 local function PlayerHasLootToSell()
-    local lootNames = { "Emerald", "Diamond", "Gold", "Copper" }
     local char = LPlr.Character
     local bp = LPlr:FindFirstChild("Backpack")
-    for i = 1, #lootNames do
-        local name = lootNames[i]
-        if (char and char:FindFirstChild(name)) or (bp and bp:FindFirstChild(name)) then 
-            return true 
+    
+    local validScrapNames = {}
+    local scrapsFolder = workspace:FindFirstChild("Scraps")
+    if scrapsFolder then
+        for _, v in pairs(scrapsFolder:GetChildren()) do
+            if v:IsA("BasePart") or v:IsA("Model") then
+                validScrapNames[v.Name] = true
+            end
         end
     end
-    if bp and #bp:GetChildren() > 0 then return true end
+    
+    if bp then
+        for _, tool in pairs(bp:GetChildren()) do
+            if tool:IsA("Tool") and validScrapNames[tool.Name] then
+                return true
+            end
+        end
+    end
     if char then
         for _, tool in pairs(char:GetChildren()) do
-            if tool:IsA("Tool") and tool.Name ~= "Flashlight" then
+            if tool:IsA("Tool") and validScrapNames[tool.Name] then
                 return true
             end
         end
@@ -358,23 +361,25 @@ local function PlayerHasLootToSell()
     return false
 end
 
-local CachedItems = { Emerald = {}, Diamond = {}, Gold = {}, Copper = {}, Recycler = nil }
+local CachedItems = { Scraps = {}, Recycler = nil }
 local function UpdateMapCache()
-    table.clear(CachedItems.Emerald)
-    table.clear(CachedItems.Diamond)
-    table.clear(CachedItems.Gold)
-    table.clear(CachedItems.Copper)
+    table.clear(CachedItems.Scraps)
     CachedItems.Recycler = nil
     
-    local allItems = workspace:GetDescendants()
-    for i = 1, #allItems do
-        local v = allItems[i]
-        local name = v.Name
-        if name == "Emerald" then table.insert(CachedItems.Emerald, v)
-        elseif name == "Diamond" then table.insert(CachedItems.Diamond, v)
-        elseif name == "Gold" then table.insert(CachedItems.Gold, v)
-        elseif name == "Copper" then table.insert(CachedItems.Copper, v)
-        elseif name == "ScrapRecycler" and (v:IsA("BasePart") or v:IsA("Model")) then CachedItems.Recycler = v end
+    local scrapsFolder = workspace:FindFirstChild("Scraps")
+    if scrapsFolder then
+        local children = scrapsFolder:GetChildren()
+        for i = 1, #children do
+            local v = children[i]
+            if v:IsA("BasePart") or v:IsA("Model") then
+                table.insert(CachedItems.Scraps, v)
+            end
+        end
+    end
+    
+    local recycler = workspace:FindFirstChild("ScrapRecycler", true)
+    if recycler and (recycler:IsA("BasePart") or recycler:IsA("Model")) then
+        CachedItems.Recycler = recycler
     end
 end
 
@@ -383,16 +388,16 @@ task.spawn(function()
         if Config.AutoGold then
             UpdateMapCache()
         end
-        task.wait(0.8)
+        task.wait(0.5)
     end
 end)
 
 task.spawn(function()
-    local PriorityList = { "Emerald", "Diamond", "Gold", "Copper" }
     while true do
         RS.Heartbeat:Wait()
         if Config.AutoGold and LPlr.Character and LPlr.Character:FindFirstChild("HumanoidRootPart") and LPlr.Character:FindFirstChildOfClass("Humanoid") and LPlr.Character.Humanoid.Health > 0 then
             local hrp = LPlr.Character.HumanoidRootPart
+            
             if PlayerHasLootToSell() then
                 local recycler = CachedItems.Recycler or workspace:FindFirstChild("ScrapRecycler", true)
                 if recycler then
@@ -406,20 +411,17 @@ task.spawn(function()
                 end
             else
                 local targetItem = nil
-                for p = 1, #PriorityList do
-                    local listName = PriorityList[p]
-                    local itemArray = CachedItems[listName]
-                    if itemArray then
-                        for i = #itemArray, 1, -1 do 
-                            local v = itemArray[i]
-                            if v and v.Parent and IsValidGroundItem(v) then
-                                targetItem = v
-                                break
-                            end
+                local itemArray = CachedItems.Scraps
+                if itemArray then
+                    for i = #itemArray, 1, -1 do 
+                        local v = itemArray[i]
+                        if v and v.Parent and IsValidGroundItem(v) then
+                            targetItem = v
+                            break
                         end
                     end
-                    if targetItem then break end
                 end
+                
                 if targetItem then
                     local itemPos = targetItem:IsA("BasePart") and targetItem.CFrame or targetItem:GetPivot()
                     if itemPos then
@@ -431,49 +433,6 @@ task.spawn(function()
                             RS.Heartbeat:Wait()
                         end
                     end
-                end
-            end
-        end
-    end
-end)
-
-task.spawn(function()
-    while true do
-        RS.Heartbeat:Wait()
-        if Config.AutoEarMoney and LPlr.Character and LPlr.Character:FindFirstChild("HumanoidRootPart") and LPlr.Character:FindFirstChildOfClass("Humanoid") and LPlr.Character.Humanoid.Health > 0 then
-            local hrp = LPlr.Character.HumanoidRootPart
-            if PlayerHasLootToSell() then
-                local recycler = workspace:FindFirstChild("ScrapRecycler", true)
-                if recycler then
-                    local recyclerPos = recycler:IsA("BasePart") and recycler.CFrame or recycler:GetPivot()
-                    hrp.CFrame = recyclerPos
-                    InteractWithObject(recycler)
-                    task.wait(0.2)
-                end
-            else
-                local scrapsFolder = workspace:FindFirstChild("Scraps")
-                local targetScrap = nil
-                if scrapsFolder then
-                    for _, scrap in pairs(scrapsFolder:GetChildren()) do
-                        if (scrap:IsA("BasePart") or scrap:IsA("Model")) and IsValidGroundItem(scrap) then
-                            targetScrap = scrap
-                            break
-                        end
-                    end
-                end
-                if not targetScrap then
-                    for _, v in pairs(workspace:GetDescendants()) do
-                        if v.Name:lower():find("scrap") and v ~= scrapsFolder and IsValidGroundItem(v) then
-                            targetScrap = v
-                            break
-                        end
-                    end
-                end
-                if targetScrap then
-                    local scrapPos = targetScrap:IsA("BasePart") and targetScrap.CFrame or targetScrap:GetPivot()
-                    hrp.CFrame = scrapPos
-                    InteractWithObject(targetScrap)
-                    task.wait(0.2)
                 end
             end
         end
