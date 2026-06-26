@@ -645,30 +645,43 @@ function OrionLib:MakeWindow(WindowConfig)
     end    
 
     MakeDraggable(DragPoint, MainWindow)
--- ==================== 新增：UI关闭后的重新打开开关按钮 ====================
 local OpenToggleBtn = Create("TextButton", {
     Name = "OrionOpenToggle",
     Size = UDim2.new(0, 50, 0, 50),
-    Position = UDim2.new(0, 20, 0.5, -25), -- 默认靠左居中，你可以根据需要调整位置
-    BackgroundColor3 = OrionLib.Themes[OrionLib.SelectedTheme].Main,
-    Text = "打开UI",
-    TextColor3 = OrionLib.Themes[OrionLib.SelectedTheme].Text,
+    Position = UDim2.new(0, 20, 0.5, -25),
+    BackgroundColor3 = Color3.fromRGB(30, 30, 45),
+    Text = "UI",
+    TextColor3 = Color3.fromRGB(255, 255, 255),
     Font = Enum.Font.GothamBold,
-    TextSize = 12,
-    Visible = false, -- 初始为隐藏
+    TextSize = 14,
+    Visible = false,
     Active = true,
     Parent = Orion
 })
 
--- 为这个小开关也加上圆角和描边
-Create("UICorner", { CornerRadius = UDim.new(0, 8) }).Parent = OpenToggleBtn
-local ToggleStroke = Create("UIStroke", {
-    Color = OrionLib.Themes[OrionLib.SelectedTheme].Stroke,
-    Thickness = 1.5
-})
-ToggleStroke.Parent = OpenToggleBtn
+Instance.new("UICorner", OpenToggleBtn).CornerRadius = UDim.new(0, 12)
 
-MakeDraggable(DragPoint, MainWindow)
+local Gradient = Instance.new("UIGradient", OpenToggleBtn)
+Gradient.Color = ColorSequence.new(Color3.fromRGB(120, 60, 200), Color3.fromRGB(60, 30, 100))
+Gradient.Rotation = 45
+
+local Stroke = Instance.new("UIStroke", OpenToggleBtn)
+Stroke.Color = Color3.fromRGB(255, 255, 255)
+Stroke.Transparency = 0.5
+Stroke.Thickness = 1.5
+
+OpenToggleBtn.MouseEnter:Connect(function()
+    TweenService:Create(OpenToggleBtn, TweenInfo.new(0.3), {Size = UDim2.new(0, 55, 0, 55)}):Play()
+end)
+
+OpenToggleBtn.MouseLeave:Connect(function()
+    TweenService:Create(OpenToggleBtn, TweenInfo.new(0.3), {Size = UDim2.new(0, 50, 0, 50)}):Play()
+end)
+
+OpenToggleBtn.MouseButton1Click:Connect(function()
+    OrionLib:Toggle()
+end)
+
 MakeDraggable(OpenToggleBtn, OpenToggleBtn)
 
 local function SetUIVisibility(visible)
