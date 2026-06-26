@@ -11,19 +11,32 @@ local OrionLib = {
     Connections = {},
     Flags = {},
     Themes = {
-    Default = {
-        Main = Color3.fromRGB(20, 15, 30),
-        Second = Color3.fromRGB(35, 25, 55),
-        Stroke = Color3.fromRGB(120, 60, 200),
-        Divider = Color3.fromRGB(60, 45, 90),
-        Text = Color3.fromRGB(240, 240, 255),
-        TextDark = Color3.fromRGB(160, 160, 200)
+        Default = {
+            Main = Color3.fromRGB(20, 15, 30),
+            Second = Color3.fromRGB(35, 25, 55),
+            Stroke = Color3.fromRGB(120, 60, 200),
+            Divider = Color3.fromRGB(60, 45, 90),
+            Text = Color3.fromRGB(240, 240, 255),
+            TextDark = Color3.fromRGB(160, 160, 200)
         }
     },
     SelectedTheme = "Default",
     Folder = nil,
     SaveCfg = false
 }
+
+function OrionLib:Toggle()
+    local UI = game:GetService("CoreGui"):FindFirstChild("Orion") or (gethui and gethui():FindFirstChild("Orion"))
+    if UI then
+        local MainWindow = UI:FindFirstChild("Main")
+        local OpenToggleBtn = UI:FindFirstChild("OrionOpenToggle")
+        if MainWindow and OpenToggleBtn then
+            local Visible = not MainWindow.Visible
+            MainWindow.Visible = Visible
+            OpenToggleBtn.Visible = not Visible
+        end
+    end
+end
 
 local Icons = {}
 
