@@ -22,10 +22,14 @@ local OrionLib = {
     },
     SelectedTheme = "Default",
     Folder = nil,
-    SaveCfg = false
+    SaveCfg = false,
+    LastDragEnd = 0
 }
 
 function OrionLib:Toggle()
+    if tick() - self.LastDragEnd < 0.2 then
+        return
+    end
     local UI = game:GetService("CoreGui"):FindFirstChild("Orion") or (gethui and gethui():FindFirstChild("Orion"))
     if UI then
         local MainWindow = UI:FindFirstChild("Main")
