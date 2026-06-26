@@ -7,7 +7,7 @@ local initSpeed = 16
 if LPlr.Character and LPlr.Character:FindFirstChild("Humanoid") then
     initSpeed = LPlr.Character.Humanoid.WalkSpeed
 end
-local Config = { Speed = initSpeed, FOV = Cam.FieldOfView, SpeedEn = false, FOVEn = false, InfJump = false, Noclip = false, NightVis = false, SCPHighlight = false, InfStamina = false, ThirdPerson = false, MonkeyESP = false, AutoGold = false, EarGameESP = false, ScrapESP = false, CardESP = false, AutoEarMoney = false, RecyclerESP = false, PlayerESP = false, ShowNames = false, ShowTracers = false, PlayerHighlight = false }
+local Config = { Speed = initSpeed, FOV = Cam.FieldOfView, SpeedEn = false, FOVEn = false, InfJump = false, Noclip = false, NightVis = false, SCPHighlight = false, InfStamina = false, ThirdPerson = false, MonkeyESP = false, AutoGold = false, EarGameESP = false, ScrapESP = false, CardESP = false, AutoEarMoney = false, RecyclerESP = false, PlayerESP = false, ShowNames = false, ShowTracers = false, PlayerHighlight = false, AntiSlide = false }
 local Orig = { FOV = Cam.FieldOfView, Bright = Light.Brightness, Ambient = Light.Ambient, Clock = Light.ClockTime, Speed = initSpeed }
 local Window = OrionLib:MakeWindow({Name = "BKU HUB BY BALOKSXIN", HidePremium = true, SaveConfig = false, IntroText = "BKU HUB"})
 OrionLib:MakeNotification({Name = "BKU HUB", Content = "辛巴爸爸卢比呀", Time = 3})
@@ -103,6 +103,7 @@ t2:AddToggle({Name = "第三人称", Callback = function(v) Config.ThirdPerson =
 t2:AddToggle({Name = "无限跳跃", Callback = function(v) Config.InfJump = v end})
 t2:AddToggle({Name = "穿墙模式 (Noclip)", Callback = function(v) Config.Noclip = v end})
 t2:AddToggle({Name = "夜视模式", Callback = function(v) Config.NightVis = v if not v then Light.Brightness, Light.Ambient, Light.ClockTime = Orig.Bright, Orig.Ambient, Orig.Clock end end})
+t2:AddToggle({Name = "防止转弯脚滑", Callback = function(v) Config.AntiSlide = v end})
 t2:AddSection({Name = "工具"})
 t2:AddButton({Name = "手机版Shiftlock", Callback = function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Baloksxin/ROBLOX-BKU-SCRIPT/refs/heads/main/Scripts/MobileShiftlock.LUA"))() end})
 t2:AddButton({Name = "Infinite Yield", Callback = function() loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))() end})
@@ -511,7 +512,20 @@ task.spawn(function()
         end
     end
 end)
-RS.RenderStepped:Connect(function() if Config.SpeedEn and LPlr.Character and LPlr.Character:FindFirstChild("Humanoid") then LPlr.Character.Humanoid.WalkSpeed = Config.Speed end if Config.NightVis then Light.Brightness, Light.Ambient, Light.ClockTime = 2, Color3.new(1,1,1), 12 end if Config.FOVEn then Cam.FieldOfView = Config.FOV end if Config.ThirdPerson then LPlr.CameraMode = Enum.CameraMode.Classic end if Config.InfStamina then pcall(function() local s = LPlr.PlayerGui.Stamina.Handler.Stamina if s.Value < 100 then s.Value = 100 end end) end end)
+RS.RenderStepped:Connect(function()
+    if Config.SpeedEn and LPlr.Character and LPlr.Character:FindFirstChild("Humanoid") then LPlr.Character.Humanoid.WalkSpeed = Config.Speed end
+    if Config.NightVis then Light.Brightness, Light.Ambient, Light.ClockTime = 2, Color3.new(1,1,1), 12 end
+    if Config.FOVEn then Cam.FieldOfView = Config.FOV end
+    if Config.ThirdPerson then LPlr.CameraMode = Enum.CameraMode.Classic end
+    if Config.InfStamina then pcall(function() local s = LPlr.PlayerGui.Stamina.Handler.Stamina if s.Value < 100 then s.Value = 100 end end) end
+    if Config.AntiSlide and LPlr.Character and LPlr.Character:FindFirstChild("HumanoidRootPart") then
+        local hrp = LPlr.Character.HumanoidRootPart
+        local hum = LPlr.Character:FindFirstChild("Humanoid")
+        if hum and hum.MoveDirection.Magnitude == 0 then
+            hrp.AssemblyLinearVelocity = Vector3.new(0, hrp.AssemblyLinearVelocity.Y, 0)
+        end
+    end
+end)
 RS.Stepped:Connect(function() if Config.Noclip and LPlr.Character then for _,v in pairs(LPlr.Character:GetChildren()) do if v:IsA("BasePart") then v.CanCollide = false end end end end)
 UIS.JumpRequest:Connect(function() if Config.InfJump and LPlr.Character then local h = LPlr.Character:FindFirstChildOfClass("Humanoid") if h then h:ChangeState("Jumping") end end end)
 OrionLib:Init()
