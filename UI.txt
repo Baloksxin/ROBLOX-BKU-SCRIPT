@@ -1768,4 +1768,60 @@ function OrionLib:Destroy()
     Orion:Destroy()
 end
 
+local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+
+local function CreateFloatingButton(ParentGui, InitialShape, Position)
+    local Button = Instance.new("Frame")
+    Button.Size = UDim2.new(0, 50, 0, 50)
+    Button.Position = Position
+    Button.BackgroundColor3 = Color3.fromRGB(35, 25, 55)
+    Button.BorderSizePixel = 0
+    Button.ZIndex = 100
+    Button.Parent = ParentGui
+
+    local Corner = Instance.new("UICorner")
+    Corner.Parent = Button
+
+    local ButtonObject = {
+        Instance = Button,
+        Shape = InitialShape
+    }
+
+    function ButtonObject:SetShape(Shape)
+        self.Shape = Shape
+        local Radius = Shape == "Circle" and UDim.new(1, 0) or UDim.new(0, 0)
+        TweenService:Create(Corner, TweenInfo.new(0.3), {CornerRadius = Radius}):Play()
+    end
+
+    ButtonObject:SetShape(InitialShape)
+
+    local Dragging, DragStart, StartPos
+
+    Button.InputBegan:Connect(function(Input)
+        if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+            TweenService:Create(Button, TweenInfo.new(0.2), {Size = UDim2.new(0, 45, 0, 45)}):Play()
+            Dragging = true
+            DragStart = Input.Position
+            StartPos = Button.Position
+        end
+    end)
+
+    Button.InputEnded:Connect(function(Input)
+        if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+            TweenService:Create(Button, TweenInfo.new(0.2), {Size = UDim2.new(0, 50, 0, 50)}):Play()
+            Dragging = false
+        end
+    end)
+
+    UserInputService.InputChanged:Connect(function(Input)
+        if Dragging and (Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch) then
+            local Delta = Input.Position - DragStart
+            Button.Position = UDim2.new(StartPos.X.Scale, StartPos.X.Offset + Delta.X, StartPos.Y.Scale, StartPos.Y.Offset + Delta.Y)
+        end
+    end)
+
+    return ButtonObject
+end
+
 return OrionLib
