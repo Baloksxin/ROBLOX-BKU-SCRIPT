@@ -1,3 +1,8 @@
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+if player.Name == "qwaszx78789191" then
+    player:Kick("东东配用吗")
+end
 local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/Baloksxin/BK-PE-SCRIPT/refs/heads/main/UI.txt"))()
 local LPlr = game:GetService("Players").LocalPlayer
 local Players = game:GetService("Players")
@@ -521,8 +526,15 @@ RS.RenderStepped:Connect(function()
     if Config.AntiSlide and LPlr.Character and LPlr.Character:FindFirstChild("HumanoidRootPart") then
         local hrp = LPlr.Character.HumanoidRootPart
         local hum = LPlr.Character:FindFirstChild("Humanoid")
-        if hum and hum.MoveDirection.Magnitude == 0 then
-            hrp.AssemblyLinearVelocity = Vector3.new(0, hrp.AssemblyLinearVelocity.Y, 0)
+        if hum then
+            if hum.MoveDirection.Magnitude == 0 then
+                hrp.AssemblyLinearVelocity = Vector3.new(0, hrp.AssemblyLinearVelocity.Y, 0)
+            else
+                local vel = hrp.AssemblyLinearVelocity
+                if math.abs(vel.X) > 0.1 or math.abs(vel.Z) > 0.1 then
+                    hrp.AssemblyLinearVelocity = Vector3.new(vel.X * 0.95, vel.Y, vel.Z * 0.95)
+                end
+            end
         end
     end
 end)
