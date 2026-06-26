@@ -111,6 +111,8 @@ task.spawn(function()
     end
 end)
 
+local LastDragEnd = 0
+
 local function MakeDraggable(DragPoint, Main)
     pcall(function()
         local Dragging, MousePos, FramePos = false, nil, nil
@@ -119,11 +121,14 @@ local function MakeDraggable(DragPoint, Main)
                 Dragging = true
                 MousePos = Input.Position
                 FramePos = Main.Position
-                Input.Changed:Connect(function()
-                    if Input.UserInputState == Enum.UserInputState.End then
-                        Dragging = false
-                    end
-                end)
+            end
+        end)
+        AddConnection(UserInputService.InputEnded, function(Input)
+            if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+                if Dragging then
+                    Dragging = false
+                    LastDragEnd = tick()
+                end
             end
         end)
         AddConnection(UserInputService.InputChanged, function(Input)
@@ -133,6 +138,20 @@ local function MakeDraggable(DragPoint, Main)
             end
         end)
     end)
+end
+
+function OrionLib:Toggle()
+    if tick() - LastDragEnd < 0.2 then return end
+    local UI = game:GetService("CoreGui"):FindFirstChild("Orion") or (gethui and gethui():FindFirstChild("Orion"))
+    if UI then
+        local MainWindow = UI:FindFirstChild("Main")
+        local OpenToggleBtn = UI:FindFirstChild("OrionOpenToggle")
+        if MainWindow and OpenToggleBtn then
+            local Visible = not MainWindow.Visible
+            MainWindow.Visible = Visible
+            OpenToggleBtn.Visible = not Visible
+        end
+    end
 end
 
 local function Create(Name, Properties, Children)
