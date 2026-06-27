@@ -547,6 +547,10 @@ function OrionLib:Init()
     end    
 end    
 
+function Window:MakeFloatingButton(Config)
+    return MakeElement("FloatingButton", Config)
+end
+
 function OrionLib:MakeWindow(WindowConfig)
     local FirstTab = true
     local Minimized = false
@@ -865,12 +869,13 @@ end)
     end    
 
     local TabFunction = {}
+    
     function TabFunction:MakeTab(TabConfig)
         TabConfig = TabConfig or {}
         TabConfig.Name = TabConfig.Name or "Tab"
         TabConfig.Icon = TabConfig.Icon or ""
         TabConfig.PremiumOnly = TabConfig.PremiumOnly or false
-
+    
         local TabFrame = SetChildren(SetProps(MakeElement("Button"), {
             Size = UDim2.new(1, 0, 0, 30),
             Parent = TabHolder
