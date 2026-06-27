@@ -1852,9 +1852,10 @@ end)
         end
         return ElementFunction
     end
-    function TabFunction:MakeFloatingButton(Config)
-        return MakeElement("FloatingButton", Config)
-    end
+    
+        function TabFunction:MakeFloatingButton(Config)
+            return MakeElement("FloatingButton", Config)
+        end
 
     return TabFunction
 end
