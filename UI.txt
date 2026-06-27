@@ -420,7 +420,7 @@ CreateElement("FloatingButton", function(Config)
     Btn.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
     Btn.Text = ""
     Btn.Parent = Orion
-    Btn.Active = true
+    Btn.Active = false
 
     Instance.new("UICorner", Btn).CornerRadius = UDim.new(0, 12)
 
@@ -448,8 +448,10 @@ CreateElement("FloatingButton", function(Config)
         TweenService:Create(Btn, TweenInfo.new(0.25), {Size = UDim2.new(0, 50, 0, 50)}):Play()
     end)
 
-    Btn.MouseButton1Click:Connect(function()
-        Config.Callback()
+    Btn.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            Config.Callback()
+        end
     end)
 
     MakeDraggable(Btn, Btn)
