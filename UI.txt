@@ -1852,8 +1852,7 @@ end)
         end
         return ElementFunction
     end
-    
-    function Window:MakeFloatingButton(Config)
+    function TabFunction:MakeFloatingButton(Config)
         return MakeElement("FloatingButton", Config)
     end
 
