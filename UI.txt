@@ -27,7 +27,7 @@ local OrionLib = {
 }
 
 function OrionLib:Toggle()
-    if tick() - self.LastDragEnd < 0.2 then
+    if tick() - OrionLib.LastDragEnd < 0.2 then
         return
     end
     local UI = game:GetService("CoreGui"):FindFirstChild("Orion") or (gethui and gethui():FindFirstChild("Orion"))
@@ -1710,14 +1710,15 @@ end)
                 ColorS = (math.clamp(ColorSelection.AbsolutePosition.X - Color.AbsolutePosition.X, 0, Color.AbsoluteSize.X) / Color.AbsoluteSize.X)
                 ColorV = 1 - (math.clamp(ColorSelection.AbsolutePosition.Y - Color.AbsolutePosition.Y, 0, Color.AbsoluteSize.Y) / Color.AbsoluteSize.Y)
 
+                local ColorInput
+                local HueInput
+
                 AddConnection(Color.InputBegan, function(input)
-                    if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
-                        if ColorInput then
-                            ColorInput:Disconnect()
-                        end
+                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                        if ColorInput then ColorInput:Disconnect() end
                         ColorInput = AddConnection(RunService.RenderStepped, function()
-                            local ColorX = (math.clamp(Mouse.X - Color.AbsolutePosition.X, 0, Color.AbsoluteSize.X) / Color.AbsoluteSize.X)
-                            local ColorY = (math.clamp(Mouse.Y - Color.AbsolutePosition.Y, 0, Color.AbsoluteSize.Y) / Color.AbsoluteSize.Y)
+                            local ColorX = math.clamp((Mouse.X - Color.AbsolutePosition.X) / Color.AbsoluteSize.X, 0, 1)
+                            local ColorY = math.clamp((Mouse.Y - Color.AbsolutePosition.Y) / Color.AbsoluteSize.Y, 0, 1)
                             ColorSelection.Position = UDim2.new(ColorX, 0, ColorY, 0)
                             ColorS = ColorX
                             ColorV = 1 - ColorY
@@ -1727,35 +1728,26 @@ end)
                 end)
 
                 AddConnection(Color.InputEnded, function(input)
-                    if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
-                        if ColorInput then
-                            ColorInput:Disconnect()
-                        end
+                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                        if ColorInput then ColorInput:Disconnect() end
                     end
                 end)
 
                 AddConnection(Hue.InputBegan, function(input)
-                    if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
-                        if HueInput then
-                            HueInput:Disconnect()
-                        end;
-
+                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                        if HueInput then HueInput:Disconnect() end
                         HueInput = AddConnection(RunService.RenderStepped, function()
-                            local HueY = (math.clamp(Mouse.Y - Hue.AbsolutePosition.Y, 0, Hue.AbsoluteSize.Y) / Hue.AbsoluteSize.Y)
-
+                            local HueY = math.clamp((Mouse.Y - Hue.AbsolutePosition.Y) / Hue.AbsoluteSize.Y, 0, 1)
                             HueSelection.Position = UDim2.new(0.5, 0, HueY, 0)
                             ColorH = 1 - HueY
-
                             UpdateColorPicker()
                         end)
                     end
                 end)
 
                 AddConnection(Hue.InputEnded, function(input)
-                    if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
-                        if HueInput then
-                            HueInput:Disconnect()
-                        end
+                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                        if HueInput then HueInput:Disconnect() end
                     end
                 end)
 
