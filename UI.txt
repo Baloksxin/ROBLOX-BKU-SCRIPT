@@ -431,14 +431,15 @@ CreateElement("FloatingButton", function(Config)
     Stroke.Transparency = 0.5
     Stroke.Thickness = 1.5
 
+    -- 图标
     local Icon = Instance.new("ImageLabel")
     Icon.Name = "Icon"
     Icon.BackgroundTransparency = 1
     Icon.Size = UDim2.new(0, 24, 0, 24)
-    Icon.Position = UDim2.new(0.5, -12, 0.5, -12)
     Icon.Image = Config.Icon
     Icon.Parent = Btn
 
+    -- 文字
     local TextLabel = Instance.new("TextLabel")
     TextLabel.Name = "Text"
     TextLabel.BackgroundTransparency = 1
@@ -446,34 +447,37 @@ CreateElement("FloatingButton", function(Config)
     TextLabel.TextColor3 = Color3.fromRGB(240, 240, 255)
     TextLabel.Font = Enum.Font.GothamBold
     TextLabel.TextSize = 14
+    TextLabel.TextXAlignment = Enum.TextXAlignment.Left
     TextLabel.Parent = Btn
 
     local function UpdateSize()
-        local padding = 12
-        local iconWidth = (Config.Icon ~= "" and 32 or 0)
+        wait() -- 等待一帧让TextBounds计算
+        local padding = 14
+        local iconWidth = (Config.Icon ~= "" and 36 or 0)
         local textWidth = TextLabel.TextBounds.X
-        local totalWidth = textWidth + iconWidth + padding * 2 + 8
-        totalWidth = math.max(totalWidth, 50)
+        local totalWidth = textWidth + iconWidth + padding * 2
+        
+        totalWidth = math.max(totalWidth, 56)
+        
         Btn.Size = UDim2.new(0, totalWidth, 0, 50)
 
         if Config.Icon ~= "" then
             Icon.Position = UDim2.new(0, padding, 0.5, -12)
-            TextLabel.Position = UDim2.new(0, padding + 32, 0.5, -7)
-            TextLabel.Size = UDim2.new(0, textWidth, 0, 14)
+            TextLabel.Position = UDim2.new(0, padding + 36, 0.5, -7)
         else
-            TextLabel.Position = UDim2.new(0.5, -textWidth/2, 0.5, -7)
-            TextLabel.Size = UDim2.new(0, textWidth, 0, 14)
+            TextLabel.Position = UDim2.new(0.5, -textWidth/2 - 4, 0.5, -7)
         end
+        TextLabel.Size = UDim2.new(0, textWidth + 4, 0, 14)
     end
 
     UpdateSize()
 
     Btn.MouseEnter:Connect(function()
-        TweenService:Create(Btn, TweenInfo.new(0.25), {Size = UDim2.new(0, Btn.Size.X.Offset + 8, 0, 55)}):Play()
+        TweenService:Create(Btn, TweenInfo.new(0.25), {Size = UDim2.new(0, Btn.Size.X.Offset + 6, 0, 55)}):Play()
     end)
 
     Btn.MouseLeave:Connect(function()
-        TweenService:Create(Btn, TweenInfo.new(0.25), {Size = UDim2.new(0, Btn.Size.X.Offset - 8, 0, 50)}):Play()
+        TweenService:Create(Btn, TweenInfo.new(0.25), {Size = UDim2.new(0, Btn.Size.X.Offset - 6, 0, 50)}):Play()
     end)
 
     Btn.InputBegan:Connect(function(input)
