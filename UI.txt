@@ -431,7 +431,6 @@ CreateElement("FloatingButton", function(Config)
     Stroke.Transparency = 0.5
     Stroke.Thickness = 1.5
 
-    -- 图标
     local Icon = Instance.new("ImageLabel")
     Icon.Name = "Icon"
     Icon.BackgroundTransparency = 1
@@ -439,7 +438,6 @@ CreateElement("FloatingButton", function(Config)
     Icon.Image = Config.Icon
     Icon.Parent = Btn
 
-    -- 文字
     local TextLabel = Instance.new("TextLabel")
     TextLabel.Name = "Text"
     TextLabel.BackgroundTransparency = 1
@@ -450,16 +448,18 @@ CreateElement("FloatingButton", function(Config)
     TextLabel.TextXAlignment = Enum.TextXAlignment.Left
     TextLabel.Parent = Btn
 
+    local OriginalSize
+
     local function UpdateSize()
-        wait() -- 等待一帧让TextBounds计算
+        task.wait()
         local padding = 14
         local iconWidth = (Config.Icon ~= "" and 36 or 0)
         local textWidth = TextLabel.TextBounds.X
         local totalWidth = textWidth + iconWidth + padding * 2
-        
         totalWidth = math.max(totalWidth, 56)
-        
-        Btn.Size = UDim2.new(0, totalWidth, 0, 50)
+
+        OriginalSize = UDim2.new(0, totalWidth, 0, 50)
+        Btn.Size = OriginalSize
 
         if Config.Icon ~= "" then
             Icon.Position = UDim2.new(0, padding, 0.5, -12)
@@ -473,11 +473,15 @@ CreateElement("FloatingButton", function(Config)
     UpdateSize()
 
     Btn.MouseEnter:Connect(function()
-        TweenService:Create(Btn, TweenInfo.new(0.25), {Size = UDim2.new(0, Btn.Size.X.Offset + 6, 0, 55)}):Play()
+        if OriginalSize then
+            TweenService:Create(Btn, TweenInfo.new(0.25, Enum.EasingStyle.Quint), {Size = UDim2.new(0, OriginalSize.X.Offset + 8, 0, 55)}):Play()
+        end
     end)
 
     Btn.MouseLeave:Connect(function()
-        TweenService:Create(Btn, TweenInfo.new(0.25), {Size = UDim2.new(0, Btn.Size.X.Offset - 6, 0, 50)}):Play()
+        if OriginalSize then
+            TweenService:Create(Btn, TweenInfo.new(0.25, Enum.EasingStyle.Quint), {Size = OriginalSize}):Play()
+        end
     end)
 
     Btn.InputBegan:Connect(function(input)
