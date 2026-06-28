@@ -474,13 +474,15 @@ CreateElement("FloatingButton", function(Config)
 
     Btn.MouseEnter:Connect(function()
         if OriginalSize then
-            TweenService:Create(Btn, TweenInfo.new(0.25, Enum.EasingStyle.Quint), {Size = UDim2.new(0, OriginalSize.X.Offset + 8, 0, 55)}):Play()
+            TweenService:Create(Btn, TweenInfo.new(0.25, Enum.EasingStyle.Quint), {
+                Size = UDim2.new(0, OriginalSize.X.Offset + 8, 0, 55)
+            }):Play()
         end
     end)
 
     Btn.MouseLeave:Connect(function()
         if OriginalSize then
-            TweenService:Create(Btn, TweenInfo.new(0.25, Enum.EasingStyle.Quint), {Size = OriginalSize}):Play()
+            Btn.Size = OriginalSize
         end
     end)
 
