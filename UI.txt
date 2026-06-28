@@ -1896,7 +1896,7 @@ end)
     end
     
         function TabFunction:MakeFloatingButton(Config)
-            return MakeElement("FloatingButton", Config)
+            return MakeElement("MakeFloatingButton", Config)
         end
 
     return TabFunction
