@@ -139,8 +139,8 @@ local UserInputService = game:GetService("UserInputService")
 
 rs.Stepped:Connect(function()
     if noclipEnabled and plr.Character then
-        for _, part in pairs(plr.Character:GetDescendants()) do
-            if part:IsA("BasePart") then
+        for _, part in ipairs(plr.Character:GetDescendants()) do
+            if part:IsA("BasePart") and part.CanCollide then
                 part.CanCollide = false
             end
         end
@@ -155,13 +155,6 @@ NoclipButton.MouseButton1Click:Connect(function()
     else
         NoclipButton.Text = "穿墙: 关闭"
         NoclipButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-        if plr.Character then
-            for _, part in pairs(plr.Character:GetDescendants()) do
-                if part:IsA("BasePart") then
-                    part.CanCollide = true
-                end
-            end
-        end
     end
 end)
 
