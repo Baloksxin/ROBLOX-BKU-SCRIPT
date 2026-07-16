@@ -133,6 +133,7 @@ SliderButtonCorner.Parent = SliderButton
 local flying = false
 local noclipEnabled = false
 local flyConnection = nil
+local originalCollisions = {}
 local plr = game:GetService("Players").LocalPlayer
 local rs = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
@@ -140,7 +141,10 @@ local UserInputService = game:GetService("UserInputService")
 rs.Stepped:Connect(function()
     if noclipEnabled and plr.Character then
         for _, part in ipairs(plr.Character:GetDescendants()) do
-            if part:IsA("BasePart") and part.CanCollide then
+            if part:IsA("BasePart") then
+                if originalCollisions[part] == nil then
+                    originalCollisions[part] = part.CanCollide
+                end
                 part.CanCollide = false
             end
         end
@@ -155,6 +159,12 @@ NoclipButton.MouseButton1Click:Connect(function()
     else
         NoclipButton.Text = "穿墙: 关闭"
         NoclipButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+        for part, originalState in pairs(originalCollisions) do
+            if part and part.Parent then
+                part.CanCollide = originalState
+            end
+        end
+        table.clear(originalCollisions)
     end
 end)
 
