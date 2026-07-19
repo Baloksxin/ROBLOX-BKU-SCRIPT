@@ -14,8 +14,8 @@ ToggleBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 ToggleBtn.TextColor3 = Color3.new(1, 1, 1)
 
 local MainFrame = Instance.new("Frame", ScreenGui)
-MainFrame.Size = UDim2.new(0, 800, 0, 550)
-MainFrame.Position = UDim2.new(0.5, -400, 0.5, -275)
+MainFrame.Size = UDim2.new(0, 600, 0, 400)
+MainFrame.Position = UDim2.new(0.5, -300, 0.5, -200)
 MainFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 MainFrame.Active = true
 MainFrame.Draggable = true
@@ -30,48 +30,52 @@ InfoLabel.Size = UDim2.new(1, 0, 0, 30)
 InfoLabel.Position = UDim2.new(0, 0, 0, 0)
 InfoLabel.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 InfoLabel.TextColor3 = Color3.fromRGB(255, 100, 100)
-InfoLabel.Text = "请将音频文件放入: workspace/MySounds 文件夹中 (支持 mp3, wav, ogg, flac, aac, m4a, wma, mpeg)"
+InfoLabel.Text = "放入: workspace/MySounds (支持: mp3, wav, ogg, flac, aac, m4a, wma, mpeg)"
 InfoLabel.Font = Enum.Font.SourceSansBold
+InfoLabel.TextScaled = true
 
 local SoundList = Instance.new("ScrollingFrame", MainFrame)
-SoundList.Size = UDim2.new(0.5, 0, 0.7, -30)
+SoundList.Size = UDim2.new(0.5, 0, 0.55, 0)
 SoundList.Position = UDim2.new(0, 0, 0, 30)
-SoundList.AutomaticCanvasSize = Enum.AutomaticSize.Y
-SoundList.ScrollBarThickness = 10
+SoundList.AutomaticCanvasSize = Enum.AutomaticSize.XY
+SoundList.ScrollBarThickness = 12
+SoundList.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 Instance.new("UIListLayout", SoundList)
 
 local FileList = Instance.new("ScrollingFrame", MainFrame)
-FileList.Size = UDim2.new(0.5, 0, 0.7, -30)
+FileList.Size = UDim2.new(0.5, 0, 0.55, 0)
 FileList.Position = UDim2.new(0.5, 0, 0, 30)
-FileList.AutomaticCanvasSize = Enum.AutomaticSize.Y
-FileList.ScrollBarThickness = 10
+FileList.AutomaticCanvasSize = Enum.AutomaticSize.XY
+FileList.ScrollBarThickness = 12
+FileList.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 Instance.new("UIListLayout", FileList)
 
 local ActionFrame = Instance.new("Frame", MainFrame)
-ActionFrame.Size = UDim2.new(1, 0, 0, 60)
-ActionFrame.Position = UDim2.new(0, 0, 0.8, 0)
+ActionFrame.Size = UDim2.new(1, 0, 0, 40)
+ActionFrame.Position = UDim2.new(0, 0, 0.65, 0)
 ActionFrame.BackgroundTransparency = 1
 
 local RefreshBtn = Instance.new("TextButton", ActionFrame)
-RefreshBtn.Size = UDim2.new(0.45, 0, 0, 50)
-RefreshBtn.Position = UDim2.new(0.025, 0, 0, 0)
+RefreshBtn.Size = UDim2.new(0.48, 0, 1, 0)
+RefreshBtn.Position = UDim2.new(0.01, 0, 0, 0)
 RefreshBtn.Text = "刷新数据"
 RefreshBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 RefreshBtn.TextColor3 = Color3.new(1, 1, 1)
 
 local ClearBtn = Instance.new("TextButton", ActionFrame)
-ClearBtn.Size = UDim2.new(0.45, 0, 0, 50)
-ClearBtn.Position = UDim2.new(0.525, 0, 0, 0)
+ClearBtn.Size = UDim2.new(0.48, 0, 1, 0)
+ClearBtn.Position = UDim2.new(0.51, 0, 0, 0)
 ClearBtn.Text = "替换为空白"
 ClearBtn.BackgroundColor3 = Color3.fromRGB(150, 60, 60)
 ClearBtn.TextColor3 = Color3.new(1, 1, 1)
 
 local StatusLabel = Instance.new("TextLabel", MainFrame)
-StatusLabel.Size = UDim2.new(1, 0, 0, 40)
-StatusLabel.Position = UDim2.new(0, 0, 1, -40)
+StatusLabel.Size = UDim2.new(1, 0, 0, 90)
+StatusLabel.Position = UDim2.new(0, 0, 0.75, 0)
 StatusLabel.BackgroundTransparency = 1
 StatusLabel.TextColor3 = Color3.new(1, 1, 1)
-StatusLabel.Text = "请选择左侧游戏音效，再选择右侧音频文件"
+StatusLabel.Text = "请选择左侧音效"
+StatusLabel.TextWrapped = true
 
 local SelectedSound = nil
 local validExtensions = {".mp3", ".wav", ".ogg", ".flac", ".aac", ".m4a", ".wma", ".mpeg"}
@@ -116,13 +120,13 @@ local function refreshSounds()
     for _, obj in pairs(foundSounds) do
         local btn = Instance.new("TextButton", SoundList)
         btn.Text = obj:GetFullName()
+        btn.Size = UDim2.new(0, 800, 0, 30)
         btn.TextXAlignment = Enum.TextXAlignment.Left
-        btn.Size = UDim2.new(1, -20, 0, 35)
         btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
         btn.TextColor3 = Color3.new(1, 1, 1)
         btn.MouseButton1Click:Connect(function()
             SelectedSound = obj
-            StatusLabel.Text = "已选中目标: " .. obj.Name
+            StatusLabel.Text = "已选中: " .. obj:GetFullName()
         end)
     end
 end
@@ -135,7 +139,8 @@ local function refreshFiles()
     for _, path in pairs(files) do
         local btn = Instance.new("TextButton", FileList)
         btn.Text = path:match("([^/]+)$")
-        btn.Size = UDim2.new(1, -20, 0, 35)
+        btn.Size = UDim2.new(0, 800, 0, 30)
+        btn.TextXAlignment = Enum.TextXAlignment.Left
         btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
         btn.TextColor3 = Color3.new(1, 1, 1)
         btn.MouseButton1Click:Connect(function()
