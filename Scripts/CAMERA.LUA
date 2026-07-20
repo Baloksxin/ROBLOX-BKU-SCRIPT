@@ -3,6 +3,17 @@ local Workspace = game:GetService("Workspace")
 local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
 local HttpService = game:GetService("HttpService")
+local StarterGui = game:GetService("StarterGui")
+
+local function notify(title, text, duration)
+    pcall(function()
+        StarterGui:SetCore("SendNotification", {
+            Title = title,
+            Text = text,
+            Duration = duration or 3
+        })
+    end)
+end
 
 if CoreGui:FindFirstChild("CameraPartMoverUI") then
     CoreGui.CameraPartMoverUI:Destroy()
@@ -131,12 +142,14 @@ SaveConfigButton.MouseButton1Click:Connect(function()
     local modelName = TextBox.Text
     if modelName == "" then 
         warn("请输入 怪物 名称！") 
+        notify("提示", "请输入 怪物 名称！", 3)
         return 
     end
 
     local targetModel = findTargetModel(modelName)
     if not targetModel then 
         warn("未找到 怪物：" .. modelName) 
+        notify("错误", "未找到 怪物：" .. modelName, 3)
         return 
     end
 
@@ -183,12 +196,15 @@ SaveConfigButton.MouseButton1Click:Connect(function()
                     SaveConfigButton.BackgroundColor3 = Color3.fromRGB(80, 80, 180)
                 end
             end)
+            notify("成功", "镜头配置已成功保存！", 3)
             print("配置文件已成功写入: Workspace/SavedCamra/" .. modelName .. ".txt")
         else
             warn("写入文件失败: " .. tostring(err))
+            notify("错误", "写入文件失败: " .. tostring(err), 3)
         end
     else
         warn("当前 执行器 不支持 writefile 函数！")
+        notify("错误", "当前执行器不支持 writefile 函数！", 3)
     end
 end)
 
@@ -207,6 +223,7 @@ LoadConfigButton.MouseButton1Click:Connect(function()
     local modelName = TextBox.Text
     if modelName == "" then 
         warn("请输入要加载的 怪物 名称！") 
+        notify("提示", "请输入要加载的 怪物 名称！", 3)
         return 
     end
 
@@ -244,6 +261,7 @@ LoadConfigButton.MouseButton1Click:Connect(function()
                     end
                 else
                     warn("未找到对应的 怪物，或配置文件无 camera 数据！")
+                    notify("警告", "未找到对应的 怪物，或配置文件无 camera 数据！", 3)
                 end
             end
         end)
@@ -257,12 +275,15 @@ LoadConfigButton.MouseButton1Click:Connect(function()
                     LoadConfigButton.BackgroundColor3 = Color3.fromRGB(180, 120, 0)
                 end
             end)
+            notify("成功", "镜头配置已成功加载并应用！", 3)
             print("配置已成功加载并应用到 Model: " .. modelName)
         else
             warn("解析或应用配置失败: " .. tostring(err))
+            notify("错误", "解析或应用配置失败: " .. tostring(err), 3)
         end
     else
         warn("未找到对应的配置文件: " .. filePath)
+        notify("错误", "未找到对应的配置文件！", 3)
     end
 end)
 
