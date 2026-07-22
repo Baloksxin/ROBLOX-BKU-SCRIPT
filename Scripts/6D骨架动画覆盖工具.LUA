@@ -27,6 +27,28 @@ Title.TextColor3 = Color3.new(1, 1, 1)
 Title.TextSize = 18
 Title.BackgroundTransparency = 1
 
+local CloseButton = Instance.new("TextButton", Frame)
+CloseButton.Text = "×"
+CloseButton.Size = UDim2.new(0, 30, 0, 30)
+CloseButton.Position = UDim2.new(1, -35, 0, 5)
+CloseButton.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+CloseButton.TextColor3 = Color3.new(1, 1, 1)
+CloseButton.Font = Enum.Font.GothamBold
+CloseButton.TextSize = 18
+Instance.new("UICorner", CloseButton).CornerRadius = UDim.new(0, 6)
+
+CloseButton.MouseButton1Click:Connect(function()
+    ScreenGui:Destroy()
+end)
+
+CloseButton.MouseEnter:Connect(function()
+    TweenService:Create(CloseButton, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(200, 60, 60)}):Play()
+end)
+
+CloseButton.MouseLeave:Connect(function()
+    TweenService:Create(CloseButton, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(45, 45, 45)}):Play()
+end)
+
 local function createInput(placeholder, position)
     local Box = Instance.new("TextBox", Frame)
     Box.Size = UDim2.new(0.8, 0, 0, 35)
