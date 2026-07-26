@@ -25,8 +25,89 @@ local translationCache = {}
 local pendingBatch = {}
 local isBatchProcessing = false
 
+local ICON_WORDS = {
+    "arrow", "arrows", "dot", "dots", "ellipsis", "clock", "timer", "watch",
+    "gear", "cog", "setting", "cross", "checkmark", "tick", "magnify", "search",
+    "funnel", "filter", "trash", "pencil", "edit", "share", "camera", "lock",
+    "unlock", "shield", "bell", "heart", "star", "plus", "minus", "chevron",
+    "caret", "horizontal", "vertical", "expand", "collapse", "fullscreen",
+    "center", "left", "right", "up", "down", "close", "home", "menu", "info",
+    "help", "question", "flag", "image", "picture", "photo", "person", "user"
+}
+
 local function containsChinese(text)
     return text:find("[\228-\233]") ~= nil
+end
+
+local function isIcon(instance, text)
+    if not text or type(text) ~= "string" or #text == 0 then
+        return true
+    end
+
+    local textLower = text:lower():gsub("^%s*(.-)%s*$", "%1")
+
+    if instance then
+        local curr = instance
+        for _ = 1, 6 do
+            if curr then
+                local name = curr.Name:lower()
+                if name:find("icon") or name:find("symbol") or name:find("logo") 
+                   or name:find("badge") or name:find("graphic") or name:find("glyph") 
+                   or name:find("vector") or name:find("image") or name:find("asset") then
+                    return true
+                end
+                curr = curr.Parent
+            else
+                break
+            end
+        end
+
+        pcall(function()
+            if instance.FontFace and instance.FontFace.Family then
+                local family = instance.FontFace.Family:lower()
+                if family:find("icon") or family:find("symbol") or family:find("emoji") 
+                   or family:find("dingbat") or family:find("lucide") or family:find("foundation") then
+                    return true
+                end
+            end
+        end)
+    end
+
+    if #textLower <= 40 then
+        if textLower:find("arrow") or textLower:find("dot") or textLower:find("clock") 
+           or textLower:find("chevron") or textLower:find("ellipsis") then
+            return true
+        end
+
+        for _, word in ipairs(ICON_WORDS) do
+            if textLower == word then
+                return true
+            end
+        end
+    end
+
+    if not text:match("%a") then
+        return true
+    end
+
+    if text:find("rbxasset") or text:find("<img") or text:find("http") then
+        return true
+    end
+
+    local ok, result = pcall(function()
+        for _, code in utf8.codes(text) do
+            if (code >= 0xE000 and code <= 0xF8FF) or (code >= 0xF0000 and code <= 0xFFFFD) then
+                return true
+            end
+        end
+        return false
+    end)
+
+    if ok and result then
+        return true
+    end
+
+    return false
 end
 
 local function batchGoogleTranslate(textList)
@@ -107,7 +188,11 @@ end
 
 local function enqueueTranslation(instance)
     local currentText = instance.Text
-    if type(currentText) == "string" and #currentText > 0 and not containsChinese(currentText) and not tonumber(currentText) then
+    if type(currentText) == "string" 
+       and #currentText > 0 
+       and not containsChinese(currentText) 
+       and not tonumber(currentText) 
+       and not isIcon(instance, currentText) then
         if translationCache[currentText] then
             pcall(function()
                 instance.Text = translationCache[currentText]
@@ -128,7 +213,7 @@ local function processInstance(inst)
         enqueueTranslation(inst)
         
         inst:GetPropertyChangedSignal("Text"):Connect(function()
-            if not containsChinese(inst.Text) then
+            if not containsChinese(inst.Text) and not isIcon(inst, inst.Text) then
                 enqueueTranslation(inst)
             end
         end)
