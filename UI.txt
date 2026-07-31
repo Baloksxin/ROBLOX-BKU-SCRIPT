@@ -192,16 +192,16 @@ local function MakeElement(ElementName, ...)
 end
 
 local function SetProps(Element, Props)
-	table.foreach(Props, function(Property, Value)
+	for Property, Value in pairs(Props or {}) do
 		Element[Property] = Value
-	end)
+	end
 	return Element
 end
 
 local function SetChildren(Element, Children)
-	table.foreach(Children, function(_, Child)
+	for _, Child in pairs(Children or {}) do
 		Child.Parent = Element
-	end)
+	end
 	return Element
 end
 
@@ -265,7 +265,7 @@ end
 
 local function LoadCfg(Config)
 	local Data = HttpService:JSONDecode(Config)
-	table.foreach(Data, function(a, b)
+	for a, b in pairs(Data) do
 		if OrionLib.Flags[a] then
 			spawn(function()
 				if OrionLib.Flags[a].Type == "Colorpicker" then
@@ -277,7 +277,7 @@ local function LoadCfg(Config)
 		else
 			warn("Orion Library Config Loader - Could not find ", a, b)
 		end
-	end)
+	end
 end
 
 local function SaveCfg(Name)
