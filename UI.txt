@@ -281,6 +281,9 @@ local function LoadCfg(Config)
 end
 
 local function SaveCfg(Name)
+	if not OrionLib.SaveCfg then
+		return
+	end
 	local Data = {}
 	for i, v in pairs(OrionLib.Flags) do
 		if v.Save then
