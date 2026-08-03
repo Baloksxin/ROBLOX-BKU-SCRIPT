@@ -4,6 +4,11 @@ local actualJumpHeight = (jumph == 0 or jumph == nil) and DEFAULT_JUMP_HEIGHT or
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
+if _G.JumpHeightConnection then
+    _G.JumpHeightConnection:Disconnect()
+    _G.JumpHeightConnection = nil
+end
+
 local function setupCharacter(character)
     local humanoid = character:WaitForChild("Humanoid")
     
@@ -11,15 +16,12 @@ local function setupCharacter(character)
     humanoid.JumpHeight = actualJumpHeight
     humanoid:SetStateEnabled(Enum.HumanoidStateType.Jumping, true)
     
+    local isUpdating = false
     humanoid:GetPropertyChangedSignal("JumpHeight"):Connect(function()
-        if humanoid.JumpHeight ~= actualJumpHeight then
+        if not isUpdating and humanoid.JumpHeight ~= actualJumpHeight then
+            isUpdating = true
             humanoid.JumpHeight = actualJumpHeight
-        end
-    end)
-    
-    humanoid.StateChanged:Connect(function()
-        if not humanoid:GetStateEnabled(Enum.HumanoidStateType.Jumping) then
-            humanoid:SetStateEnabled(Enum.HumanoidStateType.Jumping, true)
+            isUpdating = false
         end
     end)
 end
@@ -28,4 +30,4 @@ if LocalPlayer.Character then
     setupCharacter(LocalPlayer.Character)
 end
 
-LocalPlayer.CharacterAdded:Connect(setupCharacter)
+_G.JumpHeightConnection = LocalPlayer.CharacterAdded:Connect(setupCharacter)
