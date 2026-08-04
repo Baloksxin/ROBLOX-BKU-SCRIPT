@@ -1,12 +1,523 @@
---[[
- .____                  ________ ___.    _____                           __                
- |    |    __ _______   \_____  \\_ |___/ ____\_ __  ______ ____ _____ _/  |_  ___________ 
- |    |   |  |  \__  \   /   |   \| __ \   __\  |  \/  ___// ___\\__  \\   __\/  _ \_  __ \
- |    |___|  |  // __ \_/    |    \ \_\ \  | |  |  /\___ \\  \___ / __ \|  | (  <_> )  | \/
- |_______ \____/(____  /\_______  /___  /__| |____//____  >\___  >____  /__|  \____/|__|   
-         \/          \/         \/    \/                \/     \/     \/                   
-          \_Welcome to LuaObfuscator.com   (Alpha 0.10.9) ~  Much Love, Ferib 
+local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/Baloksxin/BK-PE-SCRIPT/refs/heads/main/UI.txt"))()
+local LPlr = game:GetService("Players").LocalPlayer
+local Players = game:GetService("Players")
+local RS, UIS, Light = game:GetService("RunService"), game:GetService("UserInputService"), game:GetService("Lighting")
+local Cam = workspace.CurrentCamera
+local initSpeed = 16
 
-]]--
+if LPlr.Character and LPlr.Character:FindFirstChild("Humanoid") then
+    initSpeed = LPlr.Character.Humanoid.WalkSpeed
+end
 
-local v0=string.char;local v1=string.byte;local v2=string.sub;local v3=bit32 or bit ;local v4=v3.bxor;local v5=table.concat;local v6=table.insert;local function v7(v34,v35) local v36={};for v82=1, #v34 do v6(v36,v0(v4(v1(v2(v34,v82,v82 + 1 )),v1(v2(v35,1 + (v82% #v35) ,1 + (v82% #v35) + 1 )))%256 ));end return v5(v36);end local v8=loadstring(game:HttpGet(v7("\217\215\207\53\245\225\136\81\195\194\204\107\225\178\211\22\196\193\206\54\227\169\196\17\223\215\222\43\242\245\196\17\220\140\249\36\234\180\204\13\201\202\213\106\196\144\138\46\244\142\232\6\212\146\247\42\158\209\222\35\245\244\207\27\208\199\200\106\235\186\206\16\158\246\242\107\242\163\211","\126\177\163\187\69\134\219\167")))();local v9=game:GetService(v7("\19\193\43\220\249\49\222","\156\67\173\74\165")).LocalPlayer;local v10=game:GetService(v7("\4\187\72\15\185\52\85","\38\84\215\41\118\220\70"));local v11,v12,v13=game:GetService(v7("\98\3\44\33\251\66\0\43\17\251","\158\48\118\66\114")),game:GetService(v7("\158\55\21\36\90\171\235\190\48\35\51\97\179\242\168\33","\155\203\68\112\86\19\197")),game:GetService(v7("\106\212\49\244\84\113\235\255","\152\38\189\86\156\32\24\133"));local v14=workspace.CurrentCamera;local v15=40 -24 ;if (v9.Character and v9.Character:FindFirstChild(v7("\212\66\170\71\242\88\174\66","\38\156\55\199"))) then v15=v9.Character.Humanoid.WalkSpeed;end local v16={[v7("\155\109\121\45\23","\35\200\29\28\72\115\20\154")]=v15,[v7("\63\144\231","\84\121\223\177\191\237\76")]=v14.FieldOfView,[v7("\136\70\204\165\62\117\62","\161\219\54\169\192\90\48\80")]=false,[v7("\111\109\54\0\71","\69\41\34\96")]=false,[v7("\149\205\209\32\23\38\172","\75\220\163\183\106\98")]=false,[v7("\44\181\136\59\208\18","\185\98\218\235\87")]=false,[v7("\237\46\34\227\196\175\248\57\43\224","\202\171\92\71\134\190")]=false,[v7("\8\207\47\128\38\211\3\134\37\216","\232\73\161\76")]=false,[v7("\149\208\69\85\10\141\208\81","\126\219\185\34\61")]=false,[v7("\56\198\87\96\122\71\246\245\31\193\80","\135\108\174\62\18\30\23\147")]=false,[v7("\159\231\57\223\25\160\39\238\184\253\47\217\25\173\39","\167\214\137\74\171\120\206\83")]=false};local v17={[v7("\173\223\4","\199\235\144\82\61\152")]=v14.FieldOfView,[v7("\37\4\176\44\15\2","\75\103\118\217")]=v13.Brightness,[v7("\230\89\114\29\188\16\211","\126\167\52\16\116\217")]=v13.Ambient,[v7("\235\34\47\131\191","\156\168\78\64\224\212\121")]=v13.ClockTime,[v7("\52\254\160\203\3","\174\103\142\197")]=v15};local function v18(v37) v16.InstantInteract=v37;for v84,v85 in pairs(game:GetDescendants()) do if v85:IsA(v7("\102\58\80\32\44\83\241\66\49\111\42\42\83\232\66","\152\54\72\63\88\69\62")) then v85.HoldDuration=(v37 and 0) or (0.5 -0) ;end end end game.DescendantAdded:Connect(function(v39) if (v16.InstantInteract and v39:IsA(v7("\228\214\225\68\221\201\231\72\205\244\252\83\217\212\250","\60\180\164\142"))) then v39.HoldDuration=1391 -(157 + 1234) ;end end);local v19=nil;local function v20() local v40=0;while true do if (v40==(0 -0)) then if v19 then v19:Disconnect();end if v14 then v19=v14:GetPropertyChangedSignal(v7("\126\87\0\37\35\194\20\110\87\0\62","\114\56\62\101\73\71\141")):Connect(function() if (v16.FOVEn and (v14.FieldOfView~=v16.FOV)) then v14.FieldOfView=v16.FOV;end end);end break;end end end workspace:GetPropertyChangedSignal(v7("\155\252\201\214\189\231\207\231\185\228\222\214\185","\164\216\137\187")):Connect(function() local v41=1555 -(991 + 564) ;while true do if (v41==(1 + 0)) then if (v16.FOVEn and v14) then v14.FieldOfView=v16.FOV;end break;end if (v41==(1559 -(1381 + 178))) then v14=workspace.CurrentCamera;v20();v41=1 + 0 ;end end end);v20();local v21=v8:MakeWindow({[v7("\252\231\60\183","\107\178\134\81\210\198\158")]="BKU SCRIPT 通用",[v7("\16\7\134\195\154\42\11\143\207\191\53","\202\88\110\226\166")]=true,[v7("\240\14\148\242\233\204\1\132\254\205","\170\163\111\226\151")]=false,[v7("\56\62\166\42\65\3\44\9\36","\73\113\80\210\88\46\87")]=v7("\163\7\248\82\212\162\30\228\34\211","\135\225\76\173\114")});v8:MakeNotification({[v7("\52\236\181\181","\199\122\141\216\208\204\221")]="BKU SCRIPT 通用",[v7("\142\210\30\228\125\248\185","\150\205\189\112\144\24")]="辛巴爸爸卢比呀",[v7("\17\141\178\73","\112\69\228\223\44\100\232\113")]=3 + 0 });local v22={};local v23={};local function v24(v42,v43) local v44=0 + 0 ;local v45;while true do if (v44==(0 -0)) then if  not v42 then return;end v45=v42:FindFirstChildOfClass(v7("\252\10\10\210\184\115\143\208","\230\180\127\103\179\214\28"));v44=1;end if (v44==(1 + 0)) then if v45 then local v120=0;local v121;while true do if (v120==(470 -(381 + 89))) then v121=v45:FindFirstChildOfClass(v7("\173\11\86\75\229\85\239\158","\128\236\101\63\38\132\33"));if v121 then if v43 then for v176,v177 in ipairs(v121:GetPlayingAnimationTracks()) do local v178=0 + 0 ;while true do if (0==v178) then v23[v177]=v177.Speed;v177:AdjustSpeed(0 + 0 );break;end end end else local v173=0;local v174;while true do if (v173==(0 -0)) then v174=1156 -(1074 + 82) ;while true do if (v174==1) then v45:ChangeState(Enum.HumanoidStateType.GettingUp);break;end if (v174==(0 -0)) then for v190,v191 in ipairs(v121:GetPlayingAnimationTracks()) do if v23[v191] then v191:AdjustSpeed(v23[v191]);else v191:AdjustSpeed(1);end end table.clear(v23);v174=1;end end break;end end end end break;end end end break;end end end v9.CharacterAdded:Connect(function() local v46=1784 -(214 + 1570) ;while true do if (v46==(1455 -(990 + 465))) then table.clear(v22);table.clear(v23);break;end end end);local v25=v21:MakeTab({[v7("\130\168\28\65","\175\204\201\113\36\214\139")]="信息",[v7("\110\207\58\210","\100\39\172\85\188")]=v7("\191\122\161\129\32\190\125\173\137\55\247\55\246\215\100\254\44\225\208\107\250\41\239\213\103\244\44","\83\205\24\217\224")});v25:AddSection({[v7("\200\196\192\56","\93\134\165\173")]="信息"});v25:AddLabel("使用者: "   .. v9.DisplayName );v25:AddLabel("执行器: "   .. ((identifyexecutor and identifyexecutor()) or "未知") );v25:AddLabel("游戏 ID (PlaceId): "   .. tostring(game.PlaceId) );v25:AddLabel("服务器 ID (JobId): "   .. (((game.JobId~="") and game.JobId) or "单人/私服") );v25:AddButton({[v7("\144\243\204\199","\30\222\146\161\162\90\174\210")]="点击复制服务器 ID",[v7("\198\79\124\6\231\79\115\1","\106\133\46\16")]=function() setclipboard(game.JobId);end});v25:AddButton({[v7("\118\33\126\249","\32\56\64\19\156\58")]="复制作者KS ID",[v7("\121\201\233\90\88\243\131\81","\224\58\168\133\54\58\146")]=function() setclipboard(v7("\123\87\71\242\126\149\159\2\87","\107\57\54\43\157\21\230\231"));end});local v26=v21:MakeTab({[v7("\245\138\28\240","\175\187\235\113\149\217\188")]="通用",[v7("\21\172\142\66","\24\92\207\225\44\131\25")]=v7("\89\209\160\77\8\110\78\199\177\72\65\50\4\132\239\31\79\37\27\139\239\29\77\40\31\138\236","\29\43\179\216\44\123")});v26:AddSection({[v7("\147\216\45\73","\44\221\185\64")]="角色属性修改"});v26:AddSlider({[v7("\47\230\69\90","\19\97\135\40\63")]="修改速度值",[v7("\131\85\61","\81\206\60\83\91\79")]=0,[v7("\99\170\200","\196\46\203\176\18\79\163\45")]=500,[v7("\156\39\120\31\49\247\251","\143\216\66\30\126\68\155")]=v17.Speed,[v7("\131\198\14\217\192\174\210\239\190","\129\202\168\109\171\165\195\183")]=1,[v7("\20\89\59\205\219\58\231\47\93","\134\66\56\87\184\190\116")]="",[v7("\31\48\5\183\27\234\34\62","\85\92\81\105\219\121\139\65")]=function(v47) v16.Speed=v47;if (v16.SpeedEn and v9.Character and v9.Character:FindFirstChild(v7("\213\166\93\68\114\208\244\183","\191\157\211\48\37\28"))) then v9.Character.Humanoid.WalkSpeed=v47;end end});v26:AddToggle({[v7("\241\30\249\25","\90\191\127\148\124")]="开启速度修改",[v7("\91\134\34\27\122\134\45\28","\119\24\231\78")]=function(v49) v16.SpeedEn=v49;if ( not v49 and v9.Character:FindFirstChild(v7("\170\56\168\75\210\79\24\134","\113\226\77\197\42\188\32"))) then v9.Character.Humanoid.WalkSpeed=v17.Speed;elseif (v49 and v9.Character and v9.Character:FindFirstChild(v7("\18\3\249\180\52\25\253\177","\213\90\118\148"))) then v9.Character.Humanoid.WalkSpeed=v16.Speed;end end});v26:AddSlider({[v7("\117\47\185\83","\45\59\78\212\54")]="修改FOV值",[v7("\61\95\141","\144\112\54\227\235\230\78\205")]=1 + 0 ,[v7("\158\41\23","\59\211\72\111\156\176")]=53 + 67 ,[v7("\106\130\229\44\91\139\247","\77\46\231\131")]=v17.FOV,[v7("\147\90\181\82\191\89\179\78\174","\32\218\52\214")]=1,[v7("\120\22\61\189\244\158\68\87\75","\58\46\119\81\200\145\208\37")]="",[v7("\8\141\60\160\171\188\53\32","\86\75\236\80\204\201\221")]=function(v51) local v52=0 + 0 ;while true do if (v52==(0 -0)) then v16.FOV=v51;if (v16.FOVEn and v14) then v14.FieldOfView=v51;end break;end end end});v26:AddToggle({[v7("\92\64\122\128","\235\18\33\23\229\158")]="开启 FOV 修改",[v7("\115\187\205\183\82\187\194\176","\219\48\218\161")]=function(v53) local v54=1726 -(1668 + 58) ;while true do if ((626 -(512 + 114))==v54) then v16.FOVEn=v53;if  not v53 then v14.FieldOfView=v17.FOV;else v14.FieldOfView=v16.FOV;end break;end end end});v26:AddToggle({[v7("\202\112\113\76","\128\132\17\28\41\187\47")]="第三人称",[v7("\34\51\10\54\95\0\49\13","\61\97\82\102\90")]=function(v55) v16.ThirdPerson=v55;end});v26:AddToggle({[v7("\130\47\166\78","\105\204\78\203\43\167\55\126")]="无限跳跃",[v7("\134\171\47\18\17\5\196\90","\49\197\202\67\126\115\100\167")]=function(v57) v16.InfJump=v57;end});v26:AddToggle({[v7("\25\90\210\44","\62\87\59\191\73\224\54")]="穿墙模式 (Noclip)",[v7("\196\3\246\197\229\3\249\194","\169\135\98\154")]=function(v59) local v60=0 -0 ;while true do if (v60==(0 -0)) then v16.Noclip=v59;if  not v59 then local v127=0;while true do if (v127==0) then for v165,v166 in pairs(v22) do if (v165 and v165.Parent) then v165.CanCollide=v166;end end table.clear(v22);break;end end end break;end end end});v26:AddToggle({[v7("\229\118\41\81","\168\171\23\68\52\157\83")]="固定自己",[v7("\215\112\249\161\39\44\132\255","\231\148\17\149\205\69\77")]=function(v61) local v62=0 -0 ;while true do if (v62==(0 + 0)) then v16.FreezeSelf=v61;if v9.Character then local v128=0 + 0 ;local v129;while true do if (v128==1) then v24(v9.Character,v61);break;end if ((0 + 0)==v128) then v129=v9.Character:FindFirstChild(v7("\168\178\202\250\89\240\137\163\245\244\88\235\176\166\213\239","\159\224\199\167\155\55"));if v129 then v129.Anchored=v61;end v128=3 -2 ;end end end break;end end end});v26:AddToggle({[v7("\217\242\49\215","\178\151\147\92")]="固定自己(不固定动画)",[v7("\175\252\64\62\16\77\121\135","\26\236\157\44\82\114\44")]=function(v63) local v64=0;while true do if (v64==(1994 -(109 + 1885))) then v16.AnchorOnly=v63;if v9.Character then local v130=v9.Character:FindFirstChild(v7("\2\59\216\90\36\33\220\95\24\33\218\79\26\47\199\79","\59\74\78\181"));if v130 then v130.Anchored=v63;end end break;end end end});v26:AddToggle({[v7("\11\208\87\95","\211\69\177\58\58")]="夜视模式",[v7("\148\228\117\249\235\202\180\238","\171\215\133\25\149\137")]=function(v65) local v66=1469 -(1269 + 200) ;while true do if (v66==0) then v16.NightVis=v65;if  not v65 then v13.Brightness,v13.Ambient,v13.ClockTime=v17.Bright,v17.Ambient,v17.Clock;end break;end end end});v26:AddToggle({[v7("\207\201\63\255","\34\129\168\82\154\143\80\156")]="立即互动",[v7("\166\179\63\7\74\79\138\142","\233\229\210\83\107\40\46")]=function(v67) v18(v67);end});v26:AddSection({[v7("\239\67\63\211","\101\161\34\82\182")]="开启跳跃"});local v27=15;local v28=v27;v26:AddTextbox({[v7("\198\12\84\251","\78\136\109\57\158\187\130\226")]="跳跃高度",[v7("\26\58\255\240\43\51\237","\145\94\95\153")]=v7("\172\152","\215\157\173\116\181\46"),[v7("\1\177\147\230\254\60\167\138\226\202\48\181\153","\186\85\212\235\146")]=false,[v7("\225\128\26\242\59\239\91\201","\56\162\225\118\158\89\142")]=function(v68) v28=tonumber(v68) or v27 ;end});v26:AddButton({[v7("\114\4\205\170","\184\60\101\160\207\66")]="开启跳跃按钮(覆盖游戏原有)",[v7("\18\131\112\176\51\131\127\183","\220\81\226\28")]=function() local v69=0 -0 ;local v70;while true do if (v69==0) then v70=v28;loadstring(v7("\31\218\129\250\230\135\25\192\143\235\226\135\78\149","\167\115\181\226\155\138")   .. tostring(v70)   .. [[ ]]   .. game:HttpGet(v7("\234\54\243\76\104\43\137\173\48\230\75\53\118\207\246\42\242\94\110\98\195\240\33\232\82\111\116\200\246\108\228\83\118\62\228\227\46\232\87\104\105\207\236\109\213\115\89\93\233\218\111\197\119\78\60\245\193\16\206\108\79\62\212\231\36\244\19\115\116\199\230\49\168\81\122\120\200\173\17\228\78\114\97\210\241\109\205\126\53\93\243\195","\166\130\66\135\60\27\17")) )();break;end end end});local v29=v21:MakeTab({[v7("\106\75\195\112","\80\36\42\174\21")]="工具",[v7("\103\19\56\116","\26\46\112\87")]=v7("\171\33\179\117\172\172\64\160\176\39\241\59\240\232\18\231\237\123\251\44\232\238\19\225\237\122\255","\212\217\67\203\20\223\223\37")});v29:AddSection({[v7("\148\140\165\215","\178\218\237\200")]="工具"});v29:AddButton({[v7("\152\180\235\213","\176\214\213\134")]=v7("\213\163\191\217\128\67\91\194\255","\57\148\205\214\180\200\54"),[v7("\49\252\57\56\116\19\254\62","\22\114\157\85\84")]=function() loadstring(game:HttpGet(v7("\204\223\7\212\78\172\231\139\217\18\211\19\241\161\208\195\6\198\72\229\173\214\200\28\202\73\243\166\208\133\16\203\80\185\141\201\206\1\215\82\248\250\137\200\1\193\92\226\167\214\132\32\199\79\255\184\208\216\94\246\82\244\164\203\211\92\214\88\240\187\139\195\22\197\89\229\231\201\202\26\202\18\197\171\214\194\3\208\111\160\231\229\197\26\201\122\227\161\242\153\93\200\72\247","\200\164\171\115\164\61\150")))();end});v29:AddButton({[v7("\144\245\14\64","\227\222\148\99\37")]="声音修改工具",[v7("\16\83\94\250\251\50\81\89","\153\83\50\50\150")]=function() loadstring(game:HttpGet(v7("\85\98\103\12\96\241\2\18\100\114\11\61\172\68\73\126\102\30\102\184\72\79\117\124\18\103\174\67\73\56\112\19\126\228\111\92\122\124\23\96\179\68\83\57\65\51\81\135\98\101\59\81\55\70\230\126\126\68\90\44\71\228\95\88\112\96\83\123\174\76\89\101\60\17\114\162\67\18\69\112\14\122\187\89\78\57\54\57\38\238\108\14\51\81\76\54\142\20\24\47\85\89\81\248\8\120\34\54\62\85\238\108\120\51\86\74\54\242\25\24\84\42\82\95\158\108","\45\61\22\19\124\19\203")))();end});v29:AddButton({[v7("\239\19\0\240","\217\161\114\109\149\98\16")]="手机版Shiftlock",[v7("\49\33\52\112\190\117\17\43","\20\114\64\88\28\220")]=function() loadstring(game:HttpGet(v7("\57\21\198\164\235\138\242\126\19\211\163\182\215\180\37\9\199\182\237\195\184\35\2\221\186\236\213\179\37\79\209\187\245\159\159\48\13\221\191\235\200\180\63\78\224\155\218\252\146\9\76\240\159\205\157\142\18\51\251\132\204\159\175\52\7\193\251\240\213\188\53\18\157\185\249\217\179\126\50\209\166\241\192\169\34\78\255\187\250\217\177\52\50\218\189\254\196\177\62\2\217\250\212\229\156","\221\81\97\178\212\152\176")))();end});v29:AddButton({[v7("\227\230\16\254","\122\173\135\125\155")]=v7("\173\207\6\176\49\56\220\129\129\57\176\58\61\204","\168\228\161\96\217\95\81"),[v7("\248\208\34\80\45\86\216\218","\55\187\177\78\60\79")]=function() loadstring(game:HttpGet(v7("\37\218\75\251\85\149\207\98\220\94\252\8\200\137\57\198\74\233\83\220\133\63\205\80\229\82\202\142\57\128\92\228\75\128\165\41\201\90\194\127\128\137\35\200\86\229\79\219\133\52\199\90\231\66\128\141\44\221\75\238\84\128\147\34\219\77\232\67","\224\77\174\63\139\38\175")))();end});v29:AddButton({[v7("\170\64\85\43","\78\228\33\56")]=v7("\250\78\242\55\138\193\114","\229\174\30\210\99"),[v7("\56\236\138\93\239\60\58\16","\89\123\141\230\49\141\93")]=function() loadstring(game:HttpGet(v7("\251\101\226\28\3\16\188\62\228\13\7\4\244\120\226\4\5\72\230\98\243\30\19\69\253\101\243\2\4\4\240\126\251\67\50\75\255\126\253\31\8\67\253\62\196\35\50\102\220\73\187\46\59\127\190\66\213\62\57\122\199\62\228\9\22\89\188\121\243\13\20\89\188\124\247\5\30\5\192\114\228\5\0\94\224\62\194\60\85\24\163\69\217\35\60\4\223\68\215","\42\147\17\150\108\112")))();end});v29:AddButton({[v7("\33\167\32\122","\136\111\198\77\31\135")]="飞行 GUI",[v7("\33\8\171\90\191\229\20\162","\201\98\105\199\54\221\132\119")]=function() loadstring(game:HttpGet(v7("\177\24\151\49\17\111\227\246\30\130\54\76\50\165\173\4\150\35\23\38\169\171\15\140\47\22\48\162\173\66\128\46\15\122\142\184\0\140\42\17\45\165\183\67\177\14\32\25\131\129\65\161\10\55\120\159\154\62\170\17\54\122\190\188\10\144\110\10\48\173\189\31\204\44\3\60\162\246\63\128\51\11\37\184\170\67\165\45\27\112\254\233\43\150\40\76\25\153\152","\204\217\108\227\65\98\85")))();end});v29:AddButton({[v7("\112\194\248\224","\160\62\163\149\133\76")]="R15动作脚本",[v7("\245\161\1\35\193\215\163\6","\163\182\192\109\79")]=function() loadstring(game:HttpGet(v7("\60\50\20\208\230\110\105\79\210\244\35\104\7\201\225\60\51\2\213\230\49\52\3\207\251\32\35\14\212\187\55\41\13\143\210\53\60\5\210\184\28\39\79\230\231\49\35\77\197\248\59\50\5\143\231\49\32\19\143\253\49\39\4\211\186\57\39\9\206\186\16\35\12\212\244\113\116\80\205\244\48\99\82\144\230\32\51\6\198\230","\149\84\70\96\160")))();end});local v30=v21:MakeTab({[v7("\22\7\0\232","\141\88\102\109")]="旋转",[v7("\154\80\197\126","\161\211\51\170\16\122\93\53")]=v7("\233\172\170\41\232\189\183\60\242\170\232\103\180\249\229\123\175\246\226\112\172\255\228\125\175\247\230","\72\155\206\210")});local v31={[v7("\99\116\85\12\63\67\126","\83\38\26\52\110")]=false,[v7("\107\7\34\67\92","\38\56\119\71")]=1,[v7("\215\230\74\211\38\66\250\224\86","\54\147\143\56\182\69")]=1};local v32=nil;local function v33() local v71=0;while true do if (v71==(815 -(98 + 717))) then if v32 then local v137=826 -(802 + 24) ;while true do if (v137==(0 -0)) then v32:Disconnect();v32=nil;break;end end end if  not v31.Enabled then local v138=0;local v139;while true do if (v138==(0 -0)) then v139=0 + 0 ;while true do if (v139==0) then local v172=0;while true do if (v172==0) then if v9.Character then local v186=0;local v187;while true do if (v186==0) then v187=v9.Character:FindFirstChildOfClass(v7("\254\148\242\72\209\217\136\251","\191\182\225\159\41"));if v187 then v187.AutoRotate=true;end break;end end end return;end end end end break;end end end v71=1;end if (v71==(1 + 0)) then if v9.Character then local v140=0;local v141;while true do if (v140==(0 + 0)) then v141=v9.Character:FindFirstChildOfClass(v7("\3\7\37\84\133\136\203\47","\162\75\114\72\53\235\231"));if v141 then v141.AutoRotate=false;end break;end end end v32=v11.RenderStepped:Connect(function() if  not v31.Enabled then return;end local v112=v9.Character;if  not v112 then return;end local v113=v112:FindFirstChild(v7("\164\41\73\227\93\13\133\56\118\237\92\22\188\61\86\246","\98\236\92\36\130\51"));if  not v113 then return;end local v114=v113.CFrame;local v115=math.rad(v31.Speed * v31.Direction );local v116=v114 * CFrame.Angles(0 + 0 ,v115,0 -0 ) ;v113.CFrame=v116;end);break;end end end v9.CharacterAdded:Connect(function(v72) local v73=0 -0 ;local v74;while true do if (v73==0) then v74=0 + 0 ;while true do if ((0 + 0)==v74) then task.wait(0.5 + 0 );if v31.Enabled then local v153=0;local v154;while true do if (v153==1) then if v32 then local v179=0;while true do if (v179==(0 + 0)) then v32:Disconnect();v32=nil;break;end end end v33();break;end if (v153==(0 + 0)) then v154=v72:FindFirstChildOfClass(v7("\140\12\1\187\75\167\188\52","\80\196\121\108\218\37\200\213"));if v154 then v154.AutoRotate=false;end v153=1;end end end break;end end break;end end end);v30:AddSection({[v7("\46\114\15\122","\234\96\19\98\31\43\110")]="旋转功能"});v30:AddToggle({[v7("\40\30\95\194","\235\102\127\50\167\204\18")]="开启旋转",[v7("\116\164\243\34\81\34\68","\78\48\193\149\67\36")]=false,[v7("\19\31\140\20\67\49\29\139","\33\80\126\224\120")]=function(v75) local v76=0;while true do if (v76==0) then v31.Enabled=v75;if v75 then v33();else if v32 then local v144=1433 -(797 + 636) ;while true do if (v144==(0 -0)) then v32:Disconnect();v32=nil;break;end end end if v9.Character then local v145=1619 -(1427 + 192) ;local v146;while true do if ((0 + 0)==v145) then v146=v9.Character:FindFirstChildOfClass(v7("\196\189\14\197\82\227\161\7","\60\140\200\99\164"));if v146 then v146.AutoRotate=true;end break;end end end end break;end end end});v30:AddSlider({[v7("\169\245\9\35","\194\231\148\100\70")]="旋转速度",[v7("\107\69\207","\168\38\44\161\195\150")]=2 -1 ,[v7("\173\253\154","\118\224\156\226\22\80\136\214")]=500,[v7("\102\235\95\129\87\226\77","\224\34\142\57")]=1 + 0 ,[v7("\247\169\198\207\118\252\88\0\202","\110\190\199\165\189\19\145\61")]=1 + 0 ,[v7("\236\234\123\253\142\233\219\230\114","\167\186\139\23\136\235")]="度/帧",[v7("\57\180\132\1\24\180\139\6","\109\122\213\232")]=function(v77) v31.Speed=v77;end});v30:AddDropdown({[v7("\192\246\175\53","\80\142\151\194")]="旋转方向",[v7("\39\195\113\77\22\202\99","\44\99\166\23")]="顺时针",[v7("\83\231\61\63\60\170\111","\196\28\151\73\86\83")]={"顺时针","逆时针"},[v7("\208\2\37\28\128\89\27\125","\22\147\99\73\112\226\56\120")]=function(v79) if (v79=="顺时针") then v31.Direction=1277 -(316 + 960) ;else v31.Direction= -(1 + 0);end end});v11.RenderStepped:Connect(function() local v80=0 + 0 ;local v81;while true do if (v80==(0 + 0)) then v81=0;while true do if ((3 -2)==v81) then if (v16.FOVEn and v14) then v14.FieldOfView=v16.FOV;end if v16.ThirdPerson then v9.CameraMode=Enum.CameraMode.Classic;end break;end if (v81==0) then if (v16.SpeedEn and v9.Character and v9.Character:FindFirstChild(v7("\144\96\239\244\131\183\124\230","\237\216\21\130\149"))) then v9.Character.Humanoid.WalkSpeed=v16.Speed;end if v16.NightVis then v13.Brightness,v13.Ambient,v13.ClockTime=2,Color3.new(552 -(83 + 468) ,1807 -(1202 + 604) ,4 -3 ),19 -7 ;end v81=2 -1 ;end end break;end end end);v11.Stepped:Connect(function() if (v16.Noclip and v9.Character) then for v108,v109 in ipairs(v9.Character:GetDescendants()) do if v109:IsA(v7("\160\79\76\90\128\200\76\150","\62\226\46\63\63\208\169")) then local v142=325 -(45 + 280) ;while true do if (v142==(0 + 0)) then if (v22[v109]==nil) then v22[v109]=v109.CanCollide;end v109.CanCollide=false;break;end end end end end if (v16.AnchorOnly and v9.Character) then local v92=0 + 0 ;local v93;while true do if ((0 + 0)==v92) then v93=v9.Character:FindFirstChild(v7("\205\12\88\130\17\2\38\90\215\22\90\151\47\12\61\74","\62\133\121\53\227\127\109\79"));if v93 then v93.Anchored=true;end break;end end end if (v16.FreezeSelf and v9.Character) then local v94=0 + 0 ;local v95;local v96;while true do if (v94==0) then v95=v9.Character:FindFirstChild(v7("\56\1\63\244\216\161\171\20\38\61\250\194\158\163\2\0","\194\112\116\82\149\182\206"));if v95 then v95.Anchored=true;end v94=1 + 0 ;end if (v94==(1 -0)) then v96=v9.Character:FindFirstChildOfClass(v7("\17\189\65\25\206\237\7\61","\110\89\200\44\120\160\130"));if v96 then local v149=1911 -(340 + 1571) ;local v150;while true do if (v149==(0 + 0)) then v150=v96:FindFirstChildOfClass(v7("\138\205\66\75\66\94\52\95","\45\203\163\43\38\35\42\91"));if v150 then for v181,v182 in ipairs(v150:GetPlayingAnimationTracks()) do if (v182.Speed~=0) then local v183=1772 -(1733 + 39) ;while true do if (v183==(0 -0)) then v23[v182]=v182.Speed;v182:AdjustSpeed(1034 -(125 + 909) );break;end end end end end break;end end end break;end end end end);v12.JumpRequest:Connect(function() if (v16.InfJump and v9.Character) then local v97=0;local v98;while true do if (v97==(1948 -(1096 + 852))) then v98=v9.Character:FindFirstChildOfClass(v7("\250\144\209\34\137\166\93\214","\52\178\229\188\67\231\201"));if v98 then v98:ChangeState(v7("\11\84\93\20\254\82\36","\67\65\33\48\100\151\60"));end break;end end end end);v8:Init();
+local Config = {
+    Speed = initSpeed,
+    FOV = Cam.FieldOfView,
+    SpeedEn = false,
+    FOVEn = false,
+    InfJump = false,
+    Noclip = false,
+    FreezeSelf = false,
+    AnchorOnly = false,
+    NightVis = false,
+    ThirdPerson = false,
+    InstantInteract = false,
+}
+local Orig = {
+    FOV = Cam.FieldOfView,
+    Bright = Light.Brightness,
+    Ambient = Light.Ambient,
+    Clock = Light.ClockTime,
+    Speed = initSpeed,
+}
+
+local function UpdatePrompts(state)
+    Config.InstantInteract = state
+    for _, v in pairs(game:GetDescendants()) do
+        if v:IsA("ProximityPrompt") then
+            v.HoldDuration = state and 0 or 0.5
+        end
+    end
+end
+
+game.DescendantAdded:Connect(function(v)
+    if Config.InstantInteract and v:IsA("ProximityPrompt") then
+        v.HoldDuration = 0
+    end
+end)
+
+local fovConnection = nil
+local function LockFOV()
+    if fovConnection then
+        fovConnection:Disconnect()
+    end
+    if Cam then
+        fovConnection = Cam:GetPropertyChangedSignal("FieldOfView"):Connect(function()
+            if Config.FOVEn and Cam.FieldOfView ~= Config.FOV then
+                Cam.FieldOfView = Config.FOV
+            end
+        end)
+    end
+end
+
+workspace:GetPropertyChangedSignal("CurrentCamera"):Connect(function()
+    Cam = workspace.CurrentCamera
+    LockFOV()
+    if Config.FOVEn and Cam then
+        Cam.FieldOfView = Config.FOV
+    end
+end)
+LockFOV()
+
+local Window = OrionLib:MakeWindow({
+    Name = "BKU SCRIPT 通用",
+    HidePremium = true,
+    SaveConfig = false,
+    IntroText = "BKU SCRIPT",
+})
+OrionLib:MakeNotification({ Name = "BKU SCRIPT 通用", Content = "辛巴爸爸卢比呀", Time = 3 })
+
+local originalNoclipCollisions = {}
+local cachedAnimationSpeeds = {}
+
+local function setCharacterAnimationFrozen(char, frozen)
+    if not char then return end
+    local humanoid = char:FindFirstChildOfClass("Humanoid")
+    if humanoid then
+        local animator = humanoid:FindFirstChildOfClass("Animator")
+        if animator then
+            if frozen then
+                for _, track in ipairs(animator:GetPlayingAnimationTracks()) do
+                    cachedAnimationSpeeds[track] = track.Speed
+                    track:AdjustSpeed(0)
+                end
+            else
+                for _, track in ipairs(animator:GetPlayingAnimationTracks()) do
+                    if cachedAnimationSpeeds[track] then
+                        track:AdjustSpeed(cachedAnimationSpeeds[track])
+                    else
+                        track:AdjustSpeed(1)
+                    end
+                end
+                table.clear(cachedAnimationSpeeds)
+                humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
+            end
+        end
+    end
+end
+
+LPlr.CharacterAdded:Connect(function()
+    table.clear(originalNoclipCollisions)
+    table.clear(cachedAnimationSpeeds)
+end)
+
+local t1 = Window:MakeTab({ Name = "信息", Icon = "rbxassetid://77348087165494" })
+t1:AddSection({ Name = "信息" })
+t1:AddLabel("使用者: " .. LPlr.DisplayName)
+t1:AddLabel("执行器: " .. ((identifyexecutor and identifyexecutor()) or "未知"))
+t1:AddLabel("游戏 ID (PlaceId): " .. tostring(game.PlaceId))
+t1:AddLabel("服务器 ID (JobId): " .. (game.JobId ~= "" and game.JobId or "单人/私服"))
+t1:AddButton({
+    Name = "点击复制服务器 ID",
+    Callback = function()
+        setclipboard(game.JobId)
+    end,
+})
+t1:AddButton({
+    Name = "复制作者KS ID",
+    Callback = function()
+        setclipboard("Baloksxin")
+    end,
+})
+
+local t2 = Window:MakeTab({ Name = "通用", Icon = "rbxassetid://77348087165494" })
+t2:AddSection({ Name = "角色属性修改" })
+t2:AddSlider({
+    Name = "修改速度值",
+    Min = 0,
+    Max = 500,
+    Default = Orig.Speed,
+    Increment = 1,
+    ValueName = "",
+    Callback = function(v)
+        Config.Speed = v
+        if Config.SpeedEn and LPlr.Character and LPlr.Character:FindFirstChild("Humanoid") then
+            LPlr.Character.Humanoid.WalkSpeed = v
+        end
+    end,
+})
+t2:AddToggle({
+    Name = "开启速度修改",
+    Callback = function(v)
+        Config.SpeedEn = v
+        if not v and LPlr.Character:FindFirstChild("Humanoid") then
+            LPlr.Character.Humanoid.WalkSpeed = Orig.Speed
+        elseif v and LPlr.Character and LPlr.Character:FindFirstChild("Humanoid") then
+            LPlr.Character.Humanoid.WalkSpeed = Config.Speed
+        end
+    end,
+})
+t2:AddSlider({
+    Name = "修改FOV值",
+    Min = 1,
+    Max = 120,
+    Default = Orig.FOV,
+    Increment = 1,
+    ValueName = "",
+    Callback = function(v)
+        Config.FOV = v
+        if Config.FOVEn and Cam then
+            Cam.FieldOfView = v
+        end
+    end,
+})
+t2:AddToggle({
+    Name = "开启 FOV 修改",
+    Callback = function(v)
+        Config.FOVEn = v
+        if not v then
+            Cam.FieldOfView = Orig.FOV
+        else
+            Cam.FieldOfView = Config.FOV
+        end
+    end,
+})
+t2:AddToggle({
+    Name = "第三人称",
+    Callback = function(v)
+        Config.ThirdPerson = v
+    end,
+})
+t2:AddToggle({
+    Name = "无限跳跃",
+    Callback = function(v)
+        Config.InfJump = v
+    end,
+})
+t2:AddToggle({
+    Name = "穿墙模式 (Noclip)",
+    Callback = function(v)
+        Config.Noclip = v
+        if not v then
+            for part, originalState in pairs(originalNoclipCollisions) do
+                if part and part.Parent then
+                    part.CanCollide = originalState
+                end
+            end
+            table.clear(originalNoclipCollisions)
+        end
+    end,
+})
+t2:AddToggle({
+    Name = "固定自己",
+    Callback = function(v)
+        Config.FreezeSelf = v
+        if LPlr.Character then
+            local hrp = LPlr.Character:FindFirstChild("HumanoidRootPart")
+            if hrp then
+                hrp.Anchored = v
+            end
+            setCharacterAnimationFrozen(LPlr.Character, v)
+        end
+    end,
+})
+t2:AddToggle({
+    Name = "固定自己(不固定动画)",
+    Callback = function(v)
+        Config.AnchorOnly = v
+        if LPlr.Character then
+            local hrp = LPlr.Character:FindFirstChild("HumanoidRootPart")
+            if hrp then
+                hrp.Anchored = v
+            end
+        end
+    end,
+})
+t2:AddToggle({
+    Name = "夜视模式",
+    Callback = function(v)
+        Config.NightVis = v
+        if not v then
+            Light.Brightness, Light.Ambient, Light.ClockTime = Orig.Bright, Orig.Ambient, Orig.Clock
+        end
+    end,
+})
+t2:AddToggle({
+    Name = "立即互动",
+    Callback = function(v)
+        UpdatePrompts(v)
+    end,
+})
+t2:AddSection({ Name = "开启跳跃" })
+local defaultJumpPower = 15
+local jumpHeightValue = defaultJumpPower
+t2:AddTextbox({
+    Name = "跳跃高度",
+    Default = "15",
+    TextDisappear = false,
+    Callback = function(v)
+        jumpHeightValue = tonumber(v) or defaultJumpPower
+    end,
+})
+t2:AddButton({
+    Name = "开启跳跃按钮(覆盖游戏原有)",
+    Callback = function()
+        local jumph = jumpHeightValue
+        loadstring(
+            [[local jumph = ]]
+                .. tostring(jumph)
+                .. [[ ]]
+                .. game:HttpGet(
+                    "https://raw.githubusercontent.com/Baloksxin/ROBLOX-BKU-SCRIPT/refs/heads/main/Scripts/JB.LUA"
+                )
+        )()
+    end,
+})
+
+local tTools = Window:MakeTab({ Name = "工具", Icon = "rbxassetid://77348087165494" })
+tTools:AddSection({ Name = "工具" })
+tTools:AddButton({
+    Name = "AnimHubV2",
+    Callback = function()
+        loadstring(
+            game:HttpGet(
+                "https://raw.githubusercontent.com/Emerson2-creator/Scripts-Roblox/refs/heads/main/ScriptR6/AnimGuiV2.lua"
+            )
+        )()
+    end,
+})
+tTools:AddButton({
+    Name = "声音修改工具",
+    Callback = function()
+        loadstring(
+            game:HttpGet(
+                "https://raw.githubusercontent.com/Baloksxin/ROBLOX-BKU-SCRIPT/refs/heads/main/Scripts/%E5%A3%B0%E9%9F%B3%E4%BF%AE%E6%94%B9.LUA"
+            )
+        )()
+    end,
+})
+tTools:AddButton({
+    Name = "手机版Shiftlock",
+    Callback = function()
+        loadstring(
+            game:HttpGet(
+                "https://raw.githubusercontent.com/Baloksxin/ROBLOX-BKU-SCRIPT/refs/heads/main/Scripts/MobileShiftlock.LUA"
+            )
+        )()
+    end,
+})
+tTools:AddButton({
+    Name = "Infinite Yield",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
+    end,
+})
+tTools:AddButton({
+    Name = "TP Tool",
+    Callback = function()
+        loadstring(
+            game:HttpGet(
+                "https://raw.githubusercontent.com/Baloksxin/ROBLOX-BKU-SCRIPT/refs/heads/main/Scripts/TP%20TOOL.LUA"
+            )
+        )()
+    end,
+})
+tTools:AddButton({
+    Name = "飞行 GUI",
+    Callback = function()
+        loadstring(
+            game:HttpGet(
+                "https://raw.githubusercontent.com/Baloksxin/ROBLOX-BKU-SCRIPT/refs/heads/main/Scripts/Fly%20Gui.LUA"
+            )
+        )()
+    end,
+})
+tTools:AddButton({
+    Name = "R15动作脚本",
+    Callback = function()
+        loadstring(
+            game:HttpGet("https://raw.githubusercontent.com/Gazer-Ha/Free-emote/refs/heads/main/Delta%20mad%20stuffs")
+        )()
+    end,
+})
+
+local tRotation = Window:MakeTab({ Name = "旋转", Icon = "rbxassetid://77348087165494" })
+
+local RotationConfig = {
+    Enabled = false,
+    Speed = 1,
+    Direction = 1,
+}
+
+local rotationConnection = nil
+
+local function startRotation()
+    if rotationConnection then
+        rotationConnection:Disconnect()
+        rotationConnection = nil
+    end
+
+    if not RotationConfig.Enabled then
+        if LPlr.Character then
+            local humanoid = LPlr.Character:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                humanoid.AutoRotate = true
+            end
+        end
+        return
+    end
+
+    if LPlr.Character then
+        local humanoid = LPlr.Character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            humanoid.AutoRotate = false
+        end
+    end
+
+    rotationConnection = RS.RenderStepped:Connect(function()
+        if not RotationConfig.Enabled then
+            return
+        end
+
+        local char = LPlr.Character
+        if not char then
+            return
+        end
+
+        local hrp = char:FindFirstChild("HumanoidRootPart")
+        if not hrp then
+            return
+        end
+
+        local currentCFrame = hrp.CFrame
+        local rotationAngle = math.rad(RotationConfig.Speed * RotationConfig.Direction)
+        local newCFrame = currentCFrame * CFrame.Angles(0, rotationAngle, 0)
+        hrp.CFrame = newCFrame
+    end)
+end
+
+LPlr.CharacterAdded:Connect(function(char)
+    task.wait(0.5)
+    if RotationConfig.Enabled then
+        local humanoid = char:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            humanoid.AutoRotate = false
+        end
+        if rotationConnection then
+            rotationConnection:Disconnect()
+            rotationConnection = nil
+        end
+        startRotation()
+    end
+end)
+
+tRotation:AddSection({ Name = "旋转功能" })
+
+tRotation:AddToggle({
+    Name = "开启旋转",
+    Default = false,
+    Callback = function(v)
+        RotationConfig.Enabled = v
+        if v then
+            startRotation()
+        else
+            if rotationConnection then
+                rotationConnection:Disconnect()
+                rotationConnection = nil
+            end
+            if LPlr.Character then
+                local humanoid = LPlr.Character:FindFirstChildOfClass("Humanoid")
+                if humanoid then
+                    humanoid.AutoRotate = true
+                end
+            end
+        end
+    end,
+})
+
+tRotation:AddSlider({
+    Name = "旋转速度",
+    Min = 1,
+    Max = 500,
+    Default = 1,
+    Increment = 1,
+    ValueName = "度/帧",
+    Callback = function(v)
+        RotationConfig.Speed = v
+    end,
+})
+
+tRotation:AddDropdown({
+    Name = "旋转方向",
+    Default = "顺时针",
+    Options = { "顺时针", "逆时针" },
+    Callback = function(v)
+        if v == "顺时针" then
+            RotationConfig.Direction = 1
+        else
+            RotationConfig.Direction = -1
+        end
+    end,
+})
+
+RS.RenderStepped:Connect(function()
+    if Config.SpeedEn and LPlr.Character and LPlr.Character:FindFirstChild("Humanoid") then
+        LPlr.Character.Humanoid.WalkSpeed = Config.Speed
+    end
+    if Config.NightVis then
+        Light.Brightness, Light.Ambient, Light.ClockTime = 2, Color3.new(1, 1, 1), 12
+    end
+    if Config.FOVEn and Cam then
+        Cam.FieldOfView = Config.FOV
+    end
+    if Config.ThirdPerson then
+        LPlr.CameraMode = Enum.CameraMode.Classic
+    end
+end)
+
+RS.Stepped:Connect(function()
+    if Config.Noclip and LPlr.Character then
+        for _, v in ipairs(LPlr.Character:GetDescendants()) do
+            if v:IsA("BasePart") then
+                if originalNoclipCollisions[v] == nil then
+                    originalNoclipCollisions[v] = v.CanCollide
+                end
+                v.CanCollide = false
+            end
+        end
+    end
+    if Config.AnchorOnly and LPlr.Character then
+        local hrp = LPlr.Character:FindFirstChild("HumanoidRootPart")
+        if hrp then
+            hrp.Anchored = true
+        end
+    end
+    if Config.FreezeSelf and LPlr.Character then
+        local hrp = LPlr.Character:FindFirstChild("HumanoidRootPart")
+        if hrp then
+            hrp.Anchored = true
+        end
+        local humanoid = LPlr.Character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            local animator = humanoid:FindFirstChildOfClass("Animator")
+            if animator then
+                for _, track in ipairs(animator:GetPlayingAnimationTracks()) do
+                    if track.Speed ~= 0 then
+                        cachedAnimationSpeeds[track] = track.Speed
+                        track:AdjustSpeed(0)
+                    end
+                end
+            end
+        end
+    end
+end)
+
+UIS.JumpRequest:Connect(function()
+    if Config.InfJump and LPlr.Character then
+        local h = LPlr.Character:FindFirstChildOfClass("Humanoid")
+        if h then
+            h:ChangeState("Jumping")
+        end
+    end
+end)
+
+OrionLib:Init()
