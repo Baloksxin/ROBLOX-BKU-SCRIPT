@@ -1,55 +1,66 @@
+local CoreGui = game:GetService("CoreGui")
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 
 local player = Players.LocalPlayer
-local camera = workspace.CurrentCamera
-local isLocked = false
-local OFFSET = Vector3.new(1.7, 0.5, 0)
 
-local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "DraggableShiftLockGui"
-screenGui.ResetOnSpawn = false
-screenGui.Parent = player:WaitForChild("PlayerGui")
-
-local button = Instance.new("ImageButton")
-button.Name = "ShiftLockButton"
-button.Size = UDim2.new(0, 55, 0, 55) 
-button.Position = UDim2.new(0.85, 0, 0.5, 0)
-button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-button.BackgroundTransparency = 0.5
-button.ZIndex = 10
-button.Active = true
-button.Parent = screenGui
-
-local uiCorner = Instance.new("UICorner")
-uiCorner.CornerRadius = UDim.new(0.5, 0)
-uiCorner.Parent = button
-
-local textLabel = Instance.new("TextLabel")
-textLabel.Size = UDim2.new(1, 0, 1, 0)
-textLabel.BackgroundTransparency = 1
-textLabel.Text = "Lock OFF"
-textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-textLabel.Font = Enum.Font.GothamBold
-textLabel.TextSize = 10
-textLabel.Parent = button
-
-local dragging
-local dragInput
-local dragStart
-local startPos
-
-local function update(input)
-    local delta = input.Position - dragStart
-    button.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+if CoreGui:FindFirstChild("MobileShiftLock") then
+    CoreGui.MobileShiftLock:Destroy()
 end
 
-button.InputBegan:Connect(function(input)
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "MobileShiftLock"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = CoreGui
+
+local ToggleButton = Instance.new("ImageButton")
+ToggleButton.Name = "ShiftLockBtn"
+ToggleButton.Size = UDim2.new(0, 48, 0, 48)
+ToggleButton.Position = UDim2.new(0.85, 0, 0.5, -24)
+ToggleButton.BackgroundTransparency = 0.4
+ToggleButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+ToggleButton.BorderSizePixel = 0
+ToggleButton.Image = "rbxassetid://182223762"
+ToggleButton.Parent = ScreenGui
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(1, 0)
+UICorner.Parent = ToggleButton
+
+local isLocked = false
+local dragging = false
+local dragStart, startPos
+local hasMoved = false
+
+local function setCustomShiftLock(state)
+    isLocked = state
+    local character = player.Character
+    if not character then return end
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    
+    if isLocked then
+        ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 162, 255)
+        if humanoid then
+            humanoid.AutoRotate = false
+            humanoid.CameraOffset = Vector3.new(1.7, 0, 0)
+        end
+    else
+        ToggleButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+        if humanoid then
+            humanoid.AutoRotate = true
+            humanoid.CameraOffset = Vector3.new(0, 0, 0)
+        end
+    end
+end
+
+ToggleButton.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
         dragging = true
         dragStart = input.Position
-        startPos = button.Position
+        startPos = ToggleButton.Position
+        hasMoved = false
+        
         input.Changed:Connect(function()
             if input.UserInputState == Enum.UserInputState.End then
                 dragging = false
@@ -58,60 +69,58 @@ button.InputBegan:Connect(function(input)
     end
 end)
 
-button.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-        dragInput = input
-    end
-end)
-
 UserInputService.InputChanged:Connect(function(input)
-    if input == dragInput and dragging then
-        update(input)
-    end
-end)
-
-local function toggleShiftLock()
-    isLocked = not isLocked
-    local character = player.Character
-    local humanoid = character and character:FindFirstChild("Humanoid")
-    if isLocked then
-        button.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
-        button.BackgroundTransparency = 0.3
-        textLabel.Text = "Lock ON"
-        if humanoid then humanoid.CameraOffset = OFFSET end
-        UserInputService.MouseBehavior = Enum.MouseBehavior.LockCenter
-    else
-        button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-        button.BackgroundTransparency = 0.5
-        textLabel.Text = "Lock OFF"
-        if humanoid then humanoid.CameraOffset = Vector3.new(0, 0, 0) end
-        UserInputService.MouseBehavior = Enum.MouseBehavior.Default
-    end
-end
-
-button.Activated:Connect(function()
-    toggleShiftLock()
-end)
-
-player.CharacterAdded:Connect(function()
-    isLocked = false
-    button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    textLabel.Text = "Lock OFF"
-    UserInputService.MouseBehavior = Enum.MouseBehavior.Default
-end)
-
-RunService.RenderStepped:Connect(function()
-    if isLocked then
-        local character = player.Character
-        local rootPart = character and character:FindFirstChild("HumanoidRootPart")
-        local humanoid = character and character:FindFirstChild("Humanoid")
-        if humanoid and humanoid.Health > 0 and rootPart then
-            UserInputService.MouseBehavior = Enum.MouseBehavior.LockCenter
-            local lookVector = camera.CFrame.LookVector
-            local yaw = math.atan2(-lookVector.X, -lookVector.Z)
-            rootPart.CFrame = CFrame.new(rootPart.Position) * CFrame.Angles(0, yaw, 0)
-        else
-            if isLocked then toggleShiftLock() end
+    if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+        local delta = input.Position - dragStart
+        if delta.Magnitude > 5 then
+            hasMoved = true
         end
+        ToggleButton.Position = UDim2.new(
+            startPos.X.Scale,
+            startPos.X.Offset + delta.X,
+            startPos.Y.Scale,
+            startPos.Y.Offset + delta.Y
+        )
+    end
+end)
+
+ToggleButton.MouseButton1Click:Connect(function()
+    if not hasMoved then
+        setCustomShiftLock(not isLocked)
+    end
+end)
+
+RunService.Heartbeat:Connect(function()
+    if not isLocked then return end
+    
+    local character = player.Character
+    if not character then return end
+    local rootPart = character:FindFirstChild("HumanoidRootPart")
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    local camera = workspace.CurrentCamera
+    
+    if rootPart and humanoid and camera then
+        local moveDir = humanoid.MoveDirection
+        local vel = rootPart.AssemblyLinearVelocity
+        local horizontalVel = Vector3.new(vel.X, 0, vel.Z)
+        
+        local isHittingWall = (moveDir.Magnitude > 0.1) and (horizontalVel.Magnitude < 0.5)
+        
+        if not isHittingWall then
+            local camLook = camera.CFrame.LookVector
+            rootPart.CFrame = CFrame.new(rootPart.Position, rootPart.Position + Vector3.new(camLook.X, 0, camLook.Z))
+        end
+    end
+end)
+
+player.CharacterAdded:Connect(function(newChar)
+    setCustomShiftLock(false)
+end)
+
+player.CharacterRemoving:Connect(function(oldChar)
+    local humanoid = oldChar:FindFirstChildOfClass("Humanoid")
+    if humanoid then
+        humanoid.AutoRotate = true
+        humanoid.CameraOffset = Vector3.new(0, 0, 0)
     end
 end)
