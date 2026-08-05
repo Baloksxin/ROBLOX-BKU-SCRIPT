@@ -1,126 +1,97 @@
-local CoreGui = game:GetService("CoreGui")
 local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local CoreGui = game:GetService("CoreGui")
 
 local player = Players.LocalPlayer
 
-if CoreGui:FindFirstChild("MobileShiftLock") then
-    CoreGui.MobileShiftLock:Destroy()
+local platform = UserInputService:GetPlatform()
+if platform == Enum.Platform.Windows or platform == Enum.Platform.OSX or platform == Enum.Platform.Linux or not UserInputService.TouchEnabled then
+    warn("仅支持移动端")
+    return
+end
+
+local ShoulderOffset = Vector3.new(1.7, 0.6, 0)
+
+if CoreGui:FindFirstChild("MobileShiftLockGUI") then
+    CoreGui.MobileShiftLockGUI:Destroy()
 end
 
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "MobileShiftLock"
-ScreenGui.ResetOnSpawn = false
+ScreenGui.Name = "MobileShiftLockGUI"
 ScreenGui.Parent = CoreGui
+ScreenGui.ResetOnSpawn = false
 
-local ToggleButton = Instance.new("ImageButton")
-ToggleButton.Name = "ShiftLockBtn"
-ToggleButton.Size = UDim2.new(0, 48, 0, 48)
-ToggleButton.Position = UDim2.new(0.85, 0, 0.5, -24)
-ToggleButton.BackgroundTransparency = 0.4
-ToggleButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-ToggleButton.BorderSizePixel = 0
-ToggleButton.Image = "rbxassetid://182223762"
-ToggleButton.Parent = ScreenGui
+local Button = Instance.new("TextButton")
+Button.Name = "ShiftLockBtn"
+Button.Parent = ScreenGui
+Button.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Button.BackgroundTransparency = 0.4
+Button.Position = UDim2.new(0.85, -30, 0.65, -30)
+Button.Size = UDim2.new(0, 48, 0, 48)
+Button.Text = "🔒"
+Button.TextSize = 22
+Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+Button.Active = true
+Button.Draggable = true
 
 local UICorner = Instance.new("UICorner")
 UICorner.CornerRadius = UDim.new(1, 0)
-UICorner.Parent = ToggleButton
+UICorner.Parent = Button
 
-local isLocked = false
-local dragging = false
-local dragStart, startPos
-local hasMoved = false
+local active = false
+local renderConnection = nil
 
-local function setCustomShiftLock(state)
-    isLocked = state
+local function toggleShiftlock()
+    active = not active
     local character = player.Character
     if not character then return end
     local humanoid = character:FindFirstChildOfClass("Humanoid")
+    local rootPart = character:FindFirstChild("HumanoidRootPart")
     
-    if isLocked then
-        ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 162, 255)
+    if active then
+        Button.BackgroundTransparency = 0.15
         if humanoid then
             humanoid.AutoRotate = false
-            humanoid.CameraOffset = Vector3.new(1.7, 0, 0)
         end
+        
+        renderConnection = RunService.RenderStepped:Connect(function()
+            if not character or not humanoid or not rootPart or humanoid.Health <= 0 then
+                active = false
+                if humanoid then humanoid.AutoRotate = true end
+                if renderConnection then renderConnection:Disconnect() end
+                Button.BackgroundTransparency = 0.4
+                return
+            end
+            
+            local camera = workspace.CurrentCamera
+            if not camera then return end
+            
+            local camVector = camera.CFrame.LookVector
+            local flatVector = Vector3.new(camVector.X, 0, camVector.Z).Unit
+            
+            if flatVector.Magnitude > 0 then
+                rootPart.CFrame = CFrame.lookAt(rootPart.Position, rootPart.Position + flatVector)
+            end
+            
+            camera.CFrame = camera.CFrame * CFrame.new(ShoulderOffset)
+        end)
     else
-        ToggleButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+        Button.BackgroundTransparency = 0.4
         if humanoid then
             humanoid.AutoRotate = true
-            humanoid.CameraOffset = Vector3.new(0, 0, 0)
+        end
+        if renderConnection then
+            renderConnection:Disconnect()
+            renderConnection = nil
         end
     end
 end
 
-ToggleButton.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragging = true
-        dragStart = input.Position
-        startPos = ToggleButton.Position
-        hasMoved = false
-        
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
-                dragging = false
-            end
-        end)
-    end
-end)
-
-UserInputService.InputChanged:Connect(function(input)
-    if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-        local delta = input.Position - dragStart
-        if delta.Magnitude > 5 then
-            hasMoved = true
-        end
-        ToggleButton.Position = UDim2.new(
-            startPos.X.Scale,
-            startPos.X.Offset + delta.X,
-            startPos.Y.Scale,
-            startPos.Y.Offset + delta.Y
-        )
-    end
-end)
-
-ToggleButton.MouseButton1Click:Connect(function()
-    if not hasMoved then
-        setCustomShiftLock(not isLocked)
-    end
-end)
-
-RunService.Heartbeat:Connect(function()
-    if not isLocked then return end
-    
-    local character = player.Character
-    if not character then return end
-    local rootPart = character:FindFirstChild("HumanoidRootPart")
-    local humanoid = character:FindFirstChildOfClass("Humanoid")
-    local camera = workspace.CurrentCamera
-    
-    if rootPart and humanoid and camera then
-        local moveDir = humanoid.MoveDirection
-        local vel = rootPart.AssemblyLinearVelocity
-        local horizontalVel = Vector3.new(vel.X, 0, vel.Z)
-        
-        local isHittingWall = (moveDir.Magnitude > 0.1) and (horizontalVel.Magnitude < 0.5)
-        
-        if not isHittingWall then
-            local camLook = camera.CFrame.LookVector
-            rootPart.CFrame = CFrame.new(rootPart.Position, rootPart.Position + Vector3.new(camLook.X, 0, camLook.Z))
-        end
-    end
-end)
+Button.MouseButton1Click:Connect(toggleShiftlock)
 
 player.CharacterAdded:Connect(function(newChar)
-    setCustomShiftLock(false)
-end)
-
-player.CharacterRemoving:Connect(function(oldChar)
-    local humanoid = oldChar:FindFirstChildOfClass("Humanoid")
-    if humanoid then
-        humanoid.AutoRotate = true
-        humanoid.CameraOffset = Vector3.new(0, 0, 0)
+    if active then
+        toggleShiftlock()
     end
 end)
