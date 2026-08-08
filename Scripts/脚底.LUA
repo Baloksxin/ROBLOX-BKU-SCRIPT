@@ -75,15 +75,15 @@ flipToggleBtn.TextSize = 13
 flipToggleBtn.Font = Enum.Font.SourceSansBold
 flipToggleBtn.Parent = frame
 
-local autoHeightBtn = Instance.new("TextButton")
-autoHeightBtn.Size = UDim2.new(0.9, 0, 0, 30)
-autoHeightBtn.Position = UDim2.new(0.05, 0, 0, 140)
-autoHeightBtn.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
-autoHeightBtn.Text = "自动隐藏(Beta): 关闭"
-autoHeightBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-autoHeightBtn.TextSize = 13
-autoHeightBtn.Font = Enum.Font.SourceSansBold
-autoHeightBtn.Parent = frame
+local autoDistBtn = Instance.new("TextButton")
+autoDistBtn.Size = UDim2.new(0.9, 0, 0, 30)
+autoDistBtn.Position = UDim2.new(0.05, 0, 0, 140)
+autoDistBtn.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+autoDistBtn.Text = "自动距离(Beta): 关闭"
+autoDistBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+autoDistBtn.TextSize = 13
+autoDistBtn.Font = Enum.Font.SourceSansBold
+autoDistBtn.Parent = frame
 
 local toggleBtn = Instance.new("TextButton")
 toggleBtn.Size = UDim2.new(0.9, 0, 0, 35)
@@ -99,7 +99,41 @@ local isLocked = false
 local targetName = ""
 local targetDist = 10
 local isFlipped = false
-local autoHeight = false
+local autoDist = false
+local savedCollisions = {}
+
+local function isBodyPart(part)
+    if not part or not part:IsA("BasePart") then return false end
+    if part.Name == "Handle" then return false end
+    if part:FindFirstAncestorOfClass("Accessory") then return false end
+    return true
+end
+
+local function saveCollisionStates(character)
+    savedCollisions = {}
+    for _, part in ipairs(character:GetDescendants()) do
+        if isBodyPart(part) then
+            savedCollisions[part] = part.CanCollide
+        end
+    end
+end
+
+local function restoreCollisionStates()
+    for part, state in pairs(savedCollisions) do
+        if part and part:IsA("BasePart") then
+            part.CanCollide = state
+        end
+    end
+    savedCollisions = {}
+end
+
+local function setCollisionStates(character, state)
+    for _, part in ipairs(character:GetDescendants()) do
+        if isBodyPart(part) then
+            part.CanCollide = state
+        end
+    end
+end
 
 flipToggleBtn.MouseButton1Click:Connect(function()
     isFlipped = not isFlipped
@@ -109,37 +143,27 @@ flipToggleBtn.MouseButton1Click:Connect(function()
     else
         flipToggleBtn.Text = "倒立: 关闭"
         flipToggleBtn.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
-        
-        if isLocked then
-            local realChar = workspace:FindFirstChild(player.Name)
-            if realChar then
-                local hrp = realChar:FindFirstChild("HumanoidRootPart")
-                if hrp then
-                    local currentPos = hrp.Position
-                    local targetModel = findTargetNpc(targetName)
-                    if targetModel then
-                        local targetRoot = targetModel:FindFirstChild("HumanoidRootPart") or targetModel.PrimaryPart or targetModel:FindFirstChild("Head")
-                        if targetRoot then
-                            local targetCFrame = targetRoot.CFrame
-                            local targetForward = targetCFrame.LookVector
-                            local targetAngle = math.atan2(targetForward.X, -targetForward.Z)
-                            hrp.CFrame = CFrame.new(currentPos) * CFrame.Angles(0, targetAngle, 0)
-                        end
-                    end
-                end
-            end
-        end
     end
 end)
 
-autoHeightBtn.MouseButton1Click:Connect(function()
-    autoHeight = not autoHeight
-    if autoHeight then
-        autoHeightBtn.Text = "自动隐藏(Beta): 开启"
-        autoHeightBtn.BackgroundColor3 = Color3.fromRGB(255, 165, 0)
+autoDistBtn.MouseButton1Click:Connect(function()
+    autoDist = not autoDist
+    if autoDist then
+        autoDistBtn.Text = "自动距离(Beta): 开启"
+        autoDistBtn.BackgroundColor3 = Color3.fromRGB(255, 165, 0)
+        distBox.Text = "自动"
+        distBox.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+        distBox.TextColor3 = Color3.fromRGB(200, 200, 200)
+        distBox.Selectable = false
+        distBox.Active = false
     else
-        autoHeightBtn.Text = "自动隐藏(Beta): 关闭"
-        autoHeightBtn.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+        autoDistBtn.Text = "自动距离(Beta): 关闭"
+        autoDistBtn.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+        distBox.Text = "10"
+        distBox.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+        distBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+        distBox.Selectable = true
+        distBox.Active = true
     end
 end)
 
@@ -155,23 +179,16 @@ toggleBtn.MouseButton1Click:Connect(function()
     if isLocked then
         toggleBtn.Text = "关闭"
         toggleBtn.BackgroundColor3 = Color3.fromRGB(255, 85, 85)
-    else
-        toggleBtn.Text = "开启"
-        toggleBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
         
         local realChar = workspace:FindFirstChild(player.Name)
         if realChar then
-            for _, part in ipairs(realChar:GetDescendants()) do
-                if part:IsA("BasePart") then
-                    part.CanCollide = true
-                end
-            end
-            local hrp = realChar:FindFirstChild("HumanoidRootPart")
-            if hrp then
-                local currentPos = hrp.Position
-                hrp.CFrame = CFrame.new(currentPos) * CFrame.Angles(0, 0, 0)
-            end
+            saveCollisionStates(realChar)
+            setCollisionStates(realChar, false)
         end
+    else
+        toggleBtn.Text = "开启"
+        toggleBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+        restoreCollisionStates()
     end
 end)
 
@@ -193,12 +210,58 @@ local function findTargetNpc(name)
     return nil
 end
 
-local function findGroundHeight(position)
-    local rayOrigin = position + Vector3.new(0, 10, 0)
-    local rayDirection = Vector3.new(0, -50, 0)
+local function getNpcY(npcModel)
+    local root = npcModel:FindFirstChild("HumanoidRootPart")
+    if root then
+        return root.Position.Y
+    end
+    local primary = npcModel.PrimaryPart
+    if primary then
+        return primary.Position.Y
+    end
+    return npcModel:GetPivot().Y
+end
+
+local function getPlayerHeight(playerChar)
+    local hrp = playerChar:FindFirstChild("HumanoidRootPart")
+    if not hrp then return 6 end
+    
+    local lowestY = math.huge
+    local highestY = -math.huge
+    
+    for _, part in ipairs(playerChar:GetDescendants()) do
+        if part:IsA("BasePart") and part:IsDescendantOf(playerChar) then
+            if part.Name ~= "Handle" then
+                local partY = part.Position.Y
+                if partY < lowestY then
+                    lowestY = partY
+                end
+                if partY > highestY then
+                    highestY = partY
+                end
+            end
+        end
+    end
+    
+    if lowestY == math.huge or highestY == -math.huge then
+        return 6
+    end
+    
+    return math.abs(highestY - lowestY)
+end
+
+local function findGroundBelowPosition(position, ignoreList)
+    local rayOrigin = position + Vector3.new(0, 5, 0)
+    local rayDirection = Vector3.new(0, -200, 0)
     local raycastParams = RaycastParams.new()
     raycastParams.FilterType = Enum.RaycastFilterType.Blacklist
-    raycastParams.FilterDescendantsInstances = {workspace:FindFirstChild(player.Name)}
+    local filterList = {workspace:FindFirstChild(player.Name)}
+    if ignoreList then
+        for _, item in ipairs(ignoreList) do
+            table.insert(filterList, item)
+        end
+    end
+    raycastParams.FilterDescendantsInstances = filterList
     
     local rayResult = workspace:Raycast(rayOrigin, rayDirection, raycastParams)
     
@@ -208,29 +271,39 @@ local function findGroundHeight(position)
     return nil
 end
 
-local function getOptimalHeight(npcPos, playerChar)
+local function findOptimalHiddenPosition(npcModel, playerChar)
     local hrp = playerChar:FindFirstChild("HumanoidRootPart")
-    if not hrp then return npcPos.Y - 10 end
+    if not hrp then return nil end
     
-    local charHeight = 5
-    local head = playerChar:FindFirstChild("Head")
-    if head then
-        charHeight = (hrp.Position.Y - head.Position.Y) + 2
-    end
+    local playerHeight = getPlayerHeight(playerChar)
+    local npcY = getNpcY(npcModel)
     
-    local groundY = findGroundHeight(npcPos)
+    local npcPos = npcModel:GetPivot()
+    local npcX = npcPos.X
+    local npcZ = npcPos.Z
+    
+    local groundY = findGroundBelowPosition(Vector3.new(npcX, npcY, npcZ), {npcModel})
+    
+    local finalY
+    
     if groundY then
-        local hiddenY = groundY - charHeight
-        if hiddenY < npcPos.Y - 50 then
-            return npcPos.Y - 10
+        local distanceToGround = npcY - groundY
+        
+        if distanceToGround < 15 and distanceToGround > 0 then
+            finalY = groundY - playerHeight - 1
+        else
+            finalY = npcY - playerHeight - 6
         end
-        return hiddenY
+    else
+        finalY = npcY - playerHeight - 6
     end
     
-    return npcPos.Y - 10
+    return Vector3.new(npcX, finalY, npcZ)
 end
 
-RunService.RenderStepped:Connect(function()
+local lastPos = nil
+
+RunService.Heartbeat:Connect(function()
     if not isLocked then return end
     if targetName == "" then return end
 
@@ -240,41 +313,37 @@ RunService.RenderStepped:Connect(function()
     local hrp = realChar:FindFirstChild("HumanoidRootPart")
     if not hrp then return end
 
-    for _, part in ipairs(realChar:GetDescendants()) do
-        if part:IsA("BasePart") then
-            part.CanCollide = false
-        end
-    end
-
     local targetModel = findTargetNpc(targetName)
     
     if targetModel and targetModel ~= realChar then
         local targetRoot = targetModel:FindFirstChild("HumanoidRootPart") or targetModel.PrimaryPart or targetModel:FindFirstChild("Head")
         
         if targetRoot then
-            local targetPos = targetRoot.Position
             local targetCFrame = targetRoot.CFrame
             local targetForward = targetCFrame.LookVector
             local targetAngle = math.atan2(targetForward.X, -targetForward.Z)
             
             local newPos
             
-            if autoHeight then
-                local optimalY = getOptimalHeight(targetPos, realChar)
-                local hrpHeight = hrp.Position.Y - realChar:GetPivot().Y
-                newPos = Vector3.new(targetPos.X, optimalY, targetPos.Z)
+            if autoDist then
+                newPos = findOptimalHiddenPosition(targetModel, realChar)
+                if not newPos then
+                    newPos = targetRoot.Position + Vector3.new(0, -10, 0)
+                end
             else
-                newPos = targetPos + Vector3.new(0, -targetDist, 0)
+                newPos = targetRoot.Position + Vector3.new(0, -targetDist, 0)
             end
+            
+            lastPos = newPos
+            
+            hrp.CFrame = CFrame.new(newPos) * CFrame.Angles(0, targetAngle, 0)
             
             if isFlipped then
-                hrp.CFrame = CFrame.new(newPos) * CFrame.Angles(math.pi, 0, 0) * CFrame.Angles(0, targetAngle, 0)
-            else
-                hrp.CFrame = CFrame.new(newPos) * CFrame.Angles(0, targetAngle, 0)
+                hrp.CFrame = hrp.CFrame * CFrame.Angles(math.pi, 0, 0)
             end
             
-            hrp.AssemblyLinearVelocity = targetRoot.AssemblyLinearVelocity
-            hrp.AssemblyAngularVelocity = targetRoot.AssemblyAngularVelocity
+            hrp.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
+            hrp.AssemblyAngularVelocity = Vector3.new(0, 0, 0)
         end
     end
 end)
