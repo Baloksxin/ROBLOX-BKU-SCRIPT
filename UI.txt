@@ -114,6 +114,7 @@ end)
 
 local LastDragEnd = 0
 
+-- 带防出界限制的拖拽函数
 local function MakeDraggable(DragPoint, Main)
 	pcall(function()
 		local Dragging, MousePos, FramePos = false, nil, nil
@@ -142,12 +143,27 @@ local function MakeDraggable(DragPoint, Main)
 				)
 			then
 				local Delta = Input.Position - MousePos
-				Main.Position = UDim2.new(
-					FramePos.X.Scale,
-					FramePos.X.Offset + Delta.X,
-					FramePos.Y.Scale,
-					FramePos.Y.Offset + Delta.Y
-				)
+				local Camera = workspace.CurrentCamera
+				local ViewportSize = Camera and Camera.ViewportSize or Vector2.new(1920, 1080)
+
+				-- 计算无限制的绝对坐标
+				local RawX = FramePos.X.Scale * ViewportSize.X + FramePos.X.Offset + Delta.X
+				local RawY = FramePos.Y.Scale * ViewportSize.Y + FramePos.Y.Offset + Delta.Y
+
+				local Size = Main.AbsoluteSize
+				local Anchor = Main.AnchorPoint
+
+				-- 计算防出界的坐标最小值和最大值
+				local MinX = Anchor.X * Size.X
+				local MinY = Anchor.Y * Size.Y
+				local MaxX = ViewportSize.X - ((1 - Anchor.X) * Size.X)
+				local MaxY = ViewportSize.Y - ((1 - Anchor.Y) * Size.Y)
+
+				-- 限制在屏幕内
+				local ClampedX = math.clamp(RawX, MinX, MaxX)
+				local ClampedY = math.clamp(RawY, MinY, MaxY)
+
+				Main.Position = UDim2.new(0, ClampedX, 0, ClampedY)
 			end
 		end)
 	end)
@@ -871,7 +887,7 @@ function OrionLib:MakeWindow(WindowConfig)
 				Size = UDim2.new(0, 615, 0, 344),
 				ClipsDescendants = true,
 				Active = true,
-				Draggable = true,
+				Draggable = false, -- 改为 false，避免 Roblox 原生拖拽覆盖我们的边界限制 logic
 			}),
 			{
 				SetChildren(
