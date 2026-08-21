@@ -7,35 +7,27 @@ if _G._JumpHeightCleanup then
     _G._JumpHeightCleanup = nil
 end
 
-local function getTarget()
-    local val = _G.jumph
-    if val == nil or val == 0 then
-        return 15
-    end
-    return val
-end
-
 local connections = {}
 
 local function setup(char)
     local hum = char:FindFirstChild("Humanoid")
     if not hum then return end
 
-    hum.UseJumpPower = false
-    hum.JumpHeight = getTarget()
+    if jumph and jumph ~= 0 then
+        hum.UseJumpPower = false
+        hum.JumpHeight = jumph
+    end
 
     table.insert(connections, hum:GetPropertyChangedSignal("JumpHeight"):Connect(function()
-        local target = getTarget()
-        if hum.JumpHeight ~= target then
-            hum.JumpHeight = target
+        if jumph and jumph ~= 0 and hum.JumpHeight ~= jumph then
+            hum.JumpHeight = jumph
         end
     end))
 
     table.insert(connections, hum:GetPropertyChangedSignal("UseJumpPower"):Connect(function()
-        local target = getTarget()
-        if hum.UseJumpPower == true then
+        if jumph and jumph ~= 0 and hum.UseJumpPower == true then
             hum.UseJumpPower = false
-            hum.JumpHeight = target
+            hum.JumpHeight = jumph
         end
     end))
 end
