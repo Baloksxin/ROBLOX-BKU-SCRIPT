@@ -12,18 +12,30 @@ end
 local function setupCharacter(character)
     local humanoid = character:WaitForChild("Humanoid")
     
+    if humanoid._jumpHeightConnection then
+        humanoid._jumpHeightConnection:Disconnect()
+        humanoid._jumpHeightConnection = nil
+    end
+    
     humanoid.UseJumpPower = false
     humanoid.JumpHeight = actualJumpHeight
     humanoid:SetStateEnabled(Enum.HumanoidStateType.Jumping, true)
     
-    local isUpdating = false
-    humanoid:GetPropertyChangedSignal("JumpHeight"):Connect(function()
-        if not isUpdating and humanoid.JumpHeight ~= actualJumpHeight then
-            isUpdating = true
+    local connection
+    local function onJumpHeightChanged()
+        if humanoid.JumpHeight ~= actualJumpHeight then
+            if connection then
+                connection:Disconnect()
+                connection = nil
+            end
             humanoid.JumpHeight = actualJumpHeight
-            isUpdating = false
+            connection = humanoid:GetPropertyChangedSignal("JumpHeight"):Connect(onJumpHeightChanged)
+            humanoid._jumpHeightConnection = connection
         end
-    end)
+    end
+    
+    connection = humanoid:GetPropertyChangedSignal("JumpHeight"):Connect(onJumpHeightChanged)
+    humanoid._jumpHeightConnection = connection
 end
 
 if LocalPlayer.Character then
