@@ -1,45 +1,49 @@
-local DEFAULT_JUMP_HEIGHT = 15
-local actualJumpHeight = (jumph == 0 or jumph == nil) and DEFAULT_JUMP_HEIGHT or jumph
+local player = game.Players.LocalPlayer
 
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-
-if _G.JumpHeightConnection then
-    _G.JumpHeightConnection:Disconnect()
-    _G.JumpHeightConnection = nil
+if _G._JumpHeightCleanup then
+    for _, conn in ipairs(_G._JumpHeightCleanup) do
+        conn:Disconnect()
+    end
+    _G._JumpHeightCleanup = nil
 end
 
-local function setupCharacter(character)
-    local humanoid = character:WaitForChild("Humanoid")
-    
-    if humanoid._jumpHeightConnection then
-        humanoid._jumpHeightConnection:Disconnect()
-        humanoid._jumpHeightConnection = nil
+local function getTarget()
+    local val = _G.jumph
+    if val == nil or val == 0 then
+        return 15
     end
-    
-    humanoid.UseJumpPower = false
-    humanoid.JumpHeight = actualJumpHeight
-    humanoid:SetStateEnabled(Enum.HumanoidStateType.Jumping, true)
-    
-    local connection
-    local function onJumpHeightChanged()
-        if humanoid.JumpHeight ~= actualJumpHeight then
-            if connection then
-                connection:Disconnect()
-                connection = nil
-            end
-            humanoid.JumpHeight = actualJumpHeight
-            connection = humanoid:GetPropertyChangedSignal("JumpHeight"):Connect(onJumpHeightChanged)
-            humanoid._jumpHeightConnection = connection
+    return val
+end
+
+local connections = {}
+
+local function setup(char)
+    local hum = char:FindFirstChild("Humanoid")
+    if not hum then return end
+
+    hum.UseJumpPower = false
+    hum.JumpHeight = getTarget()
+
+    table.insert(connections, hum:GetPropertyChangedSignal("JumpHeight"):Connect(function()
+        local target = getTarget()
+        if hum.JumpHeight ~= target then
+            hum.JumpHeight = target
         end
-    end
-    
-    connection = humanoid:GetPropertyChangedSignal("JumpHeight"):Connect(onJumpHeightChanged)
-    humanoid._jumpHeightConnection = connection
+    end))
+
+    table.insert(connections, hum:GetPropertyChangedSignal("UseJumpPower"):Connect(function()
+        local target = getTarget()
+        if hum.UseJumpPower == true then
+            hum.UseJumpPower = false
+            hum.JumpHeight = target
+        end
+    end))
 end
 
-if LocalPlayer.Character then
-    setupCharacter(LocalPlayer.Character)
+if player.Character then
+    setup(player.Character)
 end
 
-_G.JumpHeightConnection = LocalPlayer.CharacterAdded:Connect(setupCharacter)
+table.insert(connections, player.CharacterAdded:Connect(setup))
+
+_G._JumpHeightCleanup = connections
