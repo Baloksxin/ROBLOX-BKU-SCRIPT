@@ -12,12 +12,12 @@ local OrionLib = {
 	Flags = {},
 	Themes = {
 		Default = {
-			Main = Color3.fromRGB(20, 15, 30),
-			Second = Color3.fromRGB(35, 25, 55),
-			Stroke = Color3.fromRGB(120, 60, 200),
-			Divider = Color3.fromRGB(60, 45, 90),
-			Text = Color3.fromRGB(240, 240, 255),
-			TextDark = Color3.fromRGB(160, 160, 200),
+			Main = Color3.fromRGB(20, 30, 45),
+			Second = Color3.fromRGB(30, 50, 70),
+			Stroke = Color3.fromRGB(100, 180, 230),
+			Divider = Color3.fromRGB(50, 80, 110),
+			Text = Color3.fromRGB(230, 245, 255),
+			TextDark = Color3.fromRGB(150, 190, 220),
 		},
 	},
 	SelectedTheme = "Default",
@@ -113,8 +113,6 @@ task.spawn(function()
 end)
 
 local LastDragEnd = 0
-
--- 带防出界限制的拖拽函数
 local function MakeDraggable(DragPoint, Main)
 	pcall(function()
 		local Dragging, MousePos, FramePos = false, nil, nil
@@ -145,21 +143,15 @@ local function MakeDraggable(DragPoint, Main)
 				local Delta = Input.Position - MousePos
 				local Camera = workspace.CurrentCamera
 				local ViewportSize = Camera and Camera.ViewportSize or Vector2.new(1920, 1080)
-
-				-- 计算无限制的绝对坐标
 				local RawX = FramePos.X.Scale * ViewportSize.X + FramePos.X.Offset + Delta.X
 				local RawY = FramePos.Y.Scale * ViewportSize.Y + FramePos.Y.Offset + Delta.Y
 
 				local Size = Main.AbsoluteSize
 				local Anchor = Main.AnchorPoint
-
-				-- 计算防出界的坐标最小值和最大值
 				local MinX = Anchor.X * Size.X
 				local MinY = Anchor.Y * Size.Y
 				local MaxX = ViewportSize.X - ((1 - Anchor.X) * Size.X)
 				local MaxY = ViewportSize.Y - ((1 - Anchor.Y) * Size.Y)
-
-				-- 限制在屏幕内
 				local ClampedX = math.clamp(RawX, MinX, MaxX)
 				local ClampedY = math.clamp(RawY, MinY, MaxY)
 
@@ -466,7 +458,7 @@ CreateElement("FloatingButton", function(Config)
 
 	local Btn = Instance.new("TextButton")
 	Btn.Name = "FloatingButton"
-	Btn.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
+	Btn.BackgroundColor3 = Color3.fromRGB(30, 50, 70)
 	Btn.Text = ""
 	Btn.Active = false
 	Btn.Parent = Orion
@@ -474,7 +466,7 @@ CreateElement("FloatingButton", function(Config)
 	Instance.new("UICorner", Btn).CornerRadius = UDim.new(0, 12)
 
 	local Gradient = Instance.new("UIGradient", Btn)
-	Gradient.Color = ColorSequence.new(Color3.fromRGB(120, 60, 200), Color3.fromRGB(60, 30, 100))
+	Gradient.Color = ColorSequence.new(Color3.fromRGB(100, 180, 230), Color3.fromRGB(40, 80, 120))
 	Gradient.Rotation = 45
 
 	local Stroke = Instance.new("UIStroke", Btn)
@@ -588,7 +580,7 @@ function OrionLib:MakeNotification(NotificationConfig)
 		})
 
 		local NotificationFrame = SetChildren(
-			SetProps(MakeElement("RoundFrame", Color3.fromRGB(20, 15, 30), 0, 10), {
+			SetProps(MakeElement("RoundFrame", Color3.fromRGB(20, 30, 45), 0, 10), {
 				Parent = NotificationParent,
 				Size = UDim2.new(1, 0, 0, 0),
 				Position = UDim2.new(0, 0, 0, -ScreenSize.Y * 0.3),
@@ -596,7 +588,7 @@ function OrionLib:MakeNotification(NotificationConfig)
 				AutomaticSize = Enum.AutomaticSize.Y,
 			}),
 			{
-				MakeElement("Stroke", Color3.fromRGB(120, 60, 200), 1.2),
+				MakeElement("Stroke", Color3.fromRGB(100, 180, 230), 1.2),
 				MakeElement("Padding", 12, 12, 12, 12),
 				SetProps(MakeElement("Image", NotificationConfig.Image), {
 					Size = UDim2.new(0, 20, 0, 20),
@@ -615,7 +607,7 @@ function OrionLib:MakeNotification(NotificationConfig)
 					Font = Enum.Font.GothamSemibold,
 					Name = "Content",
 					AutomaticSize = Enum.AutomaticSize.Y,
-					TextColor3 = Color3.fromRGB(160, 160, 200),
+					TextColor3 = Color3.fromRGB(150, 190, 220),
 					TextWrapped = true,
 				}),
 			}
@@ -863,13 +855,25 @@ function OrionLib:MakeWindow(WindowConfig)
 
 	local WindowName = AddThemeObject(
 		SetProps(MakeElement("Label", WindowConfig.Name, 14), {
-			Size = UDim2.new(1, -30, 2, 0),
-			Position = UDim2.new(0, 25, 0, -24),
+			Size = UDim2.new(1, -120, 0, 22),
+			Position = UDim2.new(0, 25, 0, 4),
 			Font = Enum.Font.GothamBlack,
-			TextSize = 20,
+			TextSize = 18,
 		}),
 		"Text"
 	)
+
+	local WindowSubTitle = nil
+	if WindowConfig.SubTitle and WindowConfig.SubTitle ~= "" then
+		WindowSubTitle = SetProps(MakeElement("Label", WindowConfig.SubTitle, 12), {
+			Size = UDim2.new(1, -120, 0, 14),
+			Position = UDim2.new(0, 25, 0, 26),
+			Font = Enum.Font.Gotham,
+			TextSize = 11,
+			TextColor3 = Color3.fromRGB(160, 190, 210),
+			TextXAlignment = Enum.TextXAlignment.Left,
+		})
+	end
 
 	local WindowTopBarLine = AddThemeObject(
 		SetProps(MakeElement("Frame"), {
@@ -897,6 +901,7 @@ function OrionLib:MakeWindow(WindowConfig)
 					}),
 					{
 						WindowName,
+						WindowSubTitle,
 						WindowTopBarLine,
 						AddThemeObject(
 							SetChildren(
@@ -942,7 +947,7 @@ function OrionLib:MakeWindow(WindowConfig)
 		Name = "OrionOpenToggle",
 		Size = UDim2.new(0, 50, 0, 50),
 		Position = UDim2.new(0, 20, 0.5, -25),
-		BackgroundColor3 = Color3.fromRGB(30, 30, 45),
+		BackgroundColor3 = Color3.fromRGB(20, 35, 50),
 		Text = "UI",
 		TextColor3 = Color3.fromRGB(255, 255, 255),
 		Font = Enum.Font.GothamBold,
@@ -955,7 +960,7 @@ function OrionLib:MakeWindow(WindowConfig)
 	Instance.new("UICorner", OpenToggleBtn).CornerRadius = UDim.new(0, 12)
 
 	local Gradient = Instance.new("UIGradient", OpenToggleBtn)
-	Gradient.Color = ColorSequence.new(Color3.fromRGB(120, 60, 200), Color3.fromRGB(60, 30, 100))
+	Gradient.Color = ColorSequence.new(Color3.fromRGB(100, 180, 230), Color3.fromRGB(40, 80, 120))
 	Gradient.Rotation = 45
 
 	local Stroke = Instance.new("UIStroke", OpenToggleBtn)
