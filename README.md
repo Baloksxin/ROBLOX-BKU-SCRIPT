@@ -1,5 +1,5 @@
 # BKU SCRIPT
-
+LETHAL APE & EAR GAME
 ---
 
 ## 📜 说明
