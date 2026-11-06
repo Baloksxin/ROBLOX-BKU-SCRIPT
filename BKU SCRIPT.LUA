@@ -50,15 +50,14 @@ local function ExecuteScript(url)
 end
 
 MainTab:AddSection({ Name = "更新日志" })
-MainTab:AddLabel("更新了致命猴子，一些功能稍后推出")
-MainTab:AddLabel("...")
-MainTab:AddLabel("最后更新时间:2026/11/3")
+MainTab:AddLabel("修复了一些bug")
+MainTab:AddLabel("最后更新时间:2026/11/6")
 
 MainTab:AddSection({ Name = "可选服务器" })
 MainTab:AddButton({
 	Name = "通用",
 	Callback = function()
-		ExecuteScript("https://flowauth.net/v1/loaders/6f850a94a5646376fc5691ce77e76ec7.lua")
+		ExecuteScript("https://raw.githubusercontent.com/Baloksxin/ROBLOX-BKU-SCRIPT/refs/heads/main/%E9%80%9A%E7%94%A8.LUA")
 	end,
 	Icon = "rbxassetid://3944703587",
 })
@@ -74,7 +73,7 @@ MainTab:AddButton({
 MainTab:AddButton({
 	Name = "致命猴子",
 	Callback = function()
-		ExecuteScript("https://flowauth.net/v1/loaders/8f4b24028431b8ba0d9bb2e199a36753.lua")
+		ExecuteScript("https://flowauth.net/v1/loaders/6f850a94a5646376fc5691ce77e76ec7.lua")
 	end,
 	Icon = "rbxassetid://3944703587",
 })
