@@ -51,13 +51,25 @@ end
 
 MainTab:AddSection({ Name = "更新日志" })
 MainTab:AddLabel("修复了一些bug")
-MainTab:AddLabel("最后更新时间:2026/11/6")
+MainTab:AddLabel("更新了致命猴子")
+MainTab:AddLabel("添加了致命狒狒的支持!")
+MainTab:AddLabel("控制Npc by Baloksxin重新启用")
+MainTab:AddLabel("......")
+MainTab:AddLabel("最后更新时间:2026/11/10")
 
 MainTab:AddSection({ Name = "可选服务器" })
 MainTab:AddButton({
 	Name = "通用",
 	Callback = function()
 		ExecuteScript("https://flowauth.net/v1/loaders/6f850a94a5646376fc5691ce77e76ec7.lua")
+	end,
+	Icon = "rbxassetid://3944703587",
+})
+
+MainTab:AddButton({
+	Name = "致命狒狒",
+	Callback = function()
+		ExecuteScript("https://flowauth.net/v1/loaders/d241b8942fce99fbd848fd6051a13d44.lua")
 	end,
 	Icon = "rbxassetid://3944703587",
 })
