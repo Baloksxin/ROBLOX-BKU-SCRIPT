@@ -53,32 +53,31 @@ local function ExecuteScript(url)
 	end
 end
 
-local secLog = MainTab:AddSection("更新日志")
-secLog:AddParagraph({ Title = "修复了一些bug", Content = "" })
-secLog:AddParagraph({ Title = "更新了控制Npc", Content = "" })
-secLog:AddParagraph({ Title = "新的UI", Content = ""})
-secLog:AddParagraph({ Title = "最后更新时间:2026/11/15", Content = "" })
+MainTab:AddSection("更新日志")
+MainTab:AddParagraph({ Title = "修复了一些bug", Content = "" })
+MainTab:AddParagraph({ Title = "更新了控制Npc", Content = "" })
+MainTab:AddParagraph({ Title = "最后更新时间:2026/11/10", Content = "" })
 
-local secServer = MainTab:AddSection("可选服务器")
-secServer:AddButton({
+MainTab:AddSection("可选服务器")
+MainTab:AddButton({
 	Title = "通用",
 	Callback = function()
 		ExecuteScript("https://flowauth.net/v1/loaders/6f850a94a5646376fc5691ce77e76ec7.lua")
 	end,
 })
-secServer:AddButton({
+MainTab:AddButton({
 	Title = "致命狒狒",
 	Callback = function()
 		ExecuteScript("https://flowauth.net/v1/loaders/d241b8942fce99fbd848fd6051a13d44.lua")
 	end,
 })
-secServer:AddButton({
+MainTab:AddButton({
 	Title = "Ear Game",
 	Callback = function()
 		ExecuteScript("https://flowauth.net/v1/loaders/9ecaaf715ddfd8184e9069c4dcf0fd8f.lua")
 	end,
 })
-secServer:AddButton({
+MainTab:AddButton({
 	Title = "致命猴子",
 	Callback = function()
 		ExecuteScript("https://flowauth.net/v1/loaders/8f4b24028431b8ba0d9bb2e199a36753.lua")
