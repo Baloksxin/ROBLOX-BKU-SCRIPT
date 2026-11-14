@@ -56,7 +56,8 @@ end
 local secLog = MainTab:AddSection("更新日志")
 secLog:AddParagraph({ Title = "修复了一些bug", Content = "" })
 secLog:AddParagraph({ Title = "更新了控制Npc", Content = "" })
-secLog:AddParagraph({ Title = "最后更新时间:2026/11/10", Content = "" })
+secLog:AddParagraph({ Title = "新的UI", Content = ""})
+secLog:AddParagraph({ Title = "最后更新时间:2026/11/15", Content = "" })
 
 local secServer = MainTab:AddSection("可选服务器")
 secServer:AddButton({
