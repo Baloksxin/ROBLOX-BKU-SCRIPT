@@ -1,28 +1,32 @@
-local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/Baloksxin/ROBLOX-BKU-SCRIPT/refs/heads/main/UI.txt"))()
+local FluentSource = game:HttpGet("https://raw.githubusercontent.com/Baloksxin/ROBLOX-BKU-SCRIPT/refs/heads/main/UI.txt")
+local FluentChunk, FluentErr = loadstring(FluentSource)
+if not FluentChunk then
+	error("Ui加载错误:" .. tostring(FluentErr), 0)
+end
+local Fluent = FluentChunk()
+if not Fluent then
+	error("Ui加载错误:没有返回", 0)
+end
 pcall(function()
 	if type(getgenv) == "function" then
 		local e = getgenv()
 		if type(e) == "table" then
-			e.OrionLib = OrionLib
+			e.Fluent = Fluent
 		end
 	end
 end)
 
-local Window = OrionLib:MakeWindow({
-	Name = "服务器选择",
-	HidePremium = false,
-	SaveConfig = false,
-	ConfigFolder = "ServerSelect",
-	IntroEnabled = true,
-	IntroText = "服务器选择",
-	IntroIcon = "rbxassetid://8834748103",
-	Icon = "rbxassetid://8834748103",
+local Window = Fluent:CreateWindow({
+	Title = "服务器选择",
+	SubTitle = "BKU",
+	TabWidth = 140,
+	Size = UDim2.fromOffset(520, 420),
+	Acrylic = true,
+	Theme = "Pearl White",
+	MinimizeKey = Enum.KeyCode.LeftControl,
 })
 
-local MainTab = Window:MakeTab({
-	Name = "服务器选择",
-	Icon = "server",
-})
+local MainTab = Window:AddTab({ Title = "服务器选择", Icon = "lucide/server" })
 
 local _loaded = {}
 
@@ -49,45 +53,33 @@ local function ExecuteScript(url)
 	end
 end
 
-MainTab:AddSection({ Name = "更新日志" })
-MainTab:AddLabel("修复了一些bug")
-MainTab:AddLabel("更新了致命猴子")
-MainTab:AddLabel("添加了致命狒狒的支持!")
-MainTab:AddLabel("控制Npc by Baloksxin重新启用")
-MainTab:AddLabel("......")
-MainTab:AddLabel("最后更新时间:2026/11/10")
+local secLog = MainTab:AddSection("更新日志")
+secLog:AddParagraph({ Title = "修复了一些bug", Content = "" })
+secLog:AddParagraph({ Title = "更新了控制Npc", Content = "" })
+secLog:AddParagraph({ Title = "最后更新时间:2026/11/10", Content = "" })
 
-MainTab:AddSection({ Name = "可选服务器" })
-MainTab:AddButton({
-	Name = "通用",
+local secServer = MainTab:AddSection("可选服务器")
+secServer:AddButton({
+	Title = "通用",
 	Callback = function()
 		ExecuteScript("https://flowauth.net/v1/loaders/6f850a94a5646376fc5691ce77e76ec7.lua")
 	end,
-	Icon = "rbxassetid://3944703587",
 })
-
-MainTab:AddButton({
-	Name = "致命狒狒",
+secServer:AddButton({
+	Title = "致命狒狒",
 	Callback = function()
 		ExecuteScript("https://flowauth.net/v1/loaders/d241b8942fce99fbd848fd6051a13d44.lua")
 	end,
-	Icon = "rbxassetid://3944703587",
 })
-
-MainTab:AddButton({
-	Name = "Ear Game",
+secServer:AddButton({
+	Title = "Ear Game",
 	Callback = function()
 		ExecuteScript("https://flowauth.net/v1/loaders/9ecaaf715ddfd8184e9069c4dcf0fd8f.lua")
 	end,
-	Icon = "rbxassetid://3944703587",
 })
-
-MainTab:AddButton({
-	Name = "致命猴子",
+secServer:AddButton({
+	Title = "致命猴子",
 	Callback = function()
 		ExecuteScript("https://flowauth.net/v1/loaders/8f4b24028431b8ba0d9bb2e199a36753.lua")
 	end,
-	Icon = "rbxassetid://3944703587",
 })
-
-OrionLib:Init()
