@@ -156,7 +156,19 @@ local controlModule = nil
 local keys = { W = false, A = false, S = false, D = false }
 
 pcall(function()
-	controlModule = require(plr:WaitForChild("PlayerScripts"):WaitForChild("PlayerModule"):WaitForChild("ControlModule"))
+	local ps = plr:FindFirstChild("PlayerScripts") or plr:WaitForChild("PlayerScripts", 3)
+	if not ps then return end
+	local pm = ps:FindFirstChild("PlayerModule")
+	if not pm then
+		local ok, got = pcall(function()
+			return ps:WaitForChild("PlayerModule", 2)
+		end)
+		pm = ok and got or nil
+	end
+	local cm = pm and pm:FindFirstChild("ControlModule")
+	if cm then
+		controlModule = require(cm)
+	end
 end)
 
 local function getRoot(char)
