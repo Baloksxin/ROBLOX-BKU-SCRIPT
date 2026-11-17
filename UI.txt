@@ -4371,6 +4371,18 @@ local aa = {
                 function()
                     m.Container.Size = UDim2.new(1, 0, 0, m.Layout.AbsoluteContentSize.Y)
                     m.Root.Size = UDim2.new(1, 0, 0, m.Layout.AbsoluteContentSize.Y + 25)
+                    task.defer(function()
+                        local parent = m.Root and m.Root.Parent
+                        if parent and parent:IsA("ScrollingFrame") then
+                            local layout = parent:FindFirstChildWhichIsA("UIListLayout")
+                            if layout then
+                                local h = layout.AbsoluteContentSize.Y
+                                if h > 0 then
+                                    parent.CanvasSize = UDim2.new(0, 0, 0, h + 28)
+                                end
+                            end
+                        end
+                    end)
                 end
             )
             return m
@@ -4653,30 +4665,55 @@ local aa = {
                     table.insert(lib._SBOverlayTeardowns, _teardown)
                 end)
             end
+            local function refreshTabCanvas()
+                local sf = x.ContainerFrame
+                if not sf or not sf.Parent then return end
+                local h = y.AbsoluteContentSize.Y
+                if h <= 0 then
+                    local totalH = 0
+                    for _, child in ipairs(sf:GetChildren()) do
+                        if child:IsA("GuiObject") and child.Visible and not child:IsA("UIListLayout") and not child:IsA("UIPadding") then
+                            totalH = totalH + child.AbsoluteSize.Y + 5
+                        end
+                    end
+                    h = totalH
+                end
+                if h > 0 then
+                    sf.CanvasSize = UDim2.new(0, 0, 0, h + 28)
+                end
+            end
+            x.RefreshCanvas = refreshTabCanvas
+            pcall(function()
+                x.ContainerFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
+            end)
             j.AddSignal(
                 y:GetPropertyChangedSignal "AbsoluteContentSize",
                 function()
-                    x.ContainerFrame.CanvasSize = UDim2.new(0, 0, 0, y.AbsoluteContentSize.Y + 2)
+                    refreshTabCanvas()
                 end
             )
             x.ContainerFrame.ChildAdded:Connect(function()
-                task.defer(function()
-                    if y.AbsoluteContentSize.Y > 0 then
-                        x.ContainerFrame.CanvasSize = UDim2.new(0, 0, 0, y.AbsoluteContentSize.Y + 2)
-                    else
-                        local children = x.ContainerFrame:GetChildren()
-                        local totalH = 0
-                        for _, child in ipairs(children) do
-                            if child:IsA("GuiObject") and child.Visible then
-                                totalH = totalH + child.AbsoluteSize.Y
-                            end
-                        end
-                        if totalH > 0 then
-                            x.ContainerFrame.CanvasSize = UDim2.new(0, 0, 0, totalH + 20)
-                        end
-                    end
-                end)
+                task.defer(refreshTabCanvas)
+                task.delay(0.05, refreshTabCanvas)
+                task.delay(0.2, refreshTabCanvas)
             end)
+            x.ContainerFrame.ChildRemoved:Connect(function()
+                task.defer(refreshTabCanvas)
+            end)
+            j.AddSignal(x.ContainerFrame:GetPropertyChangedSignal("Visible"), function()
+                if x.ContainerFrame.Visible then
+                    task.defer(refreshTabCanvas)
+                    task.delay(0.05, refreshTabCanvas)
+                    task.delay(0.15, refreshTabCanvas)
+                end
+            end)
+            j.AddSignal(x.ContainerFrame:GetPropertyChangedSignal("AbsoluteSize"), function()
+                if x.ContainerFrame.Visible then
+                    task.defer(refreshTabCanvas)
+                end
+            end)
+            task.defer(refreshTabCanvas)
+            task.delay(0.3, refreshTabCanvas)
             x.Motor, x.SetTransparency = j.SpringMotor(1, x.Frame, "BackgroundTransparency")
             j.AddSignal(
                 x.Frame.MouseEnter,
@@ -5155,6 +5192,28 @@ local aa = {
                         end
                     end
                     o.Containers[q].Visible = true
+                    task.defer(function()
+                        local tab = o.Tabs[q]
+                        if tab and tab.RefreshCanvas then
+                            pcall(tab.RefreshCanvas)
+                        end
+                        local con = o.Containers[q]
+                        if con and con.Parent then
+                            local layout = con:FindFirstChildWhichIsA("UIListLayout")
+                            if layout then
+                                local h = layout.AbsoluteContentSize.Y
+                                if h > 0 then
+                                    con.CanvasSize = UDim2.new(0, 0, 0, h + 28)
+                                end
+                            end
+                        end
+                    end)
+                    task.delay(0.12, function()
+                        local tab = o.Tabs[q]
+                        if tab and tab.RefreshCanvas then
+                            pcall(tab.RefreshCanvas)
+                        end
+                    end)
                     for _, _vf in ipairs(o.Containers[q]:GetDescendants()) do
                         if _vf:IsA("VideoFrame") then
                             pcall(function() _vf.Volume = _vf:GetAttribute("BFVolume") or 0 end)
@@ -5287,26 +5346,52 @@ local aa = {
                     PaddingBottom = UDim.new(0, 4),
                 }),
             })
-            j.AddSignal(listLayout2:GetPropertyChangedSignal("AbsoluteContentSize"), function()
-                ht.ContainerFrame.CanvasSize = UDim2.new(0, 0, 0, listLayout2.AbsoluteContentSize.Y + 2)
-            end)
-            ht.ContainerFrame.ChildAdded:Connect(function()
-                task.defer(function()
-                    if listLayout2.AbsoluteContentSize.Y > 0 then
-                        ht.ContainerFrame.CanvasSize = UDim2.new(0, 0, 0, listLayout2.AbsoluteContentSize.Y + 2)
-                    else
-                        local totalH = 0
-                        for _, child in ipairs(ht.ContainerFrame:GetChildren()) do
-                            if child:IsA("GuiObject") and child.Visible then
-                                totalH = totalH + child.AbsoluteSize.Y
-                            end
-                        end
-                        if totalH > 0 then
-                            ht.ContainerFrame.CanvasSize = UDim2.new(0, 0, 0, totalH + 20)
+            local function refreshHtCanvas()
+                local sf = ht.ContainerFrame
+                if not sf or not sf.Parent then return end
+                local h = listLayout2.AbsoluteContentSize.Y
+                if h <= 0 then
+                    local totalH = 0
+                    for _, child in ipairs(sf:GetChildren()) do
+                        if child:IsA("GuiObject") and child.Visible and not child:IsA("UIListLayout") and not child:IsA("UIPadding") then
+                            totalH = totalH + child.AbsoluteSize.Y + 5
                         end
                     end
-                end)
+                    h = totalH
+                end
+                if h > 0 then
+                    sf.CanvasSize = UDim2.new(0, 0, 0, h + 28)
+                end
+            end
+            ht.RefreshCanvas = refreshHtCanvas
+            pcall(function()
+                ht.ContainerFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
             end)
+            j.AddSignal(listLayout2:GetPropertyChangedSignal("AbsoluteContentSize"), function()
+                refreshHtCanvas()
+            end)
+            ht.ContainerFrame.ChildAdded:Connect(function()
+                task.defer(refreshHtCanvas)
+                task.delay(0.05, refreshHtCanvas)
+                task.delay(0.2, refreshHtCanvas)
+            end)
+            ht.ContainerFrame.ChildRemoved:Connect(function()
+                task.defer(refreshHtCanvas)
+            end)
+            j.AddSignal(ht.ContainerFrame:GetPropertyChangedSignal("Visible"), function()
+                if ht.ContainerFrame.Visible then
+                    task.defer(refreshHtCanvas)
+                    task.delay(0.05, refreshHtCanvas)
+                    task.delay(0.15, refreshHtCanvas)
+                end
+            end)
+            j.AddSignal(ht.ContainerFrame:GetPropertyChangedSignal("AbsoluteSize"), function()
+                if ht.ContainerFrame.Visible then
+                    task.defer(refreshHtCanvas)
+                end
+            end)
+            task.defer(refreshHtCanvas)
+            task.delay(0.3, refreshHtCanvas)
             o.Containers[tabIdx] = ht.ContainerFrame
             ht.Container = ht.ContainerFrame
             ht.ScrollFrame = ht.ContainerFrame
