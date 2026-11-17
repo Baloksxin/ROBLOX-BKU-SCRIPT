@@ -10186,7 +10186,7 @@ local aa = {
                 })
                 stackedTrack = ai("TextButton", {
                     BackgroundTransparency = 1,
-                    Size = UDim2.new(1, 0, 0, 40),
+                    Size = UDim2.new(1, 0, 1, 0),
                     Position = UDim2.new(0, 0, 0.5, 0),
                     AnchorPoint = Vector2.new(0, 0.5),
                     Text = "",
@@ -10223,14 +10223,14 @@ local aa = {
                         h:SetValue(h.Min + ((h.Max - h.Min) * pct))
                     end
                 end)
-                stackedTrack.InputEnded:Connect(function(p2)
+                ah.AddSignal(af.InputEnded, function(p2)
                     if p2.UserInputType == Enum.UserInputType.MouseButton1 or p2.UserInputType == Enum.UserInputType.Touch then
                         sDragging = false
                     end
                 end)
                 ah.AddSignal(af.InputChanged, function(p2)
                     if sDragging and (p2.UserInputType == Enum.UserInputType.MouseMovement or p2.UserInputType == Enum.UserInputType.Touch) then
-                        local pct = math.clamp((p2.Position.X - stackedTrack.AbsolutePosition.X) / stackedTrack.AbsoluteSize.X, 0, 1)
+                        local pct = math.clamp((p2.Position.X - stackedTrack.AbsolutePosition.X) / math.max(stackedTrack.AbsoluteSize.X, 1), 0, 1)
                         h:SetValue(h.Min + ((h.Max - h.Min) * pct))
                     end
                 end)
@@ -10280,35 +10280,21 @@ local aa = {
                 })
                 task.defer(function() applySliderIcon(rightIco, rightIconKey, g) end)
             end
-            local grab = ai("TextButton", {
-                BackgroundTransparency = 1,
-                Text = "",
-                Size = UDim2.new(1, 16, 0, 36),
-                Position = UDim2.new(0, -8, 0.5, 0),
-                AnchorPoint = Vector2.new(0, 0.5),
-                ZIndex = 4,
-                Parent = railContainer,
-            })
-            ah.AddSignal(
-                grab.InputBegan,
-                function(p)
-                    if p.UserInputType == Enum.UserInputType.MouseButton1 or p.UserInputType == Enum.UserInputType.Touch then
-                        i = true
-                        local s = math.clamp((p.Position.X - trackFrame.AbsolutePosition.X) / math.max(trackFrame.AbsoluteSize.X, 1), 0, 1)
-                        h:SetValue(h.Min + ((h.Max - h.Min) * s))
-                    end
+            trackFrame.Active = true
+            k.Active = true
+            local function beginDrag(p)
+                if p.UserInputType ~= Enum.UserInputType.MouseButton1 and p.UserInputType ~= Enum.UserInputType.Touch then
+                    return
                 end
-            )
+                i = true
+                local s = math.clamp((p.Position.X - trackFrame.AbsolutePosition.X) / math.max(trackFrame.AbsoluteSize.X, 1), 0, 1)
+                h:SetValue(h.Min + ((h.Max - h.Min) * s))
+            end
+            ah.AddSignal(trackFrame.InputBegan, beginDrag)
+            ah.AddSignal(k.InputBegan, beginDrag)
+            ah.AddSignal(railContainer.InputBegan, beginDrag)
             ah.AddSignal(
-                k.InputBegan,
-                function(p)
-                    if p.UserInputType == Enum.UserInputType.MouseButton1 or p.UserInputType == Enum.UserInputType.Touch then
-                        i = true
-                    end
-                end
-            )
-            ah.AddSignal(
-                k.InputEnded,
+                af.InputEnded,
                 function(p)
                     if p.UserInputType == Enum.UserInputType.MouseButton1 or p.UserInputType == Enum.UserInputType.Touch then
                         i = false
@@ -10323,7 +10309,7 @@ local aa = {
                             (p.UserInputType == Enum.UserInputType.MouseMovement or
                                 p.UserInputType == Enum.UserInputType.Touch)
                      then
-                        local s = math.clamp((p.Position.X - trackFrame.AbsolutePosition.X) / trackFrame.AbsoluteSize.X, 0, 1)
+                        local s = math.clamp((p.Position.X - trackFrame.AbsolutePosition.X) / math.max(trackFrame.AbsoluteSize.X, 1), 0, 1)
                         h:SetValue(h.Min + ((h.Max - h.Min) * s))
                     end
                 end
