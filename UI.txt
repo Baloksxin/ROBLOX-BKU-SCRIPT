@@ -1789,6 +1789,55 @@ local aa = {
                 end
             end
             x.MinimizeKey = D.MinimizeKey
+            do
+                local UIS = game:GetService("UserInputService")
+                local cam = workspace.CurrentCamera
+                local function viewport()
+                    local c = workspace.CurrentCamera or cam
+                    return c and c.ViewportSize or Vector2.new(1280, 720)
+                end
+                local function applyAutoSize()
+                    local vp = viewport()
+                    local mobile = UIS.TouchEnabled or vp.X < 800
+                    local maximized = x.Window and x.Window.Maximized
+                    local scale = 1
+                    if mobile and not maximized then
+                        scale = math.clamp(math.min(vp.X / 900, vp.Y / 700), 0.62, 0.88)
+                    end
+                    if x.GUI then
+                        local us = x.GUI:FindFirstChild("BKU_AutoScale")
+                        if not us then
+                            us = Instance.new("UIScale")
+                            us.Name = "BKU_AutoScale"
+                            us.Parent = x.GUI
+                        end
+                        us.Scale = scale
+                    end
+                    if typeof(D.Size) == "UDim2" and D.Size.X.Offset > 0 and D.Size.Y.Offset > 0 then
+                        local baseW = D._BaseW or D.Size.X.Offset
+                        local baseH = D._BaseH or D.Size.Y.Offset
+                        D._BaseW, D._BaseH = baseW, baseH
+                        local maxW = math.floor(vp.X / math.max(scale, 0.01) * 0.94)
+                        local maxH = math.floor(vp.Y / math.max(scale, 0.01) * 0.86)
+                        local w = math.clamp(math.min(baseW, maxW), 280, baseW)
+                        local h = math.clamp(math.min(baseH, maxH), 240, baseH)
+                        D.Size = UDim2.fromOffset(w, h)
+                        if x.Window and x.Window.Root and not maximized then
+                            pcall(function()
+                                x.Window.Root.Size = D.Size
+                            end)
+                        end
+                    end
+                    if mobile and type(D.TabWidth) == "number" and D.TabWidth > 92 then
+                        D.TabWidth = 92
+                    end
+                end
+                applyAutoSize()
+                if cam then
+                    cam:GetPropertyChangedSignal("ViewportSize"):Connect(applyAutoSize)
+                end
+            end
+
             x.UseAcrylic = D.Acrylic
             x.ShineEnabled = not (D.Animated == false)
             if D.Acrylic then
@@ -6767,7 +6816,7 @@ local aa = {
             v.TabDisplay = nil
             v.ContainerHolder =
                 s(
-                "CanvasGroup",
+                "Frame",
                 {
                     Size = UDim2.new(1, -t.TabWidth - 32, 1, -66),
                     Position = UDim2.fromOffset(t.TabWidth + 26, 54),
@@ -6855,7 +6904,9 @@ local aa = {
             )
             v.ContainerBackMotor:onStep(
                 function(K)
-                    v.ContainerHolder.GroupTransparency = K
+                    if v.ContainerHolder:IsA("CanvasGroup") then
+                        v.ContainerHolder.GroupTransparency = K
+                    end
                 end
             )
             v.ContainerPosMotor:onStep(
@@ -6867,6 +6918,13 @@ local aa = {
             v.Maximize = function(M, N, O)
                 local wasMaximized = v.Maximized
                 v.Maximized = M
+                pcall(function()
+                    local gui = v.Root and v.Root:FindFirstAncestorWhichIsA("ScreenGui")
+                    if gui then
+                        local us = gui:FindFirstChild("BKU_AutoScale")
+                        if us then us.Scale = 1 end
+                    end
+                end)
                 v.TitleBar.MaxButton.Frame.Icon.Image = M and o.Restore or o.Max
                 if M and not wasMaximized then
                     K = v.Size.X.Offset
@@ -10000,18 +10058,21 @@ local aa = {
             h.Frame = j.Frame
             local totalSideW = leftW + rightW
             local railRightOffset = -(10 + rightW)
-            local railSize = UDim2.new(1, -(20 + totalSideW), 0, 6)
+            local railSize = UDim2.new(1, -(20 + totalSideW), 0, 10)
             local railPos  = UDim2.new(1, railRightOffset - leftW, 0.5, 0)
             local k =
                 ai(
-                "ImageLabel",
+                "Frame",
                 {
                     AnchorPoint = Vector2.new(0, 0.5),
-                    Position = UDim2.new(0, -10, 0.5, 0),
-                    Size = UDim2.fromOffset(20, 20),
-                    Image = "http://www.roblox.com/asset/?id=12266946128",
-                    ThemeTag = {ImageColor3 = "Accent"},
-                    ZIndex = 3,
+                    Position = UDim2.new(0, -11, 0.5, 0),
+                    Size = UDim2.fromOffset(22, 22),
+                    ThemeTag = {BackgroundColor3 = "Accent"},
+                    ZIndex = 5,
+                },
+                {
+                    ai("UICorner", {CornerRadius = UDim.new(1, 0)}),
+                    ai("UIStroke", {Thickness = 1, Transparency = 0.35, ThemeTag = {Color = "Text"}}),
                 }
             )
             local trackFrame =
@@ -10125,21 +10186,23 @@ local aa = {
                 })
                 stackedTrack = ai("TextButton", {
                     BackgroundTransparency = 1,
-                    Size = UDim2.new(1, 0, 0, 28),
+                    Size = UDim2.new(1, 0, 0, 40),
                     Position = UDim2.new(0, 0, 0.5, 0),
                     AnchorPoint = Vector2.new(0, 0.5),
                     Text = "",
                     ZIndex = 4,
                     Parent = sRailContainer,
                 })
-                stackedKnob = ai("ImageLabel", {
+                stackedKnob = ai("Frame", {
                     AnchorPoint = Vector2.new(0.5, 0.5),
                     Position = UDim2.new(0, 0, 0.5, 0),
-                    Size = UDim2.fromOffset(18, 18),
-                    Image = "http://www.roblox.com/asset/?id=12266946128",
-                    ThemeTag = {ImageColor3 = "Accent"},
-                    ZIndex = 5,
+                    Size = UDim2.fromOffset(24, 24),
+                    ThemeTag = {BackgroundColor3 = "Accent"},
+                    ZIndex = 6,
                     Parent = stackedTrack,
+                }, {
+                    ai("UICorner", {CornerRadius = UDim.new(1, 0)}),
+                    ai("UIStroke", {Thickness = 1, Transparency = 0.35, ThemeTag = {Color = "Text"}}),
                 })
                 if rightIconKey then
                     local sRIco = ai("ImageLabel", {
@@ -10217,6 +10280,25 @@ local aa = {
                 })
                 task.defer(function() applySliderIcon(rightIco, rightIconKey, g) end)
             end
+            local grab = ai("TextButton", {
+                BackgroundTransparency = 1,
+                Text = "",
+                Size = UDim2.new(1, 16, 0, 36),
+                Position = UDim2.new(0, -8, 0.5, 0),
+                AnchorPoint = Vector2.new(0, 0.5),
+                ZIndex = 4,
+                Parent = railContainer,
+            })
+            ah.AddSignal(
+                grab.InputBegan,
+                function(p)
+                    if p.UserInputType == Enum.UserInputType.MouseButton1 or p.UserInputType == Enum.UserInputType.Touch then
+                        i = true
+                        local s = math.clamp((p.Position.X - trackFrame.AbsolutePosition.X) / math.max(trackFrame.AbsoluteSize.X, 1), 0, 1)
+                        h:SetValue(h.Min + ((h.Max - h.Min) * s))
+                    end
+                end
+            )
             ah.AddSignal(
                 k.InputBegan,
                 function(p)
