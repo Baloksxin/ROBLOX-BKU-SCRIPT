@@ -1796,46 +1796,87 @@ local aa = {
                     local c = workspace.CurrentCamera or cam
                     return c and c.ViewportSize or Vector2.new(1280, 720)
                 end
+                local _camConn = nil
+                local _didCenter = false
                 local function applyAutoSize()
                     local vp = viewport()
-                    local mobile = UIS.TouchEnabled or vp.X < 800
+                    local mobile = UIS.TouchEnabled or vp.X < 900
                     local maximized = x.Window and x.Window.Maximized
+                    local root = x.Window and x.Window.Root
+                    if typeof(D.Size) == "UDim2" and D.Size.X.Offset > 0 and D.Size.Y.Offset > 0 then
+                        if not D._BaseW then
+                            D._BaseW = D.Size.X.Offset
+                            D._BaseH = D.Size.Y.Offset
+                        end
+                    end
+                    local baseW = D._BaseW or 520
+                    local baseH = D._BaseH or 420
+                    local curW = (root and root.Size.X.Offset > 0) and root.Size.X.Offset or baseW
+                    local curH = (root and root.Size.Y.Offset > 0) and root.Size.Y.Offset or baseH
                     local scale = 1
                     if mobile and not maximized then
-                        scale = math.clamp(math.min(vp.X / 900, vp.Y / 700), 0.62, 0.88)
+                        local fit = math.min((vp.X - 16) / curW, (vp.Y - 24) / curH)
+                        scale = math.clamp(fit, 0.5, 1)
                     end
-                    if x.GUI then
-                        local us = x.GUI:FindFirstChild("BKU_AutoScale")
+                    local host = root or x.GUI
+                    if host then
+                        local us = host:FindFirstChild("BKU_AutoScale")
+                        if us and us.Parent ~= host then
+                            us:Destroy()
+                            us = nil
+                        end
                         if not us then
                             us = Instance.new("UIScale")
                             us.Name = "BKU_AutoScale"
-                            us.Parent = x.GUI
+                            us.Parent = host
                         end
                         us.Scale = scale
                     end
-                    if typeof(D.Size) == "UDim2" and D.Size.X.Offset > 0 and D.Size.Y.Offset > 0 then
-                        local baseW = D._BaseW or D.Size.X.Offset
-                        local baseH = D._BaseH or D.Size.Y.Offset
-                        D._BaseW, D._BaseH = baseW, baseH
-                        local maxW = math.floor(vp.X / math.max(scale, 0.01) * 0.94)
-                        local maxH = math.floor(vp.Y / math.max(scale, 0.01) * 0.86)
-                        local w = math.clamp(math.min(baseW, maxW), 280, baseW)
-                        local h = math.clamp(math.min(baseH, maxH), 240, baseH)
-                        D.Size = UDim2.fromOffset(w, h)
-                        if x.Window and x.Window.Root and not maximized then
-                            pcall(function()
-                                x.Window.Root.Size = D.Size
-                            end)
+                    if x.GUI then
+                        local stray = x.GUI:FindFirstChild("BKU_AutoScale")
+                        if stray and stray.Parent == x.GUI then
+                            stray:Destroy()
                         end
                     end
-                    if mobile and type(D.TabWidth) == "number" and D.TabWidth > 92 then
-                        D.TabWidth = 92
+                    if root and not maximized then
+                        local visW = curW * scale
+                        local visH = curH * scale
+                        local px = root.Position.X.Offset
+                        local py = root.Position.Y.Offset
+                        if not _didCenter then
+                            px = math.floor((vp.X - visW) / 2)
+                            py = math.floor((vp.Y - visH) / 2)
+                            _didCenter = true
+                        end
+                        px = math.clamp(px, 0, math.max(0, vp.X - visW))
+                        py = math.clamp(py, 0, math.max(0, vp.Y - visH))
+                        pcall(function()
+                            root.Position = UDim2.fromOffset(px, py)
+                        end)
+                    end
+                    if mobile and type(D.TabWidth) == "number" and not D._BaseTab then
+                        D._BaseTab = D.TabWidth
+                        if D.TabWidth > 110 then
+                            D.TabWidth = 100
+                        end
                     end
                 end
+                x._ApplyAutoSize = applyAutoSize
                 applyAutoSize()
-                if cam then
-                    cam:GetPropertyChangedSignal("ViewportSize"):Connect(applyAutoSize)
+                local function bindCam()
+                    if _camConn then
+                        pcall(function() _camConn:Disconnect() end)
+                        _camConn = nil
+                    end
+                    local c = workspace.CurrentCamera
+                    if not c then return end
+                    _camConn = c:GetPropertyChangedSignal("ViewportSize"):Connect(applyAutoSize)
                 end
+                bindCam()
+                workspace:GetPropertyChangedSignal("CurrentCamera"):Connect(function()
+                    bindCam()
+                    applyAutoSize()
+                end)
             end
 
             x.UseAcrylic = D.Acrylic
@@ -1877,6 +1918,10 @@ local aa = {
                     Version = D.Version,
                 }
             x.Window = E
+            if x._ApplyAutoSize then
+                E._ApplyAutoSize = x._ApplyAutoSize
+                task.defer(x._ApplyAutoSize)
+            end
             if D.Version then x.WindowVersion = D.Version end
             function x:SetVersion(newVersion)
                 x.WindowVersion = newVersion
@@ -7004,10 +7049,13 @@ local aa = {
                 local wasMaximized = v.Maximized
                 v.Maximized = M
                 pcall(function()
-                    local gui = v.Root and v.Root:FindFirstAncestorWhichIsA("ScreenGui")
-                    if gui then
-                        local us = gui:FindFirstChild("BKU_AutoScale")
-                        if us then us.Scale = 1 end
+                    local host = v.Root
+                    local us = host and host:FindFirstChild("BKU_AutoScale")
+                    if us then
+                        us.Scale = M and 1 or us.Scale
+                    end
+                    if not M and v._ApplyAutoSize then
+                        task.defer(v._ApplyAutoSize)
                     end
                 end)
                 v.TitleBar.MaxButton.Frame.Icon.Image = M and o.Restore or o.Max
@@ -7094,7 +7142,10 @@ local aa = {
                      then
                         local N, O = M.Position - B, v.Size
                         local P = Vector3.new(O.X.Offset, O.Y.Offset, 0) + Vector3.new(1, 1, 0) * N
-                        local Q = Vector2.new(math.clamp(P.X, 470, 2048), math.clamp(P.Y, 380, 2048))
+                        local vpMin = j.ViewportSize
+                        local minW = math.clamp(math.floor(vpMin.X * 0.45), 240, 470)
+                        local minH = math.clamp(math.floor(vpMin.Y * 0.4), 200, 380)
+                        local Q = Vector2.new(math.clamp(P.X, minW, 2048), math.clamp(P.Y, minH, 2048))
                         G:setGoal {X = l.Instant.new(Q.X), Y = l.Instant.new(Q.Y)}
                     end
                 end
