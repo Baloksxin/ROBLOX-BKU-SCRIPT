@@ -54,9 +54,8 @@ local function ExecuteScript(url)
 end
 
 MainTab:AddSection("更新日志")
-MainTab:AddParagraph({ Title = "修复了一些bug", Content = "" })
-MainTab:AddParagraph({ Title = "更新了控制Npc", Content = "" })
-MainTab:AddParagraph({ Title = "最后更新时间:2026/11/10", Content = "" })
+MainTab:AddParagraph({ Title = "关闭修复", Content = "" })
+MainTab:AddParagraph({ Title = "最后更新时间:????/??/??", Content = "" })
 
 MainTab:AddSection("可选服务器")
 MainTab:AddButton({
